@@ -95,36 +95,47 @@ function PostTrip() {
       }
       
       // Prepare the data
-      const submitData = {
+      const baseData = {
         ...formData,
         departureDate: formData.departureDate ? new Date(formData.departureDate).toISOString() : null,
         arrivalDate: formData.arrivalDate ? new Date(formData.arrivalDate).toISOString() : null
       };
 
-      // Clean up document fields based on traveller type
+      // Clean up document fields based on traveller type and remove empty values
+      let submitData: any;
+      
       if (formData.travellerType === 'international') {
-        // Remove empty domestic document fields
-        delete submitData.domesticDocuments;
+        // Process international documents - remove empty strings
+        const processedInternationalDocs: any = {};
+        Object.keys(baseData.internationalDocuments).forEach(key => {
+          const typedKey = key as keyof typeof baseData.internationalDocuments;
+          processedInternationalDocs[typedKey] = baseData.internationalDocuments[typedKey] === '' 
+            ? null 
+            : baseData.internationalDocuments[typedKey];
+        });
+        
+        // Remove domestic documents from submit data
+        const { domesticDocuments, ...rest } = baseData;
+        submitData = {
+          ...rest,
+          internationalDocuments: processedInternationalDocs
+        };
       } else {
-        // Remove empty international document fields
-        delete submitData.internationalDocuments;
-      }
-      
-      // Remove empty string document values - convert to null
-      if (submitData.internationalDocuments) {
-        Object.keys(submitData.internationalDocuments).forEach(key => {
-          if (submitData.internationalDocuments[key] === '') {
-            submitData.internationalDocuments[key] = null;
-          }
+        // Process domestic documents - remove empty strings
+        const processedDomesticDocs: any = {};
+        Object.keys(baseData.domesticDocuments).forEach(key => {
+          const typedKey = key as keyof typeof baseData.domesticDocuments;
+          processedDomesticDocs[typedKey] = baseData.domesticDocuments[typedKey] === '' 
+            ? null 
+            : baseData.domesticDocuments[typedKey];
         });
-      }
-      
-      if (submitData.domesticDocuments) {
-        Object.keys(submitData.domesticDocuments).forEach(key => {
-          if (submitData.domesticDocuments[key] === '') {
-            submitData.domesticDocuments[key] = null;
-          }
-        });
+        
+        // Remove international documents from submit data
+        const { internationalDocuments, ...rest } = baseData;
+        submitData = {
+          ...rest,
+          domesticDocuments: processedDomesticDocs
+        };
       }
 
       const response = await api.travellers.create(submitData);
