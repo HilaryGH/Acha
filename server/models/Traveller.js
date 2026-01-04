@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
+const generateUniqueId = require('../utils/generateUniqueId');
 
 const travellerSchema = new mongoose.Schema({
+  // Unique ID
+  uniqueId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
   // Basic Information
   name: {
     type: String,
@@ -130,9 +137,19 @@ const travellerSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Update the updatedAt field before saving
-travellerSchema.pre('save', function(next) {
+// Update the updatedAt field before saving and generate unique ID
+travellerSchema.pre('save', async function(next) {
   this.updatedAt = Date.now();
+  
+  // Generate unique ID if it doesn't exist
+  if (!this.uniqueId) {
+    try {
+      this.uniqueId = await generateUniqueId(this.constructor);
+    } catch (error) {
+      return next(error);
+    }
+  }
+  
   next();
 });
 

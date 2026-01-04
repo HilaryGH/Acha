@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
+const generateUniqueId = require('../utils/generateUniqueId');
 
 const receiverSchema = new mongoose.Schema({
+  // Unique ID
+  uniqueId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
   // Basic Information
   name: {
     type: String,
@@ -72,13 +79,25 @@ const receiverSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Update the updatedAt field before saving
-receiverSchema.pre('save', function(next) {
+// Update the updatedAt field before saving and generate unique ID
+receiverSchema.pre('save', async function(next) {
   this.updatedAt = Date.now();
+  
+  // Generate unique ID if it doesn't exist
+  if (!this.uniqueId) {
+    try {
+      this.uniqueId = await generateUniqueId(this.constructor);
+    } catch (error) {
+      return next(error);
+    }
+  }
+  
   next();
 });
 
 module.exports = mongoose.model('Receiver', receiverSchema);
+
+
 
 
 

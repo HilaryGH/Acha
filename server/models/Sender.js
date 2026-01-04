@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
+const generateUniqueId = require('../utils/generateUniqueId');
 
 const senderSchema = new mongoose.Schema({
+  // Unique ID
+  uniqueId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
   // Basic Information
   name: {
     type: String,
@@ -52,6 +59,52 @@ const senderSchema = new mongoose.Schema({
     default: null
   },
   
+  // Delivery Item Information
+  deliveryItemInfo: {
+    productName: {
+      type: String,
+      trim: true
+    },
+    productDescription: {
+      type: String,
+      trim: true
+    },
+    brand: {
+      type: String,
+      trim: true
+    },
+    quantityType: {
+      type: String,
+      enum: ['pieces', 'weight'],
+      trim: true
+    },
+    quantityDescription: {
+      type: String,
+      trim: true
+    },
+    departureCity: {
+      type: String,
+      trim: true
+    },
+    destinationCity: {
+      type: String,
+      trim: true
+    },
+    preferredDeliveryDate: {
+      type: Date
+    },
+    photos: [{
+      type: String // Array of file paths/URLs
+    }],
+    video: {
+      type: String // Video file path/URL
+    },
+    link: {
+      type: String,
+      trim: true
+    }
+  },
+  
   // Status
   status: {
     type: String,
@@ -72,13 +125,25 @@ const senderSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Update the updatedAt field before saving
-senderSchema.pre('save', function(next) {
+// Update the updatedAt field before saving and generate unique ID
+senderSchema.pre('save', async function(next) {
   this.updatedAt = Date.now();
+  
+  // Generate unique ID if it doesn't exist
+  if (!this.uniqueId) {
+    try {
+      this.uniqueId = await generateUniqueId(this.constructor);
+    } catch (error) {
+      return next(error);
+    }
+  }
+  
   next();
 });
 
 module.exports = mongoose.model('Sender', senderSchema);
+
+
 
 
 

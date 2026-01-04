@@ -15,11 +15,11 @@ function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4 sm:gap-6">
-              <a href="tel:+25111508734" className="flex items-center gap-2 hover:text-[#9CCC65] transition-colors">
+              <a href="tel:+251911508734" className="flex items-center gap-2 hover:text-[#9CCC65] transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <span className="hidden sm:inline">+25111508734</span>
+                <span className="hidden sm:inline">+251911508734</span>
               </a>
               <a href="mailto:g.fikre2@gmail.com" className="flex items-center gap-2 hover:text-[#9CCC65] transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,6 +109,18 @@ function Navbar() {
             >
               Find Trip
             </a>
+            <Link 
+              to="/post-order" 
+              className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-[#1E88E5] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1E88E5] after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Post Order
+            </Link>
+            <Link 
+              to="/find-order" 
+              className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-[#1E88E5] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1E88E5] after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Find Order
+            </Link>
             <button 
               className="text-white px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-lg hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 whitespace-nowrap"
               style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
@@ -194,6 +206,20 @@ function Navbar() {
               >
                 Find Trip
               </a>
+              <Link 
+                to="/post-order" 
+                className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Post Order
+              </Link>
+              <Link 
+                to="/find-order" 
+                className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Find Order
+              </Link>
             </div>
             
             {/* Mobile Menu Social Icons */}

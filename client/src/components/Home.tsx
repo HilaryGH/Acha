@@ -8,7 +8,7 @@ function Home() {
         className="relative px-4 sm:px-6 lg:px-8 xl:px-12 flex items-center"
         style={{
           height: '100vh',
-          backgroundImage: `url('/hero%20image.png')`,
+          backgroundImage: `url('/hero2.png')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
