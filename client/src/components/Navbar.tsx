@@ -1,11 +1,24 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import SignInModal from './SignInModal';
 
 function Navbar() {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Navigate to search results or handle search
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+    }
   };
 
   return (
@@ -70,7 +83,7 @@ function Navbar() {
       {/* Main Navbar */}
       <nav className="w-full bg-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-          <div className="flex justify-between items-center h-14 md:h-16">
+          <div className="relative flex justify-between items-center h-14 md:h-16">
           {/* Logo */}
           <div className="flex items-center gap-2 sm:gap-3 text-gray-900 text-xl sm:text-2xl font-bold hover:scale-105 transition-transform duration-300">
             <img 
@@ -83,8 +96,29 @@ function Navbar() {
             </span>
           </div>
 
+          {/* Search Input - Centered */}
+          <form onSubmit={handleSearch} className="hidden md:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 w-full max-w-md">
+            <div className="relative w-full">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <svg 
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </form>
+
           {/* Desktop Menu */}
-          <div className={`hidden md:flex items-center gap-6 lg:gap-8`}>
+          <div className={`hidden md:flex items-center gap-4 lg:gap-6`}>
             <Link 
               to="/" 
               className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-[#1E88E5] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1E88E5] after:transition-all after:duration-300 hover:after:w-full"
@@ -92,39 +126,21 @@ function Navbar() {
               Home
             </Link>
             <Link 
-              to="/register" 
-              className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-[#1E88E5] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1E88E5] after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Register
-            </Link>
-            <Link 
               to="/post-trip" 
               className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-[#1E88E5] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1E88E5] after:transition-all after:duration-300 hover:after:w-full"
             >
               Post Trip
             </Link>
-            <a 
-              href="#find-trip" 
-              className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-[#1E88E5] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1E88E5] after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Find Trip
-            </a>
             <Link 
               to="/post-order" 
               className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-[#1E88E5] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1E88E5] after:transition-all after:duration-300 hover:after:w-full"
             >
               Post Order
             </Link>
-            <Link 
-              to="/find-order" 
-              className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-[#1E88E5] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1E88E5] after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Find Order
-            </Link>
             <button 
               className="text-white px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-lg hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 whitespace-nowrap"
               style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => setIsSignInModalOpen(true)}
             >
               Sign In
             </button>
@@ -186,26 +202,12 @@ function Navbar() {
                 Home
               </Link>
               <Link 
-                to="/register" 
-                className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Register
-              </Link>
-              <Link 
                 to="/post-trip" 
                 className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Post Trip
               </Link>
-              <a 
-                href="#find-trip" 
-                className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Find Trip
-              </a>
               <Link 
                 to="/post-order" 
                 className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
@@ -213,13 +215,25 @@ function Navbar() {
               >
                 Post Order
               </Link>
-              <Link 
-                to="/find-order" 
-                className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Find Order
-              </Link>
+              <form onSubmit={handleSearch} className="px-4 py-2">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search..."
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <svg 
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </form>
             </div>
             
             {/* Mobile Menu Social Icons */}
@@ -263,7 +277,10 @@ function Navbar() {
               <button 
                 className="w-full text-white px-6 py-3 rounded-full font-semibold text-base transition-all duration-300 shadow-lg hover:-translate-y-0.5 hover:shadow-xl whitespace-nowrap"
                 style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setIsSignInModalOpen(true);
+                }}
               >
                 Sign In
               </button>
@@ -271,7 +288,8 @@ function Navbar() {
           </div>
         </div>
       </div>
-    </nav>
+      </nav>
+      <SignInModal isOpen={isSignInModalOpen} onClose={() => setIsSignInModalOpen(false)} />
     </div>
   );
 }

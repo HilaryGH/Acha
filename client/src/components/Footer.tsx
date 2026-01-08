@@ -1,4 +1,7 @@
+import { useTranslation } from 'react-i18next';
+
 function Footer() {
+  const { t } = useTranslation();
   return (
     <footer className="bg-gray-900 text-gray-300 border-t-4" style={{ borderTopColor: '#1E88E5' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-16 sm:py-20 md:py-24 lg:py-32">
@@ -14,7 +17,7 @@ function Footer() {
               <span className="text-white font-bold text-xl">Acha delivery</span>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Connecting travelers with senders to make shipping easier, faster, and more affordable.
+              {t('footer.description')}
             </p>
             <div className="flex gap-4 pt-2">
               <a href="#" className="hover:text-[#9CCC65] transition-colors" aria-label="X (Twitter)">
@@ -47,51 +50,48 @@ function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-semibold text-lg mb-4">Quick Links</h3>
+            <h3 className="text-white font-semibold text-lg mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#home" className="text-sm hover:text-[#9CCC65] transition-colors">Home</a>
+                <a href="#home" className="text-sm hover:text-[#9CCC65] transition-colors">{t('footer.home')}</a>
               </li>
               <li>
-                <a href="#post-trip" className="text-sm hover:text-[#9CCC65] transition-colors">Post Trip</a>
+                <a href="#post-trip" className="text-sm hover:text-[#9CCC65] transition-colors">{t('footer.postTrip')}</a>
               </li>
               <li>
-                <a href="#find-trip" className="text-sm hover:text-[#9CCC65] transition-colors">Find Trip</a>
+                <a href="#about" className="text-sm hover:text-[#9CCC65] transition-colors">{t('footer.aboutUs')}</a>
               </li>
               <li>
-                <a href="#about" className="text-sm hover:text-[#9CCC65] transition-colors">About Us</a>
-              </li>
-              <li>
-                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">How It Works</a>
+                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">{t('footer.howItWorks')}</a>
               </li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h3 className="text-white font-semibold text-lg mb-4">Support</h3>
+            <h3 className="text-white font-semibold text-lg mb-4">{t('footer.support')}</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">Help Center</a>
+                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">{t('footer.helpCenter')}</a>
               </li>
               <li>
-                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">Contact Us</a>
+                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">{t('footer.contactUs')}</a>
               </li>
               <li>
-                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">FAQs</a>
+                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">{t('footer.faqs')}</a>
               </li>
               <li>
-                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">Safety & Security</a>
+                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">{t('footer.safetySecurity')}</a>
               </li>
               <li>
-                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">Terms of Service</a>
+                <a href="#" className="text-sm hover:text-[#9CCC65] transition-colors">{t('footer.termsOfService')}</a>
               </li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-white font-semibold text-lg mb-4">Contact</h3>
+            <h3 className="text-white font-semibold text-lg mb-4">{t('footer.contact')}</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,11 +113,11 @@ function Footer() {
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-gray-400 text-center md:text-left">
-              © {new Date().getFullYear()} Acha delivery. All rights reserved.
+              © {new Date().getFullYear()} Acha delivery. {t('footer.copyright')}
             </p>
             <div className="flex gap-6 text-sm">
-              <a href="#" className="hover:text-[#9CCC65] transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-[#9CCC65] transition-colors">Terms & Conditions</a>
+              <a href="#" className="hover:text-[#9CCC65] transition-colors">{t('footer.privacyPolicy')}</a>
+              <a href="#" className="hover:text-[#9CCC65] transition-colors">{t('footer.termsConditions')}</a>
             </div>
           </div>
         </div>

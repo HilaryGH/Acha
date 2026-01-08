@@ -22,8 +22,7 @@ function PostTrip() {
     internationalDocuments: {
       flightTicket: '',
       visa: '',
-      passport: '',
-      yellowCard: ''
+      passport: ''
     },
     domesticDocuments: {
       governmentID: '',
@@ -158,7 +157,7 @@ function PostTrip() {
             arrivalTime: '',
             bankAccount: '',
             travellerType: 'international',
-            internationalDocuments: { flightTicket: '', visa: '', passport: '', yellowCard: '' },
+            internationalDocuments: { flightTicket: '', visa: '', passport: '' },
             domesticDocuments: { governmentID: '', flightTicket: '', photo: '' }
           });
           navigate('/');
@@ -432,12 +431,6 @@ function PostTrip() {
                     label="Passport"
                     value={formData.internationalDocuments.passport}
                     onChange={(path) => handleDocumentChange('passport', path)}
-                    accept="image/*,.pdf"
-                  />
-                  <FileUpload
-                    label="Yellow Card (Vaccination)"
-                    value={formData.internationalDocuments.yellowCard}
-                    onChange={(path) => handleDocumentChange('yellowCard', path)}
                     accept="image/*,.pdf"
                   />
                 </div>

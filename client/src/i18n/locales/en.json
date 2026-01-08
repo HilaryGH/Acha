@@ -1,0 +1,93 @@
+{
+  "navbar": {
+    "home": "Home",
+    "postTrip": "Post Trip",
+    "postOrder": "Post Order",
+    "searchPlaceholder": "Search trips & orders...",
+    "signUp": "Sign Up"
+  },
+  "home": {
+    "hero": {
+      "title": "Connect Travelers,",
+      "titleHighlight": "Deliver Items",
+      "subtitle": "Post your travel plans and help others send items between cities. Find travelers going your way and make shipping easier, faster, and more personal."
+    },
+    "features": {
+      "title": "How It Works",
+      "subtitle": "Simple steps to connect travelers with senders",
+      "postTrip": {
+        "title": "Post Your Trip",
+        "description": "Share your travel date, departure city, and destination. Help others while you travel."
+      },
+      "findTravelers": {
+        "title": "Find Travelers",
+        "description": "Search for travelers going to your destination and request item delivery."
+      },
+      "connectDeliver": {
+        "title": "Connect & Deliver",
+        "description": "Connect with travelers, coordinate pickup and delivery, and make shipping personal."
+      }
+    },
+    "benefits": {
+      "title": "Why Choose Acha Delivery?",
+      "subtitle": "Experience the benefits of peer-to-peer delivery",
+      "costEffective": {
+        "title": "Cost Effective",
+        "description": "Save money compared to traditional shipping services."
+      },
+      "fastDelivery": {
+        "title": "Fast Delivery",
+        "description": "Get your items delivered quickly by travelers."
+      },
+      "secureSafe": {
+        "title": "Secure & Safe",
+        "description": "Trusted travelers with verified profiles."
+      },
+      "globalNetwork": {
+        "title": "Global Network",
+        "description": "Connect with travelers worldwide."
+      }
+    },
+    "testimonials": {
+      "title": "What Our Users Say",
+      "subtitle": "Trusted by travelers and senders worldwide",
+      "traveler": "Traveler",
+      "sender": "Sender",
+      "testimonial1": "Acha Delivery made it so easy to help others while traveling. Great platform!",
+      "testimonial2": "I found a traveler going to my destination and saved so much on shipping costs!",
+      "testimonial3": "Simple, fast, and reliable. Highly recommend Acha Delivery to everyone!"
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "subtitle": "Join thousands of travelers and senders making shipping easier and more affordable.",
+      "getStarted": "Get Started Now",
+      "learnMore": "Learn More"
+    }
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "support": "Support",
+    "contact": "Contact",
+    "home": "Home",
+    "postTrip": "Post Trip",
+    "findTrip": "Find Trip",
+    "aboutUs": "About Us",
+    "howItWorks": "How It Works",
+    "helpCenter": "Help Center",
+    "contactUs": "Contact Us",
+    "faqs": "FAQs",
+    "safetySecurity": "Safety & Security",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "termsConditions": "Terms & Conditions",
+    "copyright": "All rights reserved.",
+    "description": "Connecting travelers with senders to make shipping easier, faster, and more affordable."
+  },
+  "common": {
+    "freeDelivery": "Free delivery on orders over $50"
+  }
+}
+
+
+
+
