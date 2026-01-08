@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import BuyerForm from './forms/BuyerForm';
 import SenderForm from './forms/SenderForm';
 import ReceiverForm from './forms/ReceiverForm';
@@ -14,7 +13,6 @@ interface SignInModalProps {
 }
 
 function SignInModal({ isOpen, onClose }: SignInModalProps) {
-  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>('signin');
   const [registrationType, setRegistrationType] = useState<RegistrationType>(null);
   const [signInData, setSignInData] = useState({

@@ -35,7 +35,7 @@ function Search() {
         ) : query ? (
           results.length > 0 ? (
             <div className="space-y-4">
-              {results.map((result, index) => (
+              {results.map((_, index) => (
                 <div key={index} className="bg-white rounded-lg shadow p-6">
                   {/* Search results will be displayed here */}
                 </div>
