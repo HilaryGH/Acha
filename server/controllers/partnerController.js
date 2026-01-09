@@ -1,18 +1,20 @@
-const Sender = require('../models/Sender');
+const Partner = require('../models/Partner');
 
-// Get all senders
-exports.getAllSenders = async (req, res) => {
+// Get all partners
+exports.getAllPartners = async (req, res) => {
   try {
-    const { status } = req.query;
+    const { status, type, partner } = req.query;
     const filter = {};
     
     if (status) filter.status = status;
+    if (type) filter.type = type;
+    if (partner) filter.partner = partner;
     
-    const senders = await Sender.find(filter).sort({ createdAt: -1 });
+    const partners = await Partner.find(filter).sort({ createdAt: -1 });
     res.status(200).json({
       status: 'success',
-      count: senders.length,
-      data: senders
+      count: partners.length,
+      data: partners
     });
   } catch (error) {
     res.status(500).json({
@@ -22,21 +24,21 @@ exports.getAllSenders = async (req, res) => {
   }
 };
 
-// Get single sender by ID
-exports.getSenderById = async (req, res) => {
+// Get single partner by ID
+exports.getPartnerById = async (req, res) => {
   try {
-    const sender = await Sender.findById(req.params.id);
+    const partner = await Partner.findById(req.params.id);
     
-    if (!sender) {
+    if (!partner) {
       return res.status(404).json({
         status: 'error',
-        message: 'Sender not found'
+        message: 'Partner not found'
       });
     }
     
     res.status(200).json({
       status: 'success',
-      data: sender
+      data: partner
     });
   } catch (error) {
     res.status(500).json({
@@ -46,15 +48,15 @@ exports.getSenderById = async (req, res) => {
   }
 };
 
-// Create new sender
-exports.createSender = async (req, res) => {
+// Create new partner
+exports.createPartner = async (req, res) => {
   try {
-    const sender = await Sender.create(req.body);
+    const partner = await Partner.create(req.body);
     
     res.status(201).json({
       status: 'success',
-      message: 'Sender created successfully',
-      data: sender
+      message: 'Partner application submitted successfully',
+      data: partner
     });
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -72,10 +74,10 @@ exports.createSender = async (req, res) => {
   }
 };
 
-// Update sender
-exports.updateSender = async (req, res) => {
+// Update partner
+exports.updatePartner = async (req, res) => {
   try {
-    const sender = await Sender.findByIdAndUpdate(
+    const partner = await Partner.findByIdAndUpdate(
       req.params.id,
       req.body,
       {
@@ -84,17 +86,17 @@ exports.updateSender = async (req, res) => {
       }
     );
     
-    if (!sender) {
+    if (!partner) {
       return res.status(404).json({
         status: 'error',
-        message: 'Sender not found'
+        message: 'Partner not found'
       });
     }
     
     res.status(200).json({
       status: 'success',
-      message: 'Sender updated successfully',
-      data: sender
+      message: 'Partner updated successfully',
+      data: partner
     });
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -112,21 +114,21 @@ exports.updateSender = async (req, res) => {
   }
 };
 
-// Delete sender
-exports.deleteSender = async (req, res) => {
+// Delete partner
+exports.deletePartner = async (req, res) => {
   try {
-    const sender = await Sender.findByIdAndDelete(req.params.id);
+    const partner = await Partner.findByIdAndDelete(req.params.id);
     
-    if (!sender) {
+    if (!partner) {
       return res.status(404).json({
         status: 'error',
-        message: 'Sender not found'
+        message: 'Partner not found'
       });
     }
     
     res.status(200).json({
       status: 'success',
-      message: 'Sender deleted successfully'
+      message: 'Partner deleted successfully'
     });
   } catch (error) {
     res.status(500).json({
@@ -135,16 +137,4 @@ exports.deleteSender = async (req, res) => {
     });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { api } from '../../services/api';
+import FileUpload from '../FileUpload';
 
-function ReceiverForm() {
+function IndividualForm() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -28,10 +29,12 @@ function ReceiverForm() {
     setMessage(null);
 
     try {
-      const response = await api.receivers.create(formData);
+      // TODO: Create API endpoint for individuals
+      // For now, we can use the buyers endpoint as a placeholder
+      const response = await api.buyers.create(formData);
       
       if (response.status === 'success') {
-        setMessage({ type: 'success', text: 'Receiver registered successfully!' });
+        setMessage({ type: 'success', text: 'Individual registered successfully!' });
         setFormData({
           name: '',
           phone: '',
@@ -44,7 +47,7 @@ function ReceiverForm() {
           idDocument: ''
         });
       } else {
-        setMessage({ type: 'error', text: response.message || 'Failed to register receiver' });
+        setMessage({ type: 'error', text: response.message || 'Failed to register' });
       }
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'An error occurred' });
@@ -56,7 +59,7 @@ function ReceiverForm() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-3xl font-bold mb-6 text-gray-900">Register as Receiver</h2>
+        <h2 className="text-3xl font-bold mb-6 text-gray-900">Register as Individual</h2>
         
         {message && (
           <div className={`mb-6 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
@@ -65,11 +68,14 @@ function ReceiverForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Basic Information */}
           <div className="border-b pb-6">
             <h3 className="text-xl font-semibold mb-4 text-gray-800">Basic Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -77,10 +83,13 @@ function ReceiverForm() {
                   value={formData.name}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="John Doe"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="tel"
                   name="phone"
@@ -88,10 +97,13 @@ function ReceiverForm() {
                   value={formData.phone}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="+1234567890"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -99,30 +111,39 @@ function ReceiverForm() {
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="john@example.com"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">WhatsApp</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  WhatsApp (Optional)
+                </label>
                 <input
                   type="text"
                   name="whatsapp"
                   value={formData.whatsapp}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="+1234567890"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Telegram</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Telegram (Optional)
+                </label>
                 <input
                   type="text"
                   name="telegram"
                   value={formData.telegram}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="@username"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Bank Account *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Bank Account <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="bankAccount"
@@ -130,16 +151,20 @@ function ReceiverForm() {
                   value={formData.bankAccount}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Bank account number"
                 />
               </div>
             </div>
           </div>
 
+          {/* Location Information */}
           <div className="border-b pb-6">
             <h3 className="text-xl font-semibold mb-4 text-gray-800">Location Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Current City *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Current City <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="currentCity"
@@ -147,42 +172,44 @@ function ReceiverForm() {
                   value={formData.currentCity}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="New York"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Location (Optional)
+                </label>
                 <input
                   type="text"
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Street address"
                 />
               </div>
             </div>
           </div>
 
+          {/* Attached Documents */}
           <div className="pb-6">
             <h3 className="text-xl font-semibold mb-4 text-gray-800">Attached Documents</h3>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">ID/Driving License/Passport (URL or file path)</label>
-              <input
-                type="text"
-                name="idDocument"
-                value={formData.idDocument}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
+            <FileUpload
+              label="ID/Driving License/Passport"
+              value={formData.idDocument}
+              onChange={(path) => setFormData(prev => ({ ...prev, idDocument: path }))}
+              accept="image/*,.pdf"
+            />
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
             className="w-full py-3 px-6 rounded-lg text-white font-semibold transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
           >
-            {loading ? 'Submitting...' : 'Register as Receiver'}
+            {loading ? 'Submitting...' : 'Register as Individual'}
           </button>
         </form>
       </div>
@@ -190,16 +217,4 @@ function ReceiverForm() {
   );
 }
 
-export default ReceiverForm;
-
-
-
-
-
-
-
-
-
-
-
-
+export default IndividualForm;

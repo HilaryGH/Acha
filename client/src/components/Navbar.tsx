@@ -97,7 +97,7 @@ function Navbar() {
           </div>
 
           {/* Search Input - Centered */}
-          <form onSubmit={handleSearch} className="hidden md:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 w-full max-w-md">
+          <form onSubmit={handleSearch} className="hidden md:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 w-full max-w-xs">
             <div className="relative w-full">
               <input
                 type="text"
@@ -194,6 +194,27 @@ function Navbar() {
             
             {/* Mobile Menu Links */}
             <div className="flex flex-col flex-1 py-4 px-4 gap-2">
+              {/* Search Input - Above Links */}
+              <form onSubmit={handleSearch} className="px-4 py-2">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search..."
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <svg 
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </form>
+              
               <Link 
                 to="/" 
                 className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
@@ -215,25 +236,34 @@ function Navbar() {
               >
                 Post Order
               </Link>
-              <form onSubmit={handleSearch} className="px-4 py-2">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search..."
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <svg 
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+              
+              {/* Feature Badges */}
+              <div className="flex flex-col gap-1.5 px-4 py-2 mt-1">
+                <div className="group relative overflow-hidden px-2.5 py-1.5 rounded-lg transition-all duration-300" style={{ background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.08) 0%, rgba(38, 198, 218, 0.08) 50%, rgba(67, 160, 71, 0.08) 100%)' }}>
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs shadow-sm" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}>
+                      <span className="text-[10px]">⚡</span>
+                    </div>
+                    <span className="text-[10px] font-semibold text-gray-700">Fast Delivery</span>
+                  </div>
                 </div>
-              </form>
+                <div className="group relative overflow-hidden px-2.5 py-1.5 rounded-lg transition-all duration-300" style={{ background: 'linear-gradient(135deg, rgba(38, 198, 218, 0.08) 0%, rgba(67, 160, 71, 0.08) 50%, rgba(30, 136, 229, 0.08) 100%)' }}>
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs shadow-sm" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 50%, #1E88E5 100%)' }}>
+                      <span className="text-[10px]">🔒</span>
+                    </div>
+                    <span className="text-[10px] font-semibold text-gray-700">Secure & Safe</span>
+                  </div>
+                </div>
+                <div className="group relative overflow-hidden px-2.5 py-1.5 rounded-lg transition-all duration-300" style={{ background: 'linear-gradient(135deg, rgba(67, 160, 71, 0.08) 0%, rgba(30, 136, 229, 0.08) 50%, rgba(38, 198, 218, 0.08) 100%)' }}>
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs shadow-sm" style={{ background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 50%, #26C6DA 100%)' }}>
+                      <span className="text-[10px]">🌍</span>
+                    </div>
+                    <span className="text-[10px] font-semibold text-gray-700">Global Network</span>
+                  </div>
+                </div>
+              </div>
             </div>
             
             {/* Mobile Menu Social Icons */}

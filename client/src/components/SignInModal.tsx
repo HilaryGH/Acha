@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import BuyerForm from './forms/BuyerForm';
-import SenderForm from './forms/SenderForm';
-import ReceiverForm from './forms/ReceiverForm';
-import TravellerForm from './forms/TravellerForm';
+import IndividualForm from './forms/IndividualForm';
+import DeliveryPartnerForm from './forms/DeliveryPartnerForm';
 
-type RegistrationType = 'buyer' | 'sender' | 'receiver' | 'traveller' | null;
+type RegistrationType = 'individual' | 'delivery-partner' | null;
 type ViewMode = 'signin' | 'register';
 
 interface SignInModalProps {
@@ -62,10 +60,8 @@ function SignInModal({ isOpen, onClose }: SignInModalProps) {
             </button>
           </div>
           <div className="p-6">
-            {registrationType === 'buyer' && <BuyerForm />}
-            {registrationType === 'sender' && <SenderForm />}
-            {registrationType === 'receiver' && <ReceiverForm />}
-            {registrationType === 'traveller' && <TravellerForm />}
+            {registrationType === 'individual' && <IndividualForm />}
+            {registrationType === 'delivery-partner' && <DeliveryPartnerForm />}
           </div>
         </div>
       </div>
@@ -75,10 +71,8 @@ function SignInModal({ isOpen, onClose }: SignInModalProps) {
   // Registration type selection view
   if (viewMode === 'register') {
     const registrationTypes = [
-      { id: 'buyer' as const, title: 'Buyer', description: 'Want to order items from abroad?', icon: '🛒' },
-      { id: 'sender' as const, title: 'Sender', description: 'Have items to send?', icon: '📦' },
-      { id: 'receiver' as const, title: 'Receiver', description: 'Expecting a delivery?', icon: '📬' },
-      { id: 'traveller' as const, title: 'Traveller', description: 'Traveling and want to earn?', icon: '✈️' },
+      { id: 'individual' as const, title: 'Individual', description: 'Register as an individual user', icon: '👤' },
+      { id: 'delivery-partner' as const, title: 'Delivery Partner', description: 'Join our delivery network and start earning', icon: '🚚' },
     ];
 
     return (
@@ -97,22 +91,22 @@ function SignInModal({ isOpen, onClose }: SignInModalProps) {
           </div>
           <div className="p-6">
             <p className="text-gray-600 mb-6 text-center">Choose your role to get started</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {registrationTypes.map((type) => (
                 <div
                   key={type.id}
                   onClick={() => setRegistrationType(type.id)}
-                  className="bg-gray-50 rounded-lg p-6 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-2 border-transparent hover:border-blue-500"
+                  className="bg-gray-50 rounded-lg p-3 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-2 border-transparent hover:border-blue-500"
                 >
-                  <div className="text-4xl mb-3 text-center">{type.icon}</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">
+                  <div className="text-xl mb-1.5 text-center">{type.icon}</div>
+                  <h3 className="text-base font-bold text-gray-900 mb-1 text-center">
                     {type.title}
                   </h3>
-                  <p className="text-gray-600 text-center text-sm mb-4">
+                  <p className="text-gray-600 text-center text-xs mb-2">
                     {type.description}
                   </p>
                   <button
-                    className="w-full py-2 px-4 rounded-lg text-white font-semibold transition-all duration-300 hover:shadow-lg text-sm"
+                    className="w-full py-1 px-3 rounded-lg text-white font-semibold transition-all duration-300 hover:shadow-lg text-xs"
                     style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
                   >
                     Register as {type.title}

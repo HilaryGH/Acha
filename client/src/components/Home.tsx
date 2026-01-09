@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import PartnerWithUsForm from './forms/PartnerWithUsForm'
 
 function Home() {
   const { t } = useTranslation();
@@ -21,7 +22,7 @@ function Home() {
               {/* Animated title with staggered entrance */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-5 leading-tight relative z-10">
                 <span className="inline-block text-gray-900 animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
-                  {t('home.hero.title')}{' '}
+            {t('home.hero.title')}{' '}
                 </span>
                 <span 
                   className="inline-block animate-gradient-shift bg-clip-text text-transparent"
@@ -33,14 +34,14 @@ function Home() {
                     animationDelay: '0.4s'
                   }}
                 >
-                  {t('home.hero.titleHighlight')}
-                </span>
-              </h1>
+              {t('home.hero.titleHighlight')}
+            </span>
+          </h1>
 
               {/* Animated subtitle with fade and slide */}
               <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-4 md:mb-5 leading-relaxed relative z-10 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-                {t('home.hero.subtitle')}
-              </p>
+            {t('home.hero.subtitle')}
+          </p>
 
               {/* Animated feature badges with brand colors */}
               <div className="flex flex-wrap gap-2 mb-4 relative z-10 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
@@ -221,6 +222,19 @@ function Home() {
               <div className="flex text-yellow-400 mt-6">★★★★★</div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Partner With Us Section */}
+      <section className="py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 text-center mb-6 md:mb-8 lg:mb-10">
+            Partner With Us
+          </h2>
+          <p className="text-center text-gray-600 mb-12 md:mb-16 text-lg sm:text-xl max-w-2xl mx-auto">
+            Invest / Partner With Us - Join us in revolutionizing the delivery and travel industry
+          </p>
+          <PartnerWithUsForm />
         </div>
       </section>
 
