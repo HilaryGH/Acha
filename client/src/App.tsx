@@ -9,6 +9,8 @@ import PostOrder from './pages/PostOrder'
 import PostDeliveryItem from './pages/PostDeliveryItem'
 import FindDeliveryItem from './pages/FindDeliveryItem'
 import Search from './pages/Search'
+import PartnerWithUs from './pages/PartnerWithUs'
+import WomenInitiatives from './pages/WomenInitiatives'
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="/post-delivery-item" element={<PostDeliveryItem />} />
           <Route path="/find-delivery-item" element={<FindDeliveryItem />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/partner-with-us" element={<PartnerWithUs />} />
+          <Route path="/women-initiatives" element={<WomenInitiatives />} />
         </Routes>
         <Footer />
       </div>

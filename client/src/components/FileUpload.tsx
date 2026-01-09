@@ -74,16 +74,16 @@ function FileUpload({ label, value, onChange, accept = 'image/*,.pdf' }: FileUpl
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-xs font-medium text-gray-700 mb-1.5">
         {label}
       </label>
       <div className="space-y-2">
         {value && (
           <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-lg">
-            <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
-            <span className="text-sm text-green-700 flex-1 truncate">{value}</span>
+            <span className="text-xs text-green-700 flex-1 truncate">{value}</span>
             <button
               type="button"
               onClick={handleRemove}
@@ -112,7 +112,7 @@ function FileUpload({ label, value, onChange, accept = 'image/*,.pdf' }: FileUpl
               disabled={uploading}
               className="hidden"
             />
-            <div className="w-full px-4 py-2 border border-gray-300 rounded-lg text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <div className="w-full px-3 py-2 border border-gray-300 rounded-lg text-center text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {uploading ? 'Uploading...' : '📁 Choose File'}
             </div>
           </label>
@@ -128,7 +128,7 @@ function FileUpload({ label, value, onChange, accept = 'image/*,.pdf' }: FileUpl
                 disabled={uploading}
                 className="hidden"
               />
-              <div className="w-full px-4 py-2 border border-gray-300 rounded-lg text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              <div className="w-full px-3 py-2 border border-gray-300 rounded-lg text-center text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 {uploading ? 'Uploading...' : '📷 Camera'}
               </div>
             </label>

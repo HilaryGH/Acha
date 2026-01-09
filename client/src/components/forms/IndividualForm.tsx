@@ -59,6 +59,14 @@ function IndividualForm() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="bg-white rounded-xl shadow-lg p-8">
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <img 
+            src="/acha.png" 
+            alt="Acha Logo" 
+            className="h-12 md:h-16 object-contain"
+          />
+        </div>
         <h2 className="text-3xl font-bold mb-6 text-gray-900">Register as Individual</h2>
         
         {message && (

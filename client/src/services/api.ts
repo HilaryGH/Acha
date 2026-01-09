@@ -142,6 +142,27 @@ const partners = {
   },
 };
 
+// Women Initiatives API
+const womenInitiatives = {
+  create: async (data: any) => {
+    const response = await fetch(`${API_BASE_URL}/women-initiatives`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to submit application');
+    }
+
+    return result;
+  },
+};
+
 // Export the API object
 export const api = {
   upload,
@@ -150,4 +171,5 @@ export const api = {
   receivers,
   travellers,
   partners,
+  womenInitiatives,
 };

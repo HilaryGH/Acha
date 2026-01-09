@@ -21,6 +21,7 @@ app.use('/api/senders', require('./routes/senderRoutes'));
 app.use('/api/receivers', require('./routes/receiverRoutes'));
 app.use('/api/travellers', require('./routes/travellerRoutes'));
 app.use('/api/partners', require('./routes/partnerRoutes'));
+app.use('/api/women-initiatives', require('./routes/womenInitiativeRoutes'));
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/acha';
