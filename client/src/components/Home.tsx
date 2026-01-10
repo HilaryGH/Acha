@@ -78,7 +78,7 @@ function Home() {
 
         {/* Hero Content */}
         <div className="flex-1 flex  w-full">
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-0 pb-4 md:py-0">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-4 pb-4 md:pt-0 md:pb-0">
             <div className="flex flex-col lg:flex-row  gap-6 lg:gap-12">
             {/* Content - Left Half */}
             <div className="w-full lg:w-1/2 flex flex-col justify-center relative text-center lg:text-left">
