@@ -67,3 +67,134 @@ body {
 .animate-float {
     animation: float 3s ease-in-out infinite;
 }
+
+/* Title Animations */
+@keyframes letter-reveal {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) rotateX(90deg) scale(0.8);
+        filter: blur(10px);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(-5px) rotateX(45deg) scale(1.1);
+        filter: blur(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes letter-bounce {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-8px) rotate(-2deg);
+    }
+    75% {
+        transform: translateY(-8px) rotate(2deg);
+    }
+}
+
+@keyframes gradient-wave {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes glow-pulse {
+    0%, 100% {
+        text-shadow: 
+            0 0 10px rgba(30, 136, 229, 0.5),
+            0 0 20px rgba(38, 198, 218, 0.3),
+            0 0 30px rgba(67, 160, 71, 0.2);
+    }
+    50% {
+        text-shadow: 
+            0 0 20px rgba(30, 136, 229, 0.8),
+            0 0 40px rgba(38, 198, 218, 0.6),
+            0 0 60px rgba(67, 160, 71, 0.4);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.letter-reveal {
+    display: inline-block;
+    animation: letter-reveal 0.8s ease-out forwards;
+    opacity: 1 !important; /* Ensure text is visible */
+    transform-style: preserve-3d;
+    will-change: opacity, transform, filter;
+}
+
+.letter-reveal.visible {
+    opacity: 1 !important;
+}
+
+.letter-bounce {
+    display: inline-block;
+    animation: letter-bounce 2s ease-in-out infinite;
+}
+
+.letter-bounce-delay-1 {
+    animation-delay: 0.1s;
+}
+
+.letter-bounce-delay-2 {
+    animation-delay: 0.2s;
+}
+
+.letter-bounce-delay-3 {
+    animation-delay: 0.3s;
+}
+
+.letter-bounce-delay-4 {
+    animation-delay: 0.4s;
+}
+
+.gradient-wave-text {
+    background: linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #E3F2FD 25%,
+        #BBDEFB 50%,
+        #E3F2FD 75%,
+        #ffffff 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-wave 3s linear infinite;
+    color: #ffffff; /* Fallback color */
+}
+
+.glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.shimmer-effect {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+}

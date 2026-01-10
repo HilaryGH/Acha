@@ -5,12 +5,81 @@ function Home() {
   const { t } = useTranslation();
   return (
     <div className="w-full">
-      {/* Hero Section */}
+      {/* Hero Section with Title */}
       <section 
-        className="relative min-h-screen flex items-center bg-gray-50 pt-20 sm:pt-24 md:pt-0"
+        className="relative h-screen flex flex-col bg-gray-50 overflow-hidden"
       >
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+        {/* Page Title */}
+        <div className="relative bg-gradient-to-r from-blue-600 via-cyan-500 to-green-600 py-4 sm:py-6 overflow-hidden flex-shrink-0">
+          {/* Animated background particles */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-0 left-1/4 w-2 h-2 bg-white rounded-full opacity-60 animate-float" style={{ animationDelay: '0s' }}></div>
+            <div className="absolute top-0 left-1/2 w-1.5 h-1.5 bg-white rounded-full opacity-40 animate-float" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute top-0 left-3/4 w-2 h-2 bg-white rounded-full opacity-50 animate-float" style={{ animationDelay: '2s' }}></div>
+          </div>
+          
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-center relative z-10">
+            {/* Animated English text */}
+            <span className="inline-block">
+              {'Acha Delivery'.split('').map((char, index) => (
+                <span
+                  key={`english-${index}`}
+                  className={`letter-reveal letter-bounce glow-pulse ${
+                    index % 2 === 0 ? 'letter-bounce-delay-1' : 'letter-bounce-delay-2'
+                  }`}
+                  style={{
+                    animationDelay: `${index * 0.1}s`,
+                    color: '#ffffff',
+                    textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 0 10px rgba(255,255,255,0.2)',
+                    animation: `letter-reveal 0.8s ease-out ${index * 0.1}s forwards, letter-bounce 2s ease-in-out ${index * 0.1 + 0.8}s infinite`,
+                    opacity: 1
+                  }}
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </span>
+              ))}
+            </span>
+            
+            {/* Space between */}
+            <span className="inline-block mx-2 sm:mx-3 md:mx-4"> </span>
+            
+            {/* Animated Amharic text with gradient */}
+            <span className="text-3xl sm:text-4xl md:text-5xl inline-block">
+              {'አቻ ደሊቨሪ'.split('').map((char, index) => (
+                <span
+                  key={`amharic-${index}`}
+                  className={`letter-reveal letter-bounce glow-pulse ${
+                    index === 0 ? 'letter-bounce-delay-1' :
+                    index === 1 ? 'letter-bounce-delay-2' :
+                    index === 2 ? 'letter-bounce-delay-3' : 'letter-bounce-delay-4'
+                  }`}
+                  style={{
+                    animationDelay: `${(index + 10) * 0.1}s`,
+                    display: 'inline-block',
+                    transformStyle: 'preserve-3d',
+                    perspective: '1000px',
+                    color: '#ffffff',
+                    textShadow: '0 2px 8px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.3)',
+                    background: 'linear-gradient(90deg, #ffffff 0%, #E3F2FD 50%, #ffffff 100%)',
+                    backgroundSize: '200% auto',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    animation: `gradient-wave 3s linear infinite, letter-reveal 0.8s ease-out ${(index + 10) * 0.1}s forwards`,
+                    opacity: 1
+                  }}
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </span>
+              ))}
+            </span>
+          </h1>
+        </div>
+
+        {/* Hero Content */}
+        <div className="flex-1 flex items-center w-full">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-8 md:py-0">
+            <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
             {/* Content - Left Half */}
             <div className="w-full lg:w-1/2 flex flex-col justify-center relative text-center lg:text-left">
               {/* Animated gradient orbs - floating background decoration */}
@@ -19,7 +88,7 @@ function Home() {
               <div className="absolute top-1/2 -left-4 w-24 h-24 rounded-full opacity-12 blur-2xl animate-float" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 50%, #1E88E5 100%)', animationDelay: '0.75s' }}></div>
 
               {/* Animated title with staggered entrance */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-5 leading-tight relative z-10">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 md:mb-4 leading-tight relative z-10">
                 <span className="inline-block text-gray-900 animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
             {t('home.hero.title')}{' '}
                 </span>
@@ -38,12 +107,12 @@ function Home() {
           </h1>
 
               {/* Animated subtitle with fade and slide */}
-              <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-4 md:mb-5 leading-relaxed relative z-10 animate-fade-in-up mx-auto lg:mx-0 max-w-xl lg:max-w-none" style={{ animationDelay: '0.6s' }}>
+              <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-3 md:mb-4 leading-relaxed relative z-10 animate-fade-in-up mx-auto lg:mx-0 max-w-xl lg:max-w-none" style={{ animationDelay: '0.6s' }}>
             {t('home.hero.subtitle')}
           </p>
 
               {/* Animated feature badges with brand colors */}
-              <div className="flex flex-wrap gap-2 mb-4 relative z-10 animate-fade-in-up justify-center lg:justify-start" style={{ animationDelay: '0.8s' }}>
+              <div className="flex flex-wrap gap-2 mb-3 md:mb-4 relative z-10 animate-fade-in-up justify-center lg:justify-start" style={{ animationDelay: '0.8s' }}>
                 <div className="group relative overflow-hidden px-4 py-2 rounded-full transition-all duration-300 hover:scale-105" style={{ background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.1) 0%, rgba(38, 198, 218, 0.1) 50%, rgba(67, 160, 71, 0.1) 100%)' }}>
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}></div>
@@ -86,13 +155,14 @@ function Home() {
             </div>
             
             {/* Image - Right Half */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center">
+            <div className="w-full lg:w-1/2 flex items-start justify-center lg:items-center">
               <img 
                 src="/acha hero.jpg" 
                 alt="Acha Hero" 
-                className="w-full h-auto max-h-[600px] object-contain rounded-lg shadow-xl"
+                className="w-full h-auto max-h-[500px] md:max-h-[600px] object-contain rounded-lg shadow-xl"
               />
             </div>
+          </div>
           </div>
         </div>
       </section>
@@ -329,6 +399,122 @@ function Home() {
                   </p>
             </div>
             </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission & Vision Section */}
+      <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-5 blur-3xl" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full opacity-5 blur-3xl" style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)' }}></div>
+        
+        <div className="relative max-w-7xl mx-auto z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+            {/* Mission Card */}
+            <div className="group relative bg-gradient-to-br from-white to-gray-50 p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border-2 border-transparent hover:border-blue-300 overflow-hidden">
+              {/* Animated gradient overlay */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.05) 0%, rgba(38, 198, 218, 0.05) 100%)' }}></div>
+              
+              {/* Icon */}
+              <div className="relative z-10 mb-6">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg" style={{ 
+                  background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
+                  boxShadow: '0 4px 15px rgba(30, 136, 229, 0.3)'
+                }}>
+                  🎯
+                </div>
+              </div>
+              
+              {/* Content */}
+              <div className="relative z-10">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">
+                  Mission
+                </h2>
+                <p className="text-gray-700 text-base md:text-lg leading-relaxed">
+                  "Acha Delivery connects travelers with spare luggage space and verified local delivery partners (cycle, e-bike, and motorcycle riders) to provide affordable, reliable, and sustainable delivery solutions for domestic and international senders across Ethiopia — making every trip and ride count while saving time and money for everyone involved."
+                </p>
+              </div>
+            </div>
+
+            {/* Vision Card */}
+            <div className="group relative bg-gradient-to-br from-white to-gray-50 p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border-2 border-transparent hover:border-green-300 overflow-hidden">
+              {/* Animated gradient overlay */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(135deg, rgba(67, 160, 71, 0.05) 0%, rgba(38, 198, 218, 0.05) 100%)' }}></div>
+              
+              {/* Icon */}
+              <div className="relative z-10 mb-6">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg" style={{ 
+                  background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)',
+                  boxShadow: '0 4px 15px rgba(67, 160, 71, 0.3)'
+                }}>
+                  👁️
+                </div>
+              </div>
+              
+              {/* Content */}
+              <div className="relative z-10">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
+                  Vision
+                </h2>
+                <p className="text-gray-700 text-base md:text-lg leading-relaxed">
+                  "To become the leading peer-to-peer and on-demand delivery ecosystem in Ethiopia at 2030, transforming how people and goods move efficiently, affordably, and sustainably across borders and communities."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Us Section */}
+      <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12" style={{ background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.03) 0%, rgba(38, 198, 218, 0.03) 50%, rgba(67, 160, 71, 0.03) 100%)' }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6">
+              <span className="bg-clip-text text-transparent animate-gradient-shift" style={{ 
+                background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
+                backgroundSize: '200% 200%',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                About Us
+              </span>
+            </h2>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 md:p-12 border-2" style={{ borderColor: 'rgba(30, 136, 229, 0.2)' }}>
+              <p className="text-gray-700 text-lg md:text-xl leading-relaxed mb-6">
+                <span className="font-semibold text-gray-900">Acha Delivery</span> is a peer-to-peer delivery and local delivery partner marketplace platform headquartered in <span className="font-semibold">Addis Ababa, Ethiopia</span>.
+              </p>
+
+              <p className="text-gray-700 text-lg md:text-xl leading-relaxed mb-6">
+                As a peer-to-peer marketplace, it links international and domestic travelers (acting as carriers) with buyers, senders, and recipients.
+              </p>
+
+              <p className="text-gray-700 text-lg md:text-xl leading-relaxed mb-6">
+                Additionally, Acha Delivery serves as a delivery partner marketplace, connecting clients with verified local delivery partners — including bicycle riders, e-bike riders, and motorcycle couriers — for fast, on-demand delivery services within Ethiopia.
+              </p>
+
+              <p className="text-gray-700 text-lg md:text-xl leading-relaxed mb-8">
+                This dual approach makes Acha Delivery a smart, sustainable solution for both cross-border and local shipping needs.
+              </p>
+
+              {/* Motto */}
+              <div className="relative mt-10 pt-8 border-t-2" style={{ borderColor: 'rgba(30, 136, 229, 0.2)' }}>
+                <div className="text-center">
+                  <p className="text-sm md:text-base text-gray-600 mb-2 font-medium">Motto</p>
+                  <p className="text-2xl md:text-3xl lg:text-4xl font-bold bg-clip-text text-transparent animate-gradient-shift" style={{ 
+                    background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
+                    backgroundSize: '200% 200%',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>
+                    "Unmatched Delivery"
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
