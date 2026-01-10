@@ -77,9 +77,9 @@ function Home() {
         </div>
 
         {/* Hero Content */}
-        <div className="flex-1 flex items-center w-full">
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-8 md:py-0">
-            <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
+        <div className="flex-1 flex  w-full">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-0 pb-4 md:py-0">
+            <div className="flex flex-col lg:flex-row  gap-6 lg:gap-12">
             {/* Content - Left Half */}
             <div className="w-full lg:w-1/2 flex flex-col justify-center relative text-center lg:text-left">
               {/* Animated gradient orbs - floating background decoration */}
@@ -162,52 +162,220 @@ function Home() {
                 className="w-full h-auto max-h-[500px] md:max-h-[600px] object-contain rounded-lg shadow-xl"
               />
             </div>
-          </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
+      {/* Features Section - Hanging Cards */}
+      <section className="relative py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white overflow-hidden">
+        {/* Decorative top connection line */}
+        <div className="absolute top-0 left-0 right-0 h-px opacity-20" style={{ background: 'linear-gradient(90deg, transparent 0%, #1E88E5 25%, #26C6DA 50%, #43A047 75%, transparent 100%)' }}></div>
+        
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 text-center mb-6 md:mb-8 lg:mb-10">
-            {t('home.features.title')}
-          </h2>
-          <p className="text-center text-gray-600 mb-16 md:mb-20 lg:mb-24 text-lg sm:text-xl max-w-2xl mx-auto">
-            {t('home.features.subtitle')}
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
-            {/* Feature Card 1 */}
-            <div className="bg-gradient-to-br from-gray-50 to-white p-8 sm:p-10 lg:p-12 rounded-2xl text-center transition-all duration-300 shadow-md hover:-translate-y-2 hover:shadow-xl border-2" style={{ borderColor: 'rgba(30, 136, 229, 0.2)' }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#1E88E5'; e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(30, 136, 229, 0.2)'; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(30, 136, 229, 0.2)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)'; }}>
-              <div className="text-5xl sm:text-6xl mb-6 md:mb-8">✈️</div>
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 md:mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 lg:gap-20 relative">
+            {/* Feature Card 1 - Post Your Trip */}
+            <div className="relative group animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              {/* Hanging Rope/Chain */}
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 z-0">
+                <div className="relative w-1 h-16 mx-auto" style={{ 
+                  background: 'linear-gradient(180deg, rgba(30, 136, 229, 0.3) 0%, rgba(30, 136, 229, 0.1) 100%)',
+                  boxShadow: '0 0 10px rgba(30, 136, 229, 0.2)'
+                }}>
+                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full border-2" style={{ 
+                    borderColor: '#1E88E5',
+                    background: 'radial-gradient(circle, rgba(30, 136, 229, 0.3) 0%, transparent 70%)'
+                  }}></div>
+                  {/* Connection point */}
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full animate-pulse" style={{ 
+                    background: '#1E88E5',
+                    boxShadow: '0 0 15px rgba(30, 136, 229, 0.6)'
+                  }}></div>
+                </div>
+              </div>
+
+              {/* Card */}
+              <div className="relative bg-gradient-to-br from-white to-blue-50/30 p-8 sm:p-10 lg:p-12 rounded-3xl text-center transition-all duration-500 shadow-xl hover:shadow-2xl border-t-4 hover:-translate-y-3 transform origin-top" 
+                style={{ 
+                  borderTopColor: '#1E88E5',
+                  boxShadow: '0 20px 40px rgba(30, 136, 229, 0.15), 0 0 0 1px rgba(30, 136, 229, 0.1)'
+                }}
+                onMouseEnter={(e) => { 
+                  e.currentTarget.style.borderTopColor = '#26C6DA';
+                  e.currentTarget.style.boxShadow = '0 30px 60px rgba(30, 136, 229, 0.25), 0 0 0 2px rgba(38, 198, 218, 0.2)';
+                }} 
+                onMouseLeave={(e) => { 
+                  e.currentTarget.style.borderTopColor = '#1E88E5';
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(30, 136, 229, 0.15), 0 0 0 1px rgba(30, 136, 229, 0.1)';
+                }}>
+                {/* Glowing top border */}
+                <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ 
+                  background: 'linear-gradient(90deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
+                  boxShadow: '0 0 20px rgba(30, 136, 229, 0.6)'
+                }}></div>
+
+                {/* Icon Container */}
+                <div className="relative mb-6 md:mb-8">
+                  <div className="relative inline-block">
+                    <div className="absolute inset-0 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity" style={{ 
+                      background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
+                      transform: 'scale(1.5)'
+                    }}></div>
+                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center text-4xl md:text-5xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl" style={{ 
+                      background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
+                      boxShadow: '0 10px 30px rgba(30, 136, 229, 0.4)'
+                    }}>
+                      ✈️
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <h3 className="text-2xl sm:text-3xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300" style={{ 
+                  background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
                 {t('home.features.postTrip.title')}
               </h3>
-              <p className="text-gray-600 leading-relaxed text-base sm:text-lg">
+                <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-medium">
                 {t('home.features.postTrip.description')}
               </p>
+              </div>
             </div>
 
-            {/* Feature Card 2 */}
-            <div className="bg-gradient-to-br from-gray-50 to-white p-8 sm:p-10 lg:p-12 rounded-2xl text-center transition-all duration-300 shadow-md hover:-translate-y-2 hover:shadow-xl border-2" style={{ borderColor: 'rgba(38, 198, 218, 0.2)' }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#26C6DA'; e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(38, 198, 218, 0.2)'; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(38, 198, 218, 0.2)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)'; }}>
-              <div className="text-5xl sm:text-6xl mb-6 md:mb-8">📦</div>
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 md:mb-6">
+            {/* Feature Card 2 - Find Travelers */}
+            <div className="relative group animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              {/* Hanging Rope/Chain */}
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 z-0">
+                <div className="relative w-1 h-16 mx-auto" style={{ 
+                  background: 'linear-gradient(180deg, rgba(38, 198, 218, 0.3) 0%, rgba(38, 198, 218, 0.1) 100%)',
+                  boxShadow: '0 0 10px rgba(38, 198, 218, 0.2)'
+                }}>
+                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full border-2" style={{ 
+                    borderColor: '#26C6DA',
+                    background: 'radial-gradient(circle, rgba(38, 198, 218, 0.3) 0%, transparent 70%)'
+                  }}></div>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full animate-pulse" style={{ 
+                    background: '#26C6DA',
+                    boxShadow: '0 0 15px rgba(38, 198, 218, 0.6)',
+                    animationDelay: '0.3s'
+                  }}></div>
+                </div>
+              </div>
+
+              {/* Card */}
+              <div className="relative bg-gradient-to-br from-white to-cyan-50/30 p-8 sm:p-10 lg:p-12 rounded-3xl text-center transition-all duration-500 shadow-xl hover:shadow-2xl border-t-4 hover:-translate-y-3 transform origin-top" 
+                style={{ 
+                  borderTopColor: '#26C6DA',
+                  boxShadow: '0 20px 40px rgba(38, 198, 218, 0.15), 0 0 0 1px rgba(38, 198, 218, 0.1)'
+                }}
+                onMouseEnter={(e) => { 
+                  e.currentTarget.style.borderTopColor = '#43A047';
+                  e.currentTarget.style.boxShadow = '0 30px 60px rgba(38, 198, 218, 0.25), 0 0 0 2px rgba(67, 160, 71, 0.2)';
+                }} 
+                onMouseLeave={(e) => { 
+                  e.currentTarget.style.borderTopColor = '#26C6DA';
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(38, 198, 218, 0.15), 0 0 0 1px rgba(38, 198, 218, 0.1)';
+                }}>
+                <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ 
+                  background: 'linear-gradient(90deg, #26C6DA 0%, #43A047 50%, #1E88E5 100%)',
+                  boxShadow: '0 0 20px rgba(38, 198, 218, 0.6)'
+                }}></div>
+
+                <div className="relative mb-6 md:mb-8">
+                  <div className="relative inline-block">
+                    <div className="absolute inset-0 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity" style={{ 
+                      background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)',
+                      transform: 'scale(1.5)'
+                    }}></div>
+                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center text-4xl md:text-5xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl" style={{ 
+                      background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)',
+                      boxShadow: '0 10px 30px rgba(38, 198, 218, 0.4)'
+                    }}>
+                      📦
+                    </div>
+                  </div>
+                </div>
+
+                <h3 className="text-2xl sm:text-3xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300" style={{ 
+                  background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
                 {t('home.features.findTravelers.title')}
               </h3>
-              <p className="text-gray-600 leading-relaxed text-base sm:text-lg">
+                <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-medium">
                 {t('home.features.findTravelers.description')}
               </p>
+              </div>
             </div>
 
-            {/* Feature Card 3 */}
-            <div className="bg-gradient-to-br from-gray-50 to-white p-8 sm:p-10 lg:p-12 rounded-2xl text-center transition-all duration-300 shadow-md hover:-translate-y-2 hover:shadow-xl border-2" style={{ borderColor: 'rgba(67, 160, 71, 0.2)' }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#43A047'; e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(67, 160, 71, 0.2)'; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(67, 160, 71, 0.2)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)'; }}>
-              <div className="text-5xl sm:text-6xl mb-6 md:mb-8">🤝</div>
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 md:mb-6">
+            {/* Feature Card 3 - Connect & Deliver */}
+            <div className="relative group animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+              {/* Hanging Rope/Chain */}
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 z-0">
+                <div className="relative w-1 h-16 mx-auto" style={{ 
+                  background: 'linear-gradient(180deg, rgba(67, 160, 71, 0.3) 0%, rgba(67, 160, 71, 0.1) 100%)',
+                  boxShadow: '0 0 10px rgba(67, 160, 71, 0.2)'
+                }}>
+                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full border-2" style={{ 
+                    borderColor: '#43A047',
+                    background: 'radial-gradient(circle, rgba(67, 160, 71, 0.3) 0%, transparent 70%)'
+                  }}></div>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full animate-pulse" style={{ 
+                    background: '#43A047',
+                    boxShadow: '0 0 15px rgba(67, 160, 71, 0.6)',
+                    animationDelay: '0.6s'
+                  }}></div>
+                </div>
+              </div>
+
+              {/* Card */}
+              <div className="relative bg-gradient-to-br from-white to-green-50/30 p-8 sm:p-10 lg:p-12 rounded-3xl text-center transition-all duration-500 shadow-xl hover:shadow-2xl border-t-4 hover:-translate-y-3 transform origin-top" 
+                style={{ 
+                  borderTopColor: '#43A047',
+                  boxShadow: '0 20px 40px rgba(67, 160, 71, 0.15), 0 0 0 1px rgba(67, 160, 71, 0.1)'
+                }}
+                onMouseEnter={(e) => { 
+                  e.currentTarget.style.borderTopColor = '#1E88E5';
+                  e.currentTarget.style.boxShadow = '0 30px 60px rgba(67, 160, 71, 0.25), 0 0 0 2px rgba(30, 136, 229, 0.2)';
+                }} 
+                onMouseLeave={(e) => { 
+                  e.currentTarget.style.borderTopColor = '#43A047';
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(67, 160, 71, 0.15), 0 0 0 1px rgba(67, 160, 71, 0.1)';
+                }}>
+                <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ 
+                  background: 'linear-gradient(90deg, #43A047 0%, #1E88E5 50%, #26C6DA 100%)',
+                  boxShadow: '0 0 20px rgba(67, 160, 71, 0.6)'
+                }}></div>
+
+                <div className="relative mb-6 md:mb-8">
+                  <div className="relative inline-block">
+                    <div className="absolute inset-0 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity" style={{ 
+                      background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 100%)',
+                      transform: 'scale(1.5)'
+                    }}></div>
+                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center text-4xl md:text-5xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl" style={{ 
+                      background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 100%)',
+                      boxShadow: '0 10px 30px rgba(67, 160, 71, 0.4)'
+                    }}>
+                      🤝
+                    </div>
+                  </div>
+                </div>
+
+                <h3 className="text-2xl sm:text-3xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300" style={{ 
+                  background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
                 {t('home.features.connectDeliver.title')}
               </h3>
-              <p className="text-gray-600 leading-relaxed text-base sm:text-lg">
+                <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-medium">
                 {t('home.features.connectDeliver.description')}
               </p>
+              </div>
             </div>
           </div>
         </div>
@@ -404,167 +572,143 @@ function Home() {
         </div>
       </section>
 
-      {/* Mission & Vision Section */}
-      <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white overflow-hidden">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-5 blur-3xl" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full opacity-5 blur-3xl" style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)' }}></div>
-        
-        <div className="relative max-w-7xl mx-auto z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-            {/* Mission Card */}
-            <div className="group relative bg-gradient-to-br from-white to-gray-50 p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border-2 border-transparent hover:border-blue-300 overflow-hidden">
-              {/* Animated gradient overlay */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.05) 0%, rgba(38, 198, 218, 0.05) 100%)' }}></div>
-              
-              {/* Icon */}
-              <div className="relative z-10 mb-6">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg" style={{ 
-                  background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
-                  boxShadow: '0 4px 15px rgba(30, 136, 229, 0.3)'
-                }}>
-                  🎯
-                </div>
-              </div>
-              
-              {/* Content */}
-              <div className="relative z-10">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">
-                  Mission
-                </h2>
-                <p className="text-gray-700 text-base md:text-lg leading-relaxed">
-                  "Acha Delivery connects travelers with spare luggage space and verified local delivery partners (cycle, e-bike, and motorcycle riders) to provide affordable, reliable, and sustainable delivery solutions for domestic and international senders across Ethiopia — making every trip and ride count while saving time and money for everyone involved."
-                </p>
-              </div>
-            </div>
-
-            {/* Vision Card */}
-            <div className="group relative bg-gradient-to-br from-white to-gray-50 p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border-2 border-transparent hover:border-green-300 overflow-hidden">
-              {/* Animated gradient overlay */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(135deg, rgba(67, 160, 71, 0.05) 0%, rgba(38, 198, 218, 0.05) 100%)' }}></div>
-              
-              {/* Icon */}
-              <div className="relative z-10 mb-6">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg" style={{ 
-                  background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)',
-                  boxShadow: '0 4px 15px rgba(67, 160, 71, 0.3)'
-                }}>
-                  👁️
-                </div>
-              </div>
-              
-              {/* Content */}
-              <div className="relative z-10">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
-                  Vision
-                </h2>
-                <p className="text-gray-700 text-base md:text-lg leading-relaxed">
-                  "To become the leading peer-to-peer and on-demand delivery ecosystem in Ethiopia at 2030, transforming how people and goods move efficiently, affordably, and sustainably across borders and communities."
-                </p>
-              </div>
-            </div>
-          </div>
+      {/* About Us Section Preview */}
+      <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 overflow-hidden">
+        {/* Animated SVG Waves Background */}
+        <div className="absolute inset-0 z-0">
+          <svg className="absolute bottom-0 left-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" fill="url(#waveGradient1)" opacity="0.1" style={{ animation: 'wave 15s ease-in-out infinite' }} />
+            <path d="M0,192L48,197.3C96,203,192,213,288,213.3C384,213,480,203,576,181.3C672,160,768,128,864,122.7C960,117,1056,139,1152,154.7C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" fill="url(#waveGradient2)" opacity="0.15" style={{ animation: 'wave 20s ease-in-out infinite reverse' }} />
+            <defs>
+              <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#1E88E5" />
+                <stop offset="50%" stopColor="#26C6DA" />
+                <stop offset="100%" stopColor="#43A047" />
+              </linearGradient>
+              <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#43A047" />
+                <stop offset="50%" stopColor="#26C6DA" />
+                <stop offset="100%" stopColor="#1E88E5" />
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
-      </section>
 
-      {/* About Us Section */}
-      <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12" style={{ background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.03) 0%, rgba(38, 198, 218, 0.03) 50%, rgba(67, 160, 71, 0.03) 100%)' }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6">
-              <span className="bg-clip-text text-transparent animate-gradient-shift" style={{ 
-                background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
-                backgroundSize: '200% 200%',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
-                About Us
-              </span>
-            </h2>
-          </div>
+        {/* Floating Orbs */}
+        <div className="absolute top-20 right-10 w-32 h-32 rounded-full opacity-20 blur-2xl animate-float" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)', animationDelay: '0s' }}></div>
+        <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full opacity-20 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)', animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 right-1/4 w-24 h-24 rounded-full opacity-15 blur-xl animate-float" style={{ background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 100%)', animationDelay: '4s' }}></div>
 
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 md:p-12 border-2" style={{ borderColor: 'rgba(30, 136, 229, 0.2)' }}>
-              <p className="text-gray-700 text-lg md:text-xl leading-relaxed mb-6">
-                <span className="font-semibold text-gray-900">Acha Delivery</span> is a peer-to-peer delivery and local delivery partner marketplace platform headquartered in <span className="font-semibold">Addis Ababa, Ethiopia</span>.
-              </p>
-
-              <p className="text-gray-700 text-lg md:text-xl leading-relaxed mb-6">
-                As a peer-to-peer marketplace, it links international and domestic travelers (acting as carriers) with buyers, senders, and recipients.
-              </p>
-
-              <p className="text-gray-700 text-lg md:text-xl leading-relaxed mb-6">
-                Additionally, Acha Delivery serves as a delivery partner marketplace, connecting clients with verified local delivery partners — including bicycle riders, e-bike riders, and motorcycle couriers — for fast, on-demand delivery services within Ethiopia.
-              </p>
-
-              <p className="text-gray-700 text-lg md:text-xl leading-relaxed mb-8">
-                This dual approach makes Acha Delivery a smart, sustainable solution for both cross-border and local shipping needs.
-              </p>
-
-              {/* Motto */}
-              <div className="relative mt-10 pt-8 border-t-2" style={{ borderColor: 'rgba(30, 136, 229, 0.2)' }}>
-                <div className="text-center">
-                  <p className="text-sm md:text-base text-gray-600 mb-2 font-medium">Motto</p>
-                  <p className="text-2xl md:text-3xl lg:text-4xl font-bold bg-clip-text text-transparent animate-gradient-shift" style={{ 
+        <div className="relative max-w-5xl mx-auto z-10">
+          {/* Title Section */}
+          <div className="text-center mb-12 md:mb-16 animate-fade-in-up">
+            <div className="inline-block mb-4">
+              <div className="relative">
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold relative z-10">
+                  <span className="bg-clip-text text-transparent animate-gradient-shift" style={{ 
                     background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
                     backgroundSize: '200% 200%',
                     WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent'
+                    WebkitTextFillColor: 'transparent',
+                    filter: 'drop-shadow(0 4px 8px rgba(30, 136, 229, 0.3))'
                   }}>
-                    "Unmatched Delivery"
+                    About Us
+                  </span>
+          </h2>
+                {/* Glowing underline effect */}
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 rounded-full animate-glow-pulse" style={{ 
+                  background: 'linear-gradient(90deg, transparent 0%, #1E88E5 50%, transparent 100%)',
+                  boxShadow: '0 0 20px rgba(30, 136, 229, 0.6)'
+                }}></div>
+              </div>
+            </div>
+            <p className="text-gray-600 text-lg md:text-xl mt-6 max-w-2xl mx-auto">
+              Discover Our Story & Mission
+            </p>
+          </div>
+
+          {/* Main Content Card */}
+          <div className="group relative bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 lg:p-16 border border-white/20 overflow-hidden transition-all duration-500 hover:shadow-3xl hover:-translate-y-2">
+            {/* Animated gradient border */}
+            <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-shift" style={{ 
+              background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
+              backgroundSize: '200% 200%',
+              padding: '2px'
+            }}>
+              <div className="w-full h-full bg-white/95 backdrop-blur-md rounded-3xl"></div>
+            </div>
+
+            {/* Decorative corner elements */}
+            <div className="absolute top-0 right-0 w-32 h-32 opacity-5 group-hover:opacity-10 transition-opacity">
+              <div className="absolute top-4 right-4 w-16 h-16 rounded-full" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)' }}></div>
+              <div className="absolute top-8 right-8 w-8 h-8 rounded-full" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)' }}></div>
+            </div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 opacity-5 group-hover:opacity-10 transition-opacity">
+              <div className="absolute bottom-4 left-4 w-16 h-16 rounded-full" style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 100%)' }}></div>
+              <div className="absolute bottom-8 left-8 w-8 h-8 rounded-full" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #1E88E5 100%)' }}></div>
+            </div>
+
+            {/* Content */}
+            <div className="relative z-10">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="flex-shrink-0 mt-1">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg" style={{ 
+                    background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
+                    boxShadow: '0 4px 15px rgba(30, 136, 229, 0.4)'
+                  }}>
+                    🚀
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <p className="text-gray-800 text-lg md:text-xl leading-relaxed mb-6 font-medium">
+                    <span className="font-bold bg-clip-text text-transparent" style={{ 
+                      background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent'
+                    }}>
+                      Acha Delivery
+                    </span> is a peer-to-peer delivery and local delivery partner marketplace platform headquartered in <span className="font-bold text-gray-900">Addis Ababa, Ethiopia</span>.
+                  </p>
+
+                  <p className="text-gray-700 text-base md:text-lg leading-relaxed mb-8">
+                    As a peer-to-peer marketplace, it links international and domestic travelers (acting as carriers) with buyers, senders, and recipients. Additionally, Acha Delivery serves as a delivery partner marketplace, connecting clients with verified local delivery partners...
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Testimonials Section */}
-      <section className="py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 text-center mb-6 md:mb-8 lg:mb-10">
-            {t('home.testimonials.title')}
-          </h2>
-          <p className="text-center text-gray-600 mb-16 md:mb-20 lg:mb-24 text-lg sm:text-xl max-w-2xl mx-auto">
-            {t('home.testimonials.subtitle')}
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
-            <div className="bg-gray-50 p-8 md:p-10 rounded-xl border-2 border-gray-200">
-              <div className="flex items-center mb-6">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#1E88E5] to-[#26C6DA] flex items-center justify-center text-white font-bold text-xl">A</div>
-                <div className="ml-4">
-                  <h4 className="font-semibold text-gray-900 text-lg">Ahmed Hassan</h4>
-                  <p className="text-sm text-gray-600">{t('home.testimonials.traveler')}</p>
+              {/* Call to Action Button */}
+              <div className="text-center mt-10">
+                <Link
+                  to="/about"
+                  className="group relative inline-block overflow-hidden px-10 py-4 rounded-full text-white font-bold text-base md:text-lg transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-2 active:translate-y-0"
+                  style={{ 
+                    background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
+                    boxShadow: '0 10px 30px rgba(30, 136, 229, 0.4)'
+                  }}
+                >
+                  <span className="relative z-10 flex items-center gap-3">
+                    <span>Read More About Us</span>
+                    <svg className="w-6 h-6 transition-transform duration-300 group-hover:translate-x-2 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </span>
+                  <div 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-shift"
+                    style={{ 
+                      background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)', 
+                      backgroundSize: '200% 200%',
+                      boxShadow: '0 10px 40px rgba(67, 160, 71, 0.5)'
+                    }}
+                  ></div>
+                  {/* Shimmer effect */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" style={{ 
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)'
+                  }}></div>
+                </Link>
+              </div>
+            </div>
                 </div>
               </div>
-              <p className="text-gray-700 italic text-base leading-relaxed mb-4">"{t('home.testimonials.testimonial1')}"</p>
-              <div className="flex text-yellow-400 mt-6">★★★★★</div>
-            </div>
-            <div className="bg-gray-50 p-8 md:p-10 rounded-xl border-2 border-gray-200">
-              <div className="flex items-center mb-6">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#26C6DA] to-[#43A047] flex items-center justify-center text-white font-bold text-xl">M</div>
-                <div className="ml-4">
-                  <h4 className="font-semibold text-gray-900 text-lg">Mariam Ali</h4>
-                  <p className="text-sm text-gray-600">{t('home.testimonials.sender')}</p>
-                </div>
-              </div>
-              <p className="text-gray-700 italic text-base leading-relaxed mb-4">"{t('home.testimonials.testimonial2')}"</p>
-              <div className="flex text-yellow-400 mt-6">★★★★★</div>
-            </div>
-            <div className="bg-gray-50 p-8 md:p-10 rounded-xl border-2 border-gray-200">
-              <div className="flex items-center mb-6">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#43A047] to-[#9CCC65] flex items-center justify-center text-white font-bold text-xl">Y</div>
-                <div className="ml-4">
-                  <h4 className="font-semibold text-gray-900 text-lg">Yonas Tekle</h4>
-                  <p className="text-sm text-gray-600">{t('home.testimonials.traveler')}</p>
-                </div>
-              </div>
-              <p className="text-gray-700 italic text-base leading-relaxed mb-4">"{t('home.testimonials.testimonial3')}"</p>
-              <div className="flex text-yellow-400 mt-6">★★★★★</div>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* Partner With Us & Women Initiatives Section */}

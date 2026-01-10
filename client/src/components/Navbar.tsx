@@ -91,9 +91,6 @@ function Navbar() {
               alt="Acha Logo" 
               className="h-8 sm:h-10 w-auto"
             />
-            <span className="text-gray-900">
-              Acha delivery
-            </span>
           </div>
 
           {/* Search Input - Centered */}
@@ -179,7 +176,6 @@ function Navbar() {
                   alt="Acha Logo" 
                   className="h-8 w-auto"
                 />
-                <span className="text-gray-900 font-bold text-lg">Acha delivery</span>
               </div>
               <button 
                 onClick={toggleMenu}

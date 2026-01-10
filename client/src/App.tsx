@@ -11,6 +11,7 @@ import FindDeliveryItem from './pages/FindDeliveryItem'
 import Search from './pages/Search'
 import PartnerWithUs from './pages/PartnerWithUs'
 import WomenInitiatives from './pages/WomenInitiatives'
+import About from './pages/About'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/partner-with-us" element={<PartnerWithUs />} />
           <Route path="/women-initiatives" element={<WomenInitiatives />} />
+          <Route path="/about" element={<About />} />
         </Routes>
         <Footer />
       </div>
