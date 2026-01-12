@@ -11,6 +11,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Trust proxy for accurate IP addresses (if behind reverse proxy)
+app.set('trust proxy', 1);
+
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -22,6 +25,9 @@ app.use('/api/receivers', require('./routes/receiverRoutes'));
 app.use('/api/travellers', require('./routes/travellerRoutes'));
 app.use('/api/partners', require('./routes/partnerRoutes'));
 app.use('/api/women-initiatives', require('./routes/womenInitiativeRoutes'));
+app.use('/api/premium', require('./routes/premiumRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/audit', require('./routes/auditRoutes'));
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/acha';

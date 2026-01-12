@@ -12,6 +12,7 @@ import Search from './pages/Search'
 import PartnerWithUs from './pages/PartnerWithUs'
 import WomenInitiatives from './pages/WomenInitiatives'
 import About from './pages/About'
+import Premium from './pages/Premium'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/partner-with-us" element={<PartnerWithUs />} />
           <Route path="/women-initiatives" element={<WomenInitiatives />} />
+          <Route path="/premium" element={<Premium />} />
           <Route path="/about" element={<About />} />
         </Routes>
         <Footer />

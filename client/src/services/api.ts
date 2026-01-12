@@ -163,6 +163,27 @@ const womenInitiatives = {
   },
 };
 
+// Premium API
+const premium = {
+  create: async (data: any) => {
+    const response = await fetch(`${API_BASE_URL}/premium`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to submit premium application');
+    }
+
+    return result;
+  },
+};
+
 // Export the API object
 export const api = {
   upload,
@@ -172,4 +193,5 @@ export const api = {
   travellers,
   partners,
   womenInitiatives,
+  premium,
 };

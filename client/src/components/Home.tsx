@@ -711,26 +711,26 @@ function Home() {
               </div>
       </section>
 
-      {/* Partner With Us & Women Initiatives Section */}
-      <section className="py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gray-50">
+      {/* Partner With Us, Women Initiatives & Premium Section */}
+      <section className="py-8 sm:py-10 md:py-12 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 items-center">
             {/* Partner With Us */}
             <div className="text-center">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6 md:mb-8">
+              <h2 className="text-xl sm:text-2xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">
                 Partner With Us
               </h2>
-              <p className="text-gray-600 mb-8 md:mb-10 text-lg sm:text-xl">
+              <p className="text-gray-600 mb-4 md:mb-5 text-sm sm:text-base">
                 Invest / Partner With Us - Join us in revolutionizing the delivery and travel industry
               </p>
               <Link 
                 to="/partner-with-us"
-                className="group relative inline-block overflow-hidden px-8 py-4 rounded-full text-white font-semibold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 active:translate-y-0"
+                className="group relative inline-block overflow-hidden px-5 py-2.5 rounded-full text-white font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
                 style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center gap-1.5">
                   Join In
-                  <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </span>
@@ -743,20 +743,46 @@ function Home() {
 
             {/* Women Initiatives */}
             <div className="text-center">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6 md:mb-8">
+              <h2 className="text-xl sm:text-2xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">
                 👩 Women Initiatives
               </h2>
-              <p className="text-gray-600 mb-8 md:mb-10 text-lg sm:text-xl">
+              <p className="text-gray-600 mb-4 md:mb-5 text-sm sm:text-base">
                 Join Women Initiatives - Empower yourself and join our community of amazing women
               </p>
               <Link 
                 to="/women-initiatives"
-                className="group relative inline-block overflow-hidden px-8 py-4 rounded-full text-white font-semibold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 active:translate-y-0"
+                className="group relative inline-block overflow-hidden px-5 py-2.5 rounded-full text-white font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
                 style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center gap-1.5">
                   Join In
-                  <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+                <div 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-shift"
+                  style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)', backgroundSize: '200% 200%' }}
+                ></div>
+              </Link>
+            </div>
+
+            {/* Premium Community */}
+            <div className="text-center">
+              <h2 className="text-xl sm:text-2xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">
+                ⭐ Acha Premium Community
+              </h2>
+              <p className="text-gray-600 mb-4 md:mb-5 text-sm sm:text-base">
+                Join our premium community - Exclusive benefits for delivery partners and corporate clients
+              </p>
+              <Link 
+                to="/premium"
+                className="group relative inline-block overflow-hidden px-5 py-2.5 rounded-full text-white font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+                style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
+              >
+                <span className="relative z-10 flex items-center gap-1.5">
+                  Join In
+                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </span>

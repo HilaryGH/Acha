@@ -3,7 +3,7 @@ import { api } from '../../services/api';
 import FileUpload from '../FileUpload';
 import DeliveryFeeDisplay from '../DeliveryFeeDisplay';
 
-function DeliveryPartnerForm() {
+function AchaSistersDeliveryPartnerForm() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -54,11 +54,11 @@ function DeliveryPartnerForm() {
     setMessage(null);
 
     try {
-      // TODO: Create API endpoint for delivery partners
-      // const response = await api.deliveryPartners.create(formData);
+      // TODO: Create API endpoint for acha sisters delivery partners
+      // const response = await api.achaSistersDeliveryPartners.create(formData);
       
       // For now, just show success message
-      setMessage({ type: 'success', text: 'Delivery Partner registration submitted successfully!' });
+      setMessage({ type: 'success', text: 'Acha Sisters Delivery Partner registration submitted successfully!' });
       setFormData({
         name: '',
         phone: '',
@@ -89,7 +89,7 @@ function DeliveryPartnerForm() {
             className="h-12 md:h-16 object-contain"
           />
         </div>
-        <h2 className="text-3xl font-bold mb-6 text-gray-900">Register as Delivery Partner</h2>
+        <h2 className="text-3xl font-bold mb-6 text-gray-900">Register as Acha Sisters Delivery Partner</h2>
         
         {message && (
           <div className={`mb-6 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
@@ -282,7 +282,7 @@ function DeliveryPartnerForm() {
             className="w-full py-3 px-6 rounded-lg text-white font-semibold transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
           >
-            {loading ? 'Submitting...' : 'Register as Delivery Partner'}
+            {loading ? 'Submitting...' : 'Register as Acha Sisters Delivery Partner'}
           </button>
         </form>
       </div>
@@ -290,5 +290,5 @@ function DeliveryPartnerForm() {
   );
 }
 
-export default DeliveryPartnerForm;
+export default AchaSistersDeliveryPartnerForm;
 
