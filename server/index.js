@@ -29,6 +29,29 @@ app.get('/health', (req, res) => {
   
   const isHealthy = mongoStatus === 1; // 1 = connected
   
+  // Get database connection info
+  const mongoURI = process.env.MONGO_URI;
+  const dbName = mongoose.connection.name || 'unknown';
+  
+  // Determine database source
+  let dbSource = 'unknown';
+  if (mongoURI) {
+    // Check if it's a cloud service (MongoDB Atlas, etc.)
+    if (mongoURI.includes('mongodb.net') || mongoURI.includes('mongodb+srv')) {
+      // Extract hostname from connection string
+      const match = mongoURI.match(/mongodb\+?srv?:\/\/([^\/]+)/);
+      const hostname = match ? match[1].split('@').pop()?.split('/')[0] : 'cloud';
+      dbSource = `cloud (${hostname})`;
+    } else if (mongoURI.includes('localhost') || mongoURI.includes('127.0.0.1')) {
+      dbSource = 'local (from .env)';
+    } else {
+      // Extract hostname for other remote connections
+      const match = mongoURI.match(/mongodb:\/\/([^\/]+)/);
+      const hostname = match ? match[1].split('@').pop()?.split('/')[0] : 'remote';
+      dbSource = `remote (${hostname})`;
+    }
+  }
+  
   res.status(isHealthy ? 200 : 503).json({
     status: isHealthy ? 'healthy' : 'unhealthy',
     server: 'running',
@@ -36,7 +59,10 @@ app.get('/health', (req, res) => {
     uptime: process.uptime(),
     database: {
       status: mongoStates[mongoStatus] || 'unknown',
-      connected: mongoStatus === 1
+      connected: mongoStatus === 1,
+      name: dbName,
+      source: dbSource,
+      usingEnv: true
     },
     environment: process.env.NODE_ENV || 'development'
   });
@@ -64,14 +90,26 @@ app.use('/api/premium', require('./routes/premiumRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/audit', require('./routes/auditRoutes'));
 
-// MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/acha';
-mongoose.connect(MONGODB_URI)
+// MongoDB connection - REQUIRED from .env file
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+  console.error('✗ ERROR: MONGO_URI is not set in .env file');
+  console.error('  Please set MONGO_URI in your .env file');
+  process.exit(1);
+}
+
+mongoose.connect(MONGO_URI)
   .then(() => {
-    console.log('Connected to MongoDB');
+    const dbName = mongoose.connection.name;
+    console.log(`✓ Connected to MongoDB`);
+    console.log(`  Database: ${dbName}`);
+    console.log(`  Source: from .env file (MONGO_URI)`);
   })
   .catch((error) => {
-    console.error('MongoDB connection error:', error);
+    console.error('✗ MongoDB connection error:', error);
+    console.error('  Please check your MONGO_URI in .env file');
+    process.exit(1);
   });
 
 // Error handling middleware
