@@ -17,6 +17,41 @@ app.set('trust proxy', 1);
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Health check endpoint (should be before other routes)
+app.get('/health', (req, res) => {
+  const mongoStatus = mongoose.connection.readyState;
+  const mongoStates = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting'
+  };
+  
+  const isHealthy = mongoStatus === 1; // 1 = connected
+  
+  res.status(isHealthy ? 200 : 503).json({
+    status: isHealthy ? 'healthy' : 'unhealthy',
+    server: 'running',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    database: {
+      status: mongoStates[mongoStatus] || 'unknown',
+      connected: mongoStatus === 1
+    },
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Simple status endpoint
+app.get('/api/status', (req, res) => {
+  res.json({
+    status: 'success',
+    message: 'Server is running',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // Routes
 app.use('/api/upload', require('./routes/uploadRoutes'));
 app.use('/api/buyers', require('./routes/buyerRoutes'));

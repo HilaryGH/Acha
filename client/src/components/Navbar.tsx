@@ -10,8 +10,7 @@ function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Check if user is logged in
+  const checkAuthStatus = () => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
     if (token && user) {
@@ -22,7 +21,31 @@ function Navbar() {
       } catch (e) {
         console.error('Error parsing user data:', e);
       }
+    } else {
+      setIsLoggedIn(false);
+      setUserName(null);
     }
+  };
+
+  useEffect(() => {
+    // Check if user is logged in on mount
+    checkAuthStatus();
+
+    // Listen for storage changes (logout from other tabs/windows)
+    const handleStorageChange = () => {
+      checkAuthStatus();
+    };
+
+    // Listen for custom logout event
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom logout event dispatched from same window
+    window.addEventListener('logout', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('logout', handleStorageChange);
+    };
   }, []);
 
   const toggleMenu = () => {

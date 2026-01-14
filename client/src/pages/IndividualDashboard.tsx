@@ -61,6 +61,9 @@ function IndividualDashboard() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    // Dispatch a custom event to notify Navbar of logout
+    window.dispatchEvent(new Event('logout'));
+    // Navigate to home page
     navigate('/');
   };
 
