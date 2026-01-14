@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../services/api';
 
 interface User {
   id: string;
@@ -25,7 +24,7 @@ interface BuyerProfile {
 function IndividualDashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
-  const [buyerProfile, setBuyerProfile] = useState<BuyerProfile | null>(null);
+  const [buyerProfile] = useState<BuyerProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'profile' | 'orders' | 'settings'>('overview');
 

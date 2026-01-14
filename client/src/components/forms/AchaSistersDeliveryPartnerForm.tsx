@@ -95,14 +95,21 @@ function AchaSistersDeliveryPartnerForm() {
       
       if (userResponse.status === 'success') {
         // Then create acha sisters delivery partner profile with additional data
-        const partnerData = {
-          ...formData,
-          userId: userResponse.data.user.id
-        };
-        delete partnerData.password;
-        delete partnerData.confirmPassword;
-        
         // TODO: Create API endpoint for acha sisters delivery partners
+        // const partnerData = {
+        //   name: formData.name,
+        //   phone: formData.phone,
+        //   email: formData.email,
+        //   whatsapp: formData.whatsapp,
+        //   telegram: formData.telegram,
+        //   city: formData.city,
+        //   primaryLocation: formData.primaryLocation,
+        //   deliveryMechanism: formData.deliveryMechanism,
+        //   kebeleId: formData.kebeleId,
+        //   drivingLicense: formData.drivingLicense,
+        //   photos: formData.photos,
+        //   userId: userResponse.data.user.id
+        // };
         // const response = await api.achaSistersDeliveryPartners.create(partnerData);
         
         // For now, just show success message

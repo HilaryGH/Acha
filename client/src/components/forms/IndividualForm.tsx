@@ -71,12 +71,10 @@ function IndividualForm() {
           localStorage.setItem('token', userResponse.data.token);
         }
         // Then create individual profile with additional data
-        const individualData = {
+        const { password, confirmPassword, ...individualData } = {
           ...formData,
           userId: userResponse.data.user.id
         };
-        delete individualData.password;
-        delete individualData.confirmPassword;
         
         const response = await api.buyers.create(individualData);
         
