@@ -4,7 +4,9 @@ import Navbar from './components/Navbar'
 import Home from './components/Home'
 import Footer from './components/Footer'
 import Register from './pages/Register'
+import IndividualDashboard from './pages/IndividualDashboard'
 import PostTrip from './pages/PostTrip'
+import BrowseTrips from './pages/BrowseTrips'
 import PostOrder from './pages/PostOrder'
 import PostDeliveryItem from './pages/PostDeliveryItem'
 import FindDeliveryItem from './pages/FindDeliveryItem'
@@ -22,7 +24,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<IndividualDashboard />} />
           <Route path="/post-trip" element={<PostTrip />} />
+          <Route path="/browse-trips" element={<BrowseTrips />} />
           <Route path="/post-order" element={<PostOrder />} />
           <Route path="/post-delivery-item" element={<PostDeliveryItem />} />
           <Route path="/find-delivery-item" element={<FindDeliveryItem />} />

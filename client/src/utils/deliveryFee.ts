@@ -67,3 +67,6 @@ export const formatDeliveryFeeInfo = (mechanism: DeliveryMechanism): string => {
   return `${mechanismName}: Base fee ${structure.baseFee} Birr + ${structure.perKmFee} Birr per Km`;
 };
 
+
+
+

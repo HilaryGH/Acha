@@ -16,12 +16,12 @@ const { rateLimitCodeAttempts } = require('../middleware/security');
 
 // Public routes
 router.post('/login', login);
+// Register new user (public registration - no authentication required)
+// Note: rateLimitCodeAttempts removed temporarily to debug - can be added back later
+router.post('/register', register);
 
 // Protected routes - require authentication
 router.use(authenticate); // All routes below require authentication
-
-// Register new user (with rate limiting for code attempts)
-router.post('/register', rateLimitCodeAttempts, register);
 
 // Get current user profile
 router.get('/me', getMe);

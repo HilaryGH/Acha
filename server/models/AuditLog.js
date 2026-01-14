@@ -65,3 +65,6 @@ auditLogSchema.index({ targetUser: 1, timestamp: -1 });
 
 module.exports = mongoose.model('AuditLog', auditLogSchema);
 
+
+
+

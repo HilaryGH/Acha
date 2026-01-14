@@ -133,7 +133,7 @@ const premiumSchema = new mongoose.Schema({
 });
 
 // Calculate price before saving
-premiumSchema.pre('save', async function(next) {
+premiumSchema.pre('save', async function() {
   this.updatedAt = Date.now();
   
   // Pricing structure
@@ -156,12 +156,11 @@ premiumSchema.pre('save', async function(next) {
     try {
       this.uniqueId = await generateUniqueId(this.constructor);
     } catch (error) {
-      return next(error);
+      throw error;
     }
   }
-  
-  next();
 });
 
 module.exports = mongoose.model('Premium', premiumSchema);
+
 

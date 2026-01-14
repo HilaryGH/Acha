@@ -30,9 +30,9 @@ const userSchema = new mongoose.Schema({
   // Role Information
   role: {
     type: String,
-    enum: ['super_admin', 'admin', 'marketing_team', 'customer_support'],
+    enum: ['super_admin', 'admin', 'marketing_team', 'customer_support', 'individual', 'delivery_partner', 'acha_sisters_delivery_partner'],
     required: [true, 'Role is required'],
-    default: 'customer_support'
+    default: 'individual'
   },
   
   // Status
@@ -65,10 +65,10 @@ const userSchema = new mongoose.Schema({
 });
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function() {
   // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password')) {
-    return next();
+    return;
   }
   
   try {
@@ -76,9 +76,8 @@ userSchema.pre('save', async function(next) {
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
     this.updatedAt = Date.now();
-    next();
   } catch (error) {
-    next(error);
+    throw error;
   }
 });
 
@@ -95,4 +94,5 @@ userSchema.methods.toJSON = function() {
 };
 
 module.exports = mongoose.model('User', userSchema);
+
 

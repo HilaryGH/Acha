@@ -7,6 +7,8 @@ function IndividualForm() {
     name: '',
     phone: '',
     email: '',
+    password: '',
+    confirmPassword: '',
     whatsapp: '',
     telegram: '',
     currentCity: '',
@@ -28,29 +30,85 @@ function IndividualForm() {
     setLoading(true);
     setMessage(null);
 
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setMessage({ type: 'error', text: 'Passwords do not match' });
+      setLoading(false);
+      return;
+    }
+
+    // Validate password length
+    if (formData.password.length < 6) {
+      setMessage({ type: 'error', text: 'Password must be at least 6 characters long' });
+      setLoading(false);
+      return;
+    }
+
     try {
-      // TODO: Create API endpoint for individuals
-      // For now, we can use the buyers endpoint as a placeholder
-      const response = await api.buyers.create(formData);
+      // Register user first
+      const registrationData: any = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        role: 'individual'
+      };
       
-      if (response.status === 'success') {
-        setMessage({ type: 'success', text: 'Individual registered successfully!' });
-        setFormData({
-          name: '',
-          phone: '',
-          email: '',
-          whatsapp: '',
-          telegram: '',
-          currentCity: '',
-          location: '',
-          bankAccount: '',
-          idDocument: ''
-        });
+      // Only include phone if it's not empty
+      if (formData.phone && formData.phone.trim()) {
+        registrationData.phone = formData.phone.trim();
+      }
+      
+      console.log('Registering user with data:', { ...registrationData, password: '***' });
+      const userResponse = await api.users.register(registrationData);
+      console.log('Registration response:', userResponse);
+      
+      if (userResponse.status === 'success') {
+        // Store user data and token in localStorage
+        if (userResponse.data?.user) {
+          localStorage.setItem('user', JSON.stringify(userResponse.data.user));
+        }
+        if (userResponse.data?.token) {
+          localStorage.setItem('token', userResponse.data.token);
+        }
+        // Then create individual profile with additional data
+        const individualData = {
+          ...formData,
+          userId: userResponse.data.user.id
+        };
+        delete individualData.password;
+        delete individualData.confirmPassword;
+        
+        const response = await api.buyers.create(individualData);
+        
+        if (response.status === 'success') {
+          setMessage({ type: 'success', text: 'Individual registered successfully! Redirecting to dashboard...' });
+          // Redirect to dashboard after 2 seconds
+          setTimeout(() => {
+            window.location.href = '/dashboard';
+          }, 2000);
+          setFormData({
+            name: '',
+            phone: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            whatsapp: '',
+            telegram: '',
+            currentCity: '',
+            location: '',
+            bankAccount: '',
+            idDocument: ''
+          });
+        } else {
+          setMessage({ type: 'error', text: response.message || 'Failed to complete registration' });
+        }
       } else {
-        setMessage({ type: 'error', text: response.message || 'Failed to register' });
+        setMessage({ type: 'error', text: userResponse.message || 'Failed to register' });
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'An error occurred' });
+      console.error('Registration error:', error);
+      const errorMessage = error.message || 'An error occurred during registration';
+      setMessage({ type: 'error', text: errorMessage });
     } finally {
       setLoading(false);
     }
@@ -120,6 +178,36 @@ function IndividualForm() {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="john@example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your password"
+                  minLength={6}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Confirm Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Confirm your password"
+                  minLength={6}
                 />
               </div>
               <div>

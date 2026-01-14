@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SignInModal from './SignInModal';
 
@@ -7,6 +7,23 @@ function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    if (token && user) {
+      setIsLoggedIn(true);
+      try {
+        const userData = JSON.parse(user);
+        setUserName(userData.name);
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+      }
+    }
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -123,6 +140,12 @@ function Navbar() {
               Home
             </Link>
             <Link 
+              to="/browse-trips" 
+              className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-[#1E88E5] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1E88E5] after:transition-all after:duration-300 hover:after:w-full"
+            >
+              Browse Trips
+            </Link>
+            <Link 
               to="/post-trip" 
               className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-[#1E88E5] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1E88E5] after:transition-all after:duration-300 hover:after:w-full"
             >
@@ -134,13 +157,26 @@ function Navbar() {
             >
               Post Order
             </Link>
-            <button 
-              className="text-white px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-lg hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 whitespace-nowrap"
-              style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
-              onClick={() => setIsSignInModalOpen(true)}
-            >
-              Sign In
-            </button>
+            {isLoggedIn ? (
+              <Link
+                to="/dashboard"
+                className="text-white px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-lg hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 whitespace-nowrap flex items-center gap-2"
+                style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                {userName ? userName.split(' ')[0] : 'Dashboard'}
+              </Link>
+            ) : (
+              <button 
+                className="text-white px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-lg hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 whitespace-nowrap"
+                style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
+                onClick={() => setIsSignInModalOpen(true)}
+              >
+                Sign In
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -219,6 +255,13 @@ function Navbar() {
                 Home
               </Link>
               <Link 
+                to="/browse-trips" 
+                className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Browse Trips
+              </Link>
+              <Link 
                 to="/post-trip" 
                 className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
                 onClick={() => setIsMenuOpen(false)}
@@ -232,6 +275,15 @@ function Navbar() {
               >
                 Post Order
               </Link>
+              {isLoggedIn && (
+                <Link 
+                  to="/dashboard" 
+                  className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-[#1E88E5] hover:bg-gray-50"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              )}
               
               {/* Feature Badges */}
               <div className="flex flex-col gap-1.5 px-4 py-2 mt-1">
@@ -300,16 +352,27 @@ function Navbar() {
             
             {/* Mobile Menu Footer */}
             <div className="p-4 border-t border-gray-200">
-              <button 
-                className="w-full text-white px-6 py-3 rounded-full font-semibold text-base transition-all duration-300 shadow-lg hover:-translate-y-0.5 hover:shadow-xl whitespace-nowrap"
-                style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setIsSignInModalOpen(true);
-                }}
-              >
-                Sign In
-              </button>
+              {isLoggedIn ? (
+                <Link
+                  to="/dashboard"
+                  className="block w-full text-center text-white px-6 py-3 rounded-full font-semibold text-base transition-all duration-300 shadow-lg hover:-translate-y-0.5 hover:shadow-xl whitespace-nowrap"
+                  style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Go to Dashboard
+                </Link>
+              ) : (
+                <button 
+                  className="w-full text-white px-6 py-3 rounded-full font-semibold text-base transition-all duration-300 shadow-lg hover:-translate-y-0.5 hover:shadow-xl whitespace-nowrap"
+                  style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsSignInModalOpen(true);
+                  }}
+                >
+                  Sign In
+                </button>
+              )}
             </div>
           </div>
         </div>

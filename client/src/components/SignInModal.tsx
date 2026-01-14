@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
 import IndividualForm from './forms/IndividualForm';
 import DeliveryPartnerForm from './forms/DeliveryPartnerForm';
 import AchaSistersDeliveryPartnerForm from './forms/AchaSistersDeliveryPartnerForm';
@@ -12,21 +14,46 @@ interface SignInModalProps {
 }
 
 function SignInModal({ isOpen, onClose }: SignInModalProps) {
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>('signin');
   const [registrationType, setRegistrationType] = useState<RegistrationType>(null);
   const [signInData, setSignInData] = useState({
     email: '',
     password: '',
   });
+  const [signInError, setSignInError] = useState<string | null>(null);
+  const [signInLoading, setSignInLoading] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement sign in logic
-    console.log('Sign in:', signInData);
-    // For now, just close the modal
-    onClose();
+    setSignInError(null);
+    setSignInLoading(true);
+
+    try {
+      const response = await api.users.login(signInData);
+      
+      if (response.status === 'success' && response.data) {
+        // Store user data and token
+        if (response.data.user) {
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+        }
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+        }
+        
+        // Close modal and redirect to dashboard
+        onClose();
+        navigate('/dashboard');
+        // Reload page to update navbar
+        window.location.reload();
+      }
+    } catch (error: any) {
+      setSignInError(error.message || 'Failed to sign in. Please check your credentials.');
+    } finally {
+      setSignInLoading(false);
+    }
   };
 
   const handleGoogleSignIn = async () => {
@@ -159,6 +186,11 @@ function SignInModal({ isOpen, onClose }: SignInModalProps) {
           </div>
 
           <form onSubmit={handleSignIn} className="space-y-3">
+            {signInError && (
+              <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-xs">
+                {signInError}
+              </div>
+            )}
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">
                 Email
@@ -196,10 +228,11 @@ function SignInModal({ isOpen, onClose }: SignInModalProps) {
             </div>
             <button
               type="submit"
-              className="w-full py-2 px-4 rounded-lg text-sm text-white font-semibold transition-all duration-300 hover:shadow-lg"
+              disabled={signInLoading}
+              className="w-full py-2 px-4 rounded-lg text-sm text-white font-semibold transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
             >
-              Sign In
+              {signInLoading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
 

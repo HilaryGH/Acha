@@ -3,11 +3,21 @@ const Traveller = require('../models/Traveller');
 // Get all travellers
 exports.getAllTravellers = async (req, res, next) => {
   try {
-    const { travellerType, status } = req.query;
+    const { travellerType, status, destinationCity, currentLocation } = req.query;
     const filter = {};
     
     if (travellerType) filter.travellerType = travellerType;
     if (status) filter.status = status;
+    
+    // Search by destination city (case-insensitive partial match)
+    if (destinationCity) {
+      filter.destinationCity = { $regex: destinationCity, $options: 'i' };
+    }
+    
+    // Search by departure city/current location (case-insensitive partial match)
+    if (currentLocation) {
+      filter.currentLocation = { $regex: currentLocation, $options: 'i' };
+    }
     
     const travellers = await Traveller.find(filter).sort({ createdAt: -1 });
     res.status(200).json({

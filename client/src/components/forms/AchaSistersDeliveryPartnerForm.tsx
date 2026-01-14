@@ -7,6 +7,9 @@ function AchaSistersDeliveryPartnerForm() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
     whatsapp: '',
     telegram: '',
     city: '',
@@ -53,24 +56,75 @@ function AchaSistersDeliveryPartnerForm() {
     setLoading(true);
     setMessage(null);
 
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setMessage({ type: 'error', text: 'Passwords do not match' });
+      setLoading(false);
+      return;
+    }
+
+    // Validate password length
+    if (formData.password.length < 6) {
+      setMessage({ type: 'error', text: 'Password must be at least 6 characters long' });
+      setLoading(false);
+      return;
+    }
+
+    // Validate email is provided
+    if (!formData.email) {
+      setMessage({ type: 'error', text: 'Email is required' });
+      setLoading(false);
+      return;
+    }
+
     try {
-      // TODO: Create API endpoint for acha sisters delivery partners
-      // const response = await api.achaSistersDeliveryPartners.create(formData);
+      // Register user first
+      const registrationData: any = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        role: 'acha_sisters_delivery_partner'
+      };
       
-      // For now, just show success message
-      setMessage({ type: 'success', text: 'Acha Sisters Delivery Partner registration submitted successfully!' });
-      setFormData({
-        name: '',
-        phone: '',
-        whatsapp: '',
-        telegram: '',
-        city: '',
-        primaryLocation: '',
-        deliveryMechanism: '',
-        kebeleId: '',
-        drivingLicense: '',
-        photos: [],
-      });
+      // Only include phone if it's not empty
+      if (formData.phone && formData.phone.trim()) {
+        registrationData.phone = formData.phone.trim();
+      }
+      
+      const userResponse = await api.users.register(registrationData);
+      
+      if (userResponse.status === 'success') {
+        // Then create acha sisters delivery partner profile with additional data
+        const partnerData = {
+          ...formData,
+          userId: userResponse.data.user.id
+        };
+        delete partnerData.password;
+        delete partnerData.confirmPassword;
+        
+        // TODO: Create API endpoint for acha sisters delivery partners
+        // const response = await api.achaSistersDeliveryPartners.create(partnerData);
+        
+        // For now, just show success message
+        setMessage({ type: 'success', text: 'Acha Sisters Delivery Partner registration submitted successfully!' });
+        setFormData({
+          name: '',
+          phone: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          whatsapp: '',
+          telegram: '',
+          city: '',
+          primaryLocation: '',
+          deliveryMechanism: '',
+          kebeleId: '',
+          drivingLicense: '',
+          photos: [],
+        });
+      } else {
+        setMessage({ type: 'error', text: userResponse.message || 'Failed to register' });
+      }
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'An error occurred' });
     } finally {
@@ -128,6 +182,50 @@ function AchaSistersDeliveryPartnerForm() {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="+251911508734"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="example@email.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your password"
+                  minLength={6}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Confirm Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Confirm your password"
+                  minLength={6}
                 />
               </div>
               <div>

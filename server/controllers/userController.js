@@ -12,20 +12,31 @@ const { verifyRoleCode } = require('../middleware/security');
  */
 const register = async (req, res) => {
   try {
+    console.log('Register endpoint called with body:', { ...req.body, password: '***' });
     const { name, email, password, phone, role, department, code } = req.body;
     const creatorRole = req.user?.role;
     const creatorId = req.user?.id;
     const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
     const userAgent = req.get('user-agent') || 'unknown';
     
+    // Validate required fields for public registration
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Name, email, and password are required'
+      });
+    }
+    
     // Define restricted roles that require codes
     const restrictedRoles = ['super_admin', 'admin', 'customer_support'];
-    const requestedRole = role || 'customer_support';
+    // Default role for public registration is 'individual' if not specified
+    const requestedRole = role || 'individual';
     
     // Security Layer 1: Role-based restrictions
     // Only super_admin can create admin, customer_support, or other super_admin
     if (restrictedRoles.includes(requestedRole)) {
-      if (creatorRole !== 'super_admin') {
+      // For restricted roles, authentication is required
+      if (!req.user || creatorRole !== 'super_admin') {
         // Log failed attempt
         await AuditLog.create({
           action: 'code_verification_failed',
@@ -103,19 +114,27 @@ const register = async (req, res) => {
         });
       }
     } else {
-      // For non-restricted roles (marketing_team), any authenticated user can create
-      // But log it for audit
-      await AuditLog.create({
-        action: 'user_created',
-        performedBy: creatorId,
-        details: {
-          role: requestedRole,
-          email: email?.toLowerCase()
-        },
-        ipAddress,
-        userAgent,
-        status: 'success'
-      });
+      // For non-restricted roles (individual, delivery_partner, etc.), public registration is allowed
+      // Log it for audit (only if we have a creatorId, otherwise skip audit log for public registration)
+      if (creatorId) {
+        try {
+          await AuditLog.create({
+            action: 'user_created',
+            performedBy: creatorId,
+            details: {
+              role: requestedRole,
+              email: email?.toLowerCase(),
+              registrationType: 'admin_created'
+            },
+            ipAddress,
+            userAgent,
+            status: 'success'
+          });
+        } catch (auditError) {
+          // Don't fail registration if audit log fails
+          console.error('Audit log error:', auditError);
+        }
+      }
     }
     
     // Check if user already exists
@@ -128,33 +147,48 @@ const register = async (req, res) => {
     }
     
     // Create new user
-    const user = new User({
-      name,
-      email: email.toLowerCase(),
+    const userData = {
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       password,
-      phone,
       role: requestedRole,
-      department,
       status: 'active'
-    });
+    };
+    
+    // Only include optional fields if they are provided
+    if (phone && phone.trim()) {
+      userData.phone = phone.trim();
+    }
+    if (department && department.trim()) {
+      userData.department = department.trim();
+    }
+    
+    const user = new User(userData);
     
     await user.save();
     
-    // Security Layer 4: Audit log for successful user creation
-    await AuditLog.create({
-      action: 'user_created',
-      performedBy: creatorId,
-      targetUser: user._id,
-      details: {
-        role: user.role,
-        email: user.email,
-        name: user.name,
-        department: user.department
-      },
-      ipAddress,
-      userAgent,
-      status: 'success'
-    });
+    // Security Layer 4: Audit log for successful user creation (only if creatorId exists)
+    if (creatorId) {
+      try {
+        await AuditLog.create({
+          action: 'user_created',
+          performedBy: creatorId,
+          targetUser: user._id,
+          details: {
+            role: user.role,
+            email: user.email,
+            name: user.name,
+            department: user.department
+          },
+          ipAddress,
+          userAgent,
+          status: 'success'
+        });
+      } catch (auditError) {
+        // Don't fail registration if audit log fails
+        console.error('Audit log error:', auditError);
+      }
+    }
     
     // Generate token
     const token = generateToken(user._id);
@@ -178,27 +212,46 @@ const register = async (req, res) => {
     });
   } catch (error) {
     // Log error
+    console.error('Registration error caught:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    
     const creatorId = req.user?.id;
     const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
     const userAgent = req.get('user-agent') || 'unknown';
+    
+    // Handle Mongoose validation errors
+    let errorMessage = 'Failed to register user';
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map((err) => err.message);
+      errorMessage = validationErrors.join(', ');
+    } else if (error.name === 'MongoServerError' && error.code === 11000) {
+      // Duplicate key error (email already exists)
+      errorMessage = 'User with this email already exists';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
     
     if (creatorId) {
       await AuditLog.create({
         action: 'user_created',
         performedBy: creatorId,
         details: {
-          error: error.message
+          error: errorMessage
         },
         ipAddress,
         userAgent,
         status: 'failed',
-        errorMessage: error.message
-      }).catch(() => {}); // Don't fail if audit log fails
+        errorMessage: errorMessage
+      }).catch((auditError) => {
+        console.error('Audit log creation failed:', auditError);
+      }); // Don't fail if audit log fails
     }
     
     res.status(400).json({
       status: 'error',
-      message: error.message || 'Failed to register user'
+      message: errorMessage
     });
   }
 };

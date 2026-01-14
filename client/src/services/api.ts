@@ -102,6 +102,29 @@ const receivers = {
 
 // Travellers API
 const travellers = {
+  getAll: async (params?: { destinationCity?: string; currentLocation?: string; travellerType?: string; status?: string }) => {
+    const queryParams = new URLSearchParams();
+    if (params?.destinationCity) queryParams.append('destinationCity', params.destinationCity);
+    if (params?.currentLocation) queryParams.append('currentLocation', params.currentLocation);
+    if (params?.travellerType) queryParams.append('travellerType', params.travellerType);
+    if (params?.status) queryParams.append('status', params.status);
+    
+    const url = `${API_BASE_URL}/travellers${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to fetch travellers');
+    }
+
+    return result;
+  },
   create: async (data: any) => {
     const response = await fetch(`${API_BASE_URL}/travellers`, {
       method: 'POST',
@@ -184,6 +207,69 @@ const premium = {
   },
 };
 
+// Users API
+const users = {
+  register: async (data: any) => {
+    const response = await fetch(`${API_BASE_URL}/users/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      // Extract error message from response
+      const errorMessage = result.message || result.error || 'Failed to register user';
+      console.error('Registration error:', errorMessage, result);
+      throw new Error(errorMessage);
+    }
+
+    return result;
+  },
+  login: async (data: any) => {
+    const response = await fetch(`${API_BASE_URL}/users/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to login');
+    }
+
+    return result;
+  },
+  getMe: async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No token found');
+    }
+
+    const response = await fetch(`${API_BASE_URL}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to get user profile');
+    }
+
+    return result;
+  },
+};
+
 // Export the API object
 export const api = {
   upload,
@@ -194,4 +280,5 @@ export const api = {
   partners,
   womenInitiatives,
   premium,
+  users,
 };

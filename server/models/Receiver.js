@@ -80,7 +80,7 @@ const receiverSchema = new mongoose.Schema({
 });
 
 // Update the updatedAt field before saving and generate unique ID
-receiverSchema.pre('save', async function(next) {
+receiverSchema.pre('save', async function() {
   this.updatedAt = Date.now();
   
   // Generate unique ID if it doesn't exist
@@ -88,11 +88,9 @@ receiverSchema.pre('save', async function(next) {
     try {
       this.uniqueId = await generateUniqueId(this.constructor);
     } catch (error) {
-      return next(error);
+      throw error;
     }
   }
-  
-  next();
 });
 
 module.exports = mongoose.model('Receiver', receiverSchema);
