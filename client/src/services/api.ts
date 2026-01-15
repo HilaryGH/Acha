@@ -1,4 +1,7 @@
-const API_BASE_URL = '/api';
+// Use deployed backend URL in production, or relative path for development (with proxy)
+const API_BASE_URL = import.meta.env.PROD 
+  ? 'https://acha-eeme.onrender.com/api'
+  : '/api';
 
 // Upload API
 const upload = {
