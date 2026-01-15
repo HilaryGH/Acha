@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import TripsAndOrdersSection from './TripsAndOrdersSection'
 
 function Home() {
   const { t } = useTranslation();
@@ -710,6 +711,9 @@ function Home() {
                 </div>
               </div>
       </section>
+
+      {/* Trips and Orders Section */}
+      <TripsAndOrdersSection />
 
       {/* Partner With Us, Women Initiatives & Premium Section */}
       <section className="py-8 sm:py-10 md:py-12 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gray-50">

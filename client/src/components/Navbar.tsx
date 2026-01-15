@@ -133,8 +133,8 @@ function Navbar() {
             />
           </div>
 
-          {/* Search Input - Centered */}
-          <form onSubmit={handleSearch} className="hidden md:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 w-full max-w-xs">
+          {/* Search Input - Positioned left of center */}
+          <form onSubmit={handleSearch} className="hidden md:flex items-center justify-center absolute left-[40%] transform -translate-x-1/2 w-full max-w-xs">
             <div className="relative w-full">
               <input
                 type="text"

@@ -23,6 +23,26 @@ const upload = {
 
 // Buyers API
 const buyers = {
+  getAll: async (params?: { status?: string }) => {
+    const queryParams = new URLSearchParams();
+    if (params?.status) queryParams.append('status', params.status);
+    
+    const url = `${API_BASE_URL}/buyers${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to fetch buyers');
+    }
+
+    return result;
+  },
   create: async (data: any) => {
     const response = await fetch(`${API_BASE_URL}/buyers`, {
       method: 'POST',

@@ -46,9 +46,9 @@ function BrowseTrips() {
       
       const response = await api.travellers.getAll(params);
       if (response.status === 'success') {
-        // Filter to show only verified or active trips
+        // Filter to show verified, active, or pending trips (exclude rejected and inactive)
         const activeTrips = (response.data || []).filter(
-          (trip: Trip) => trip.status === 'verified' || trip.status === 'active'
+          (trip: Trip) => trip.status === 'verified' || trip.status === 'active' || trip.status === 'pending'
         );
         setTrips(activeTrips);
       } else {

@@ -108,7 +108,7 @@ const buyerSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['pending', 'verified', 'rejected', 'active', 'inactive'],
-    default: 'pending'
+    default: 'active'
   },
   
   // Timestamps

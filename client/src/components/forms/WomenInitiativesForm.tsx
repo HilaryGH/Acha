@@ -230,14 +230,14 @@ function WomenInitiativesForm() {
 
         {/* Survey Section */}
         <div className="mt-6 pt-6 border-t">
-          <p className="text-sm text-gray-700 mb-3">Want to transform your business? Take our survey!</p>
+          <p className="text-sm text-gray-700 mb-3">Help us understand your background and skills. Complete our Current Skills & Experience Questionnaire!</p>
           <button
             type="button"
             onClick={() => setIsSurveyOpen(true)}
             className="w-full py-2.5 px-5 rounded-lg text-sm text-white font-semibold transition-all duration-300 hover:shadow-lg"
             style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
           >
-            📋 Take Survey
+            📋 Complete Skills Questionnaire
           </button>
         </div>
       </div>
