@@ -2,7 +2,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // JWT Secret from environment variable
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is not defined in environment variables");
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
 
 /**
  * Middleware to authenticate user using JWT token

@@ -18,7 +18,12 @@ const { rateLimitCodeAttempts } = require('../middleware/security');
 router.post('/login', login);
 // Register new user (public registration - no authentication required)
 // Note: rateLimitCodeAttempts removed temporarily to debug - can be added back later
+// Public registration (individual, marketing)
 router.post('/register', register);
+
+// Restricted registration (admin, super_admin, customer_support)
+router.post('/register/restricted', authenticate, register);
+
 
 // Protected routes - require authentication
 router.use(authenticate); // All routes below require authentication
