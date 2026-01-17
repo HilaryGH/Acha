@@ -1,58 +1,80 @@
 /**
- * Middleware to authorize users based on roles
- * @param {...string} roles - Roles allowed to access the route
+ * Middleware to check if user has admin or super_admin role
+ * Note: authenticate middleware must be used before this middleware
  */
-const authorize = (...roles) => {
+const isAdmin = (req, res, next) => {
+  // Check if user is authenticated (should be set by authenticate middleware)
+  if (!req.user) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'Authentication required. Please login first.'
+    });
+  }
+
+  // Check if user has admin or super_admin role
+  if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+    return res.status(403).json({
+      status: 'error',
+      message: 'Access denied. Admin privileges required.'
+    });
+  }
+
+  next();
+};
+
+/**
+ * Middleware to check if user has super_admin role
+ * Note: authenticate middleware must be used before this middleware
+ */
+const isSuperAdmin = (req, res, next) => {
+  // Check if user is authenticated (should be set by authenticate middleware)
+  if (!req.user) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'Authentication required. Please login first.'
+    });
+  }
+
+  // Check if user has super_admin role
+  if (req.user.role !== 'super_admin') {
+    return res.status(403).json({
+      status: 'error',
+      message: 'Access denied. Super admin privileges required.'
+    });
+  }
+
+  next();
+};
+
+/**
+ * Middleware factory to authorize specific roles
+ * Usage: authorize('super_admin', 'admin', 'marketing_team')
+ * Note: authenticate middleware must be used before this middleware
+ */
+const authorize = (...allowedRoles) => {
   return (req, res, next) => {
     // Check if user is authenticated (should be set by authenticate middleware)
     if (!req.user) {
       return res.status(401).json({
         status: 'error',
-        message: 'Authentication required.'
+        message: 'Authentication required. Please login first.'
       });
     }
-    
+
     // Check if user's role is in the allowed roles
-    if (!roles.includes(req.user.role)) {
+    if (!allowedRoles.includes(req.user.role)) {
       return res.status(403).json({
         status: 'error',
-        message: `Access denied. Required role: ${roles.join(' or ')}. Your role: ${req.user.role}`
+        message: `Access denied. Required roles: ${allowedRoles.join(', ')}`
       });
     }
-    
+
     next();
   };
 };
 
-/**
- * Middleware to check if user is super admin
- */
-const isSuperAdmin = authorize('super_admin');
-
-/**
- * Middleware to check if user is admin or super admin
- */
-const isAdmin = authorize('super_admin', 'admin');
-
-/**
- * Middleware to check if user is marketing team or above
- */
-const isMarketingTeam = authorize('super_admin', 'admin', 'marketing_team');
-
-/**
- * Middleware to check if user is customer support or above
- */
-const isCustomerSupport = authorize('super_admin', 'admin', 'marketing_team', 'customer_support');
-
 module.exports = {
-  authorize,
-  isSuperAdmin,
   isAdmin,
-  isMarketingTeam,
-  isCustomerSupport
+  isSuperAdmin,
+  authorize
 };
-
-
-
-
-

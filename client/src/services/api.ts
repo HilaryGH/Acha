@@ -1,7 +1,37 @@
-// Use deployed backend URL in production, or relative path for development (with proxy)
-const API_BASE_URL = import.meta.env.PROD 
-  ? 'https://acha-eeme.onrender.com/api'
-  : '/api';
+const API_BASE_URL = '/api';
+
+// Helper function to get auth token from localStorage
+const getAuthToken = (): string | null => {
+  return localStorage.getItem('token');
+};
+
+// Helper function to make API requests
+const request = async <T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> => {
+  const token = getAuthToken();
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Request failed' }));
+    throw new Error(error.message || `HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+};
 
 // Upload API
 const upload = {
@@ -9,299 +39,240 @@ const upload = {
     const formData = new FormData();
     formData.append('file', file);
 
+    const token = getAuthToken();
+    const headers: HeadersInit = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}/upload/single`, {
       method: 'POST',
+      headers,
       body: formData,
     });
 
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Upload failed' }));
+      throw new Error(error.message || `Upload failed! status: ${response.status}`);
+    }
+
     const data = await response.json();
-
-    if (!response.ok || data.status !== 'success') {
-      throw new Error(data.message || 'File upload failed');
-    }
-
-    return data.file.path;
-  },
-};
-
-// Buyers API
-const buyers = {
-  getAll: async (params?: { status?: string }) => {
-    const queryParams = new URLSearchParams();
-    if (params?.status) queryParams.append('status', params.status);
-    
-    const url = `${API_BASE_URL}/buyers${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to fetch buyers');
-    }
-
-    return result;
-  },
-  create: async (data: any) => {
-    const response = await fetch(`${API_BASE_URL}/buyers`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to create buyer');
-    }
-
-    return result;
-  },
-};
-
-// Senders API
-const senders = {
-  getAll: async () => {
-    const response = await fetch(`${API_BASE_URL}/senders`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to fetch senders');
-    }
-
-    return result;
-  },
-  create: async (data: any) => {
-    const response = await fetch(`${API_BASE_URL}/senders`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to create sender');
-    }
-
-    return result;
-  },
-};
-
-// Receivers API
-const receivers = {
-  create: async (data: any) => {
-    const response = await fetch(`${API_BASE_URL}/receivers`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to create receiver');
-    }
-
-    return result;
-  },
-};
-
-// Travellers API
-const travellers = {
-  getAll: async (params?: { destinationCity?: string; currentLocation?: string; travellerType?: string; status?: string }) => {
-    const queryParams = new URLSearchParams();
-    if (params?.destinationCity) queryParams.append('destinationCity', params.destinationCity);
-    if (params?.currentLocation) queryParams.append('currentLocation', params.currentLocation);
-    if (params?.travellerType) queryParams.append('travellerType', params.travellerType);
-    if (params?.status) queryParams.append('status', params.status);
-    
-    const url = `${API_BASE_URL}/travellers${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to fetch travellers');
-    }
-
-    return result;
-  },
-  create: async (data: any) => {
-    const response = await fetch(`${API_BASE_URL}/travellers`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to create traveller');
-    }
-
-    return result;
-  },
-};
-
-// Partners API
-const partners = {
-  create: async (data: any) => {
-    const response = await fetch(`${API_BASE_URL}/partners`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to create partner');
-    }
-
-    return result;
-  },
-};
-
-// Women Initiatives API
-const womenInitiatives = {
-  create: async (data: any) => {
-    const response = await fetch(`${API_BASE_URL}/women-initiatives`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to submit application');
-    }
-
-    return result;
-  },
-};
-
-// Premium API
-const premium = {
-  create: async (data: any) => {
-    const response = await fetch(`${API_BASE_URL}/premium`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to submit premium application');
-    }
-
-    return result;
+    return data.file?.path || data.filePath || '';
   },
 };
 
 // Users API
 const users = {
   register: async (data: any) => {
-    const response = await fetch(`${API_BASE_URL}/users/register`, {
+    return request('/users/register', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify(data),
     });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      // Extract error message from response
-      const errorMessage = result.message || result.error || 'Failed to register user';
-      console.error('Registration error:', errorMessage, result);
-      throw new Error(errorMessage);
-    }
-
-    return result;
   },
   login: async (data: any) => {
-    const response = await fetch(`${API_BASE_URL}/users/login`, {
+    return request('/users/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify(data),
     });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to login');
-    }
-
-    return result;
   },
   getMe: async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('No token found');
-    }
+    return request('/users/me');
+  },
+};
 
-    const response = await fetch(`${API_BASE_URL}/users/me`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
+// Buyers API
+const buyers = {
+  getAll: async () => {
+    return request('/buyers');
+  },
+  getById: async (id: string) => {
+    return request(`/buyers/${id}`);
+  },
+  create: async (data: any) => {
+    return request('/buyers', {
+      method: 'POST',
+      body: JSON.stringify(data),
     });
+  },
+  update: async (id: string, data: any) => {
+    return request(`/buyers/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+  delete: async (id: string) => {
+    return request(`/buyers/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
 
-    const result = await response.json();
+// Travellers API
+const travellers = {
+  getAll: async () => {
+    return request('/travellers');
+  },
+  getById: async (id: string) => {
+    return request(`/travellers/${id}`);
+  },
+  create: async (data: any) => {
+    return request('/travellers', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  update: async (id: string, data: any) => {
+    return request(`/travellers/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+  delete: async (id: string) => {
+    return request(`/travellers/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
 
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to get user profile');
-    }
+// Senders API
+const senders = {
+  getAll: async () => {
+    return request('/senders');
+  },
+  getById: async (id: string) => {
+    return request(`/senders/${id}`);
+  },
+  create: async (data: any) => {
+    return request('/senders', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  update: async (id: string, data: any) => {
+    return request(`/senders/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+  delete: async (id: string) => {
+    return request(`/senders/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
 
-    return result;
+// Receivers API
+const receivers = {
+  getAll: async () => {
+    return request('/receivers');
+  },
+  getById: async (id: string) => {
+    return request(`/receivers/${id}`);
+  },
+  create: async (data: any) => {
+    return request('/receivers', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  update: async (id: string, data: any) => {
+    return request(`/receivers/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+  delete: async (id: string) => {
+    return request(`/receivers/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+// Premium API
+const premium = {
+  getAll: async () => {
+    return request('/premium');
+  },
+  getById: async (id: string) => {
+    return request(`/premium/${id}`);
+  },
+  create: async (data: any) => {
+    return request('/premium', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  update: async (id: string, data: any) => {
+    return request(`/premium/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+};
+
+// Partners API
+const partners = {
+  getAll: async () => {
+    return request('/partners');
+  },
+  getById: async (id: string) => {
+    return request(`/partners/${id}`);
+  },
+  create: async (data: any) => {
+    return request('/partners', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  update: async (id: string, data: any) => {
+    return request(`/partners/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+  delete: async (id: string) => {
+    return request(`/partners/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+// Women Initiatives API
+const womenInitiatives = {
+  getAll: async () => {
+    return request('/women-initiatives');
+  },
+  getById: async (id: string) => {
+    return request(`/women-initiatives/${id}`);
+  },
+  create: async (data: any) => {
+    return request('/women-initiatives', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  update: async (id: string, data: any) => {
+    return request(`/women-initiatives/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+  delete: async (id: string) => {
+    return request(`/women-initiatives/${id}`, {
+      method: 'DELETE',
+    });
   },
 };
 
 // Export the API object
 export const api = {
   upload,
+  users,
   buyers,
+  travellers,
   senders,
   receivers,
-  travellers,
+  premium,
   partners,
   womenInitiatives,
-  premium,
-  users,
 };

@@ -8,24 +8,58 @@ const partnerSchema = new mongoose.Schema({
     unique: true,
     sparse: true
   },
-  // Partner Type
+  // Partner Registration Type - distinguishes between different partner forms
+  registrationType: {
+    type: String,
+    enum: ['Invest/Partner', 'Gift Delivery Partner'],
+    default: 'Invest/Partner'
+  },
+  // Partner Type (for Invest/Partner type)
   type: {
     type: String,
     enum: ['Investor', 'Strategic Partner', 'Sponsorship'],
-    required: [true, 'Partner type is required']
+    required: function() { return this.registrationType === 'Invest/Partner'; }
   },
-  // Partner Category
+  // Partner Category (for Invest/Partner type)
   partner: {
     type: String,
     enum: ['Delivery Partner', 'Domestic Suppliers', 'Tour & Travel'],
-    required: [true, 'Partner category is required']
+    required: function() { return this.registrationType === 'Invest/Partner'; }
   },
-  // Investment Type
+  // Investment Type (for Invest/Partner type)
   investmentType: {
     type: String,
-    required: [true, 'Investment type is required'],
+    required: function() { return this.registrationType === 'Invest/Partner'; },
     trim: true
   },
+  // Partner Type (for Gift Delivery Partner) - Flower Seller, Event & Wedding Organisers, etc.
+  partnerType: {
+    type: String,
+    enum: ['Flower Seller', 'Event & Wedding Organisers', 'Gift Articles Seller', 'Cafeteria & Others'],
+    required: function() { return this.registrationType === 'Gift Delivery Partner'; }
+  },
+  // Gift Types with description, photo, and price
+  giftTypes: [{
+    type: {
+      type: String,
+      enum: ['Gift Products', 'Gift Packages', 'Gift Bundles'],
+      required: true
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    photo: {
+      type: String, // URL or file path
+      default: null
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0
+    }
+  }],
   // Basic Information
   name: {
     type: String,
@@ -34,7 +68,7 @@ const partnerSchema = new mongoose.Schema({
   },
   companyName: {
     type: String,
-    required: [true, 'Company name is required'],
+    required: function() { return this.registrationType === 'Invest/Partner'; },
     trim: true
   },
   email: {
@@ -53,6 +87,20 @@ const partnerSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  telegram: {
+    type: String,
+    trim: true
+  },
+  city: {
+    type: String,
+    required: function() { return this.registrationType === 'Gift Delivery Partner'; },
+    trim: true
+  },
+  primaryLocation: {
+    type: String,
+    required: function() { return this.registrationType === 'Gift Delivery Partner'; },
+    trim: true
+  },
   // Attached Documents
   idDocument: {
     type: String, // URL or file path for ID/Passport/Driving Licence
@@ -64,6 +112,22 @@ const partnerSchema = new mongoose.Schema({
   },
   tradeRegistration: {
     type: String, // URL or file path for Trade Registration
+    default: null
+  },
+  tin: {
+    type: String, // URL or file path for TIN
+    default: null
+  },
+  businessLicense: {
+    type: String, // URL or file path for Business License
+    default: null
+  },
+  photo: {
+    type: String, // URL or file path for Photo
+    default: null
+  },
+  video: {
+    type: String, // URL or file path for Video (30 min)
     default: null
   },
   // Enquiries

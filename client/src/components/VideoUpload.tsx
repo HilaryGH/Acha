@@ -5,14 +5,18 @@ interface VideoUploadProps {
   label: string;
   value: string;
   onChange: (filePath: string) => void;
+  maxDuration?: number; // Duration in minutes, default 30 seconds
 }
 
-function VideoUpload({ label, value, onChange }: VideoUploadProps) {
+function VideoUpload({ label, value, onChange, maxDuration = 0.5 }: VideoUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Convert minutes to seconds for validation
+  const maxDurationSeconds = maxDuration * 60;
 
   const validateVideoDuration = (file: File): Promise<boolean> => {
     return new Promise((resolve, reject) => {
@@ -22,10 +26,14 @@ function VideoUpload({ label, value, onChange }: VideoUploadProps) {
       video.onloadedmetadata = () => {
         window.URL.revokeObjectURL(video.src);
         const duration = video.duration;
-        if (duration <= 30) {
+        if (duration <= maxDurationSeconds) {
           resolve(true);
         } else {
-          reject(new Error('Video must be 30 seconds or less'));
+          const maxMinutes = Math.floor(maxDuration);
+          const maxSecs = (maxDurationSeconds % 60).toFixed(0);
+          const durationMinutes = Math.floor(duration / 60);
+          const durationSecs = (duration % 60).toFixed(0);
+          reject(new Error(`Video must be ${maxMinutes > 0 ? `${maxMinutes} minute(s) ` : ''}${maxSecs !== '0' ? `${maxSecs} second(s)` : ''} or less. Your video is ${durationMinutes > 0 ? `${durationMinutes} minute(s) ` : ''}${durationSecs} second(s)`));
         }
       };
       
@@ -48,13 +56,14 @@ function VideoUpload({ label, value, onChange }: VideoUploadProps) {
       return;
     }
 
-    // Validate file size (max 50MB for videos)
-    if (file.size > 50 * 1024 * 1024) {
-      setError('Video file size must be less than 50MB');
+    // Validate file size (max 100MB for longer videos, 50MB for short ones)
+    const maxFileSize = maxDuration > 1 ? 100 * 1024 * 1024 : 50 * 1024 * 1024;
+    if (file.size > maxFileSize) {
+      setError(`Video file size must be less than ${maxDuration > 1 ? '100MB' : '50MB'}`);
       return;
     }
 
-    // Validate duration (30 seconds max)
+    // Validate duration
     try {
       await validateVideoDuration(file);
     } catch (err: any) {
@@ -153,7 +162,7 @@ function VideoUpload({ label, value, onChange }: VideoUploadProps) {
         </label>
         
         <p className="text-xs text-gray-500">
-          Max duration: 30 seconds | Max file size: 50MB | Accepted: Video files (MP4, MOV, etc.)
+          Max duration: {maxDuration >= 1 ? `${maxDuration} minute(s)` : `${maxDurationSeconds} second(s)`} | Max file size: {maxDuration > 1 ? '100MB' : '50MB'} | Accepted: Video files (MP4, MOV, etc.)
         </p>
       </div>
     </div>
