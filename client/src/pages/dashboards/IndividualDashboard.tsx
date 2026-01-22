@@ -278,3 +278,7 @@ function IndividualDashboard({ user }: IndividualDashboardProps) {
 
 export default IndividualDashboard;
 
+
+
+
+

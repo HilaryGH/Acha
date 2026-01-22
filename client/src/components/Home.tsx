@@ -10,73 +10,6 @@ function Home() {
       <section 
         className="relative h-screen flex flex-col bg-gray-50 overflow-hidden"
       >
-        {/* Page Title */}
-        <div className="relative bg-gradient-to-r from-blue-600 via-cyan-500 to-green-600 py-4 sm:py-6 overflow-hidden flex-shrink-0">
-          {/* Animated background particles */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-0 left-1/4 w-2 h-2 bg-white rounded-full opacity-60 animate-float" style={{ animationDelay: '0s' }}></div>
-            <div className="absolute top-0 left-1/2 w-1.5 h-1.5 bg-white rounded-full opacity-40 animate-float" style={{ animationDelay: '1s' }}></div>
-            <div className="absolute top-0 left-3/4 w-2 h-2 bg-white rounded-full opacity-50 animate-float" style={{ animationDelay: '2s' }}></div>
-          </div>
-          
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-center relative z-10">
-            {/* Animated English text */}
-            <span className="inline-block">
-              {'Acha Delivery'.split('').map((char, index) => (
-                <span
-                  key={`english-${index}`}
-                  className={`letter-reveal letter-bounce glow-pulse ${
-                    index % 2 === 0 ? 'letter-bounce-delay-1' : 'letter-bounce-delay-2'
-                  }`}
-                  style={{
-                    animationDelay: `${index * 0.1}s`,
-                    color: '#ffffff',
-                    textShadow: '0 2px 4px rgba(0,0,0,0.3), 0 0 10px rgba(255,255,255,0.2)',
-                    animation: `letter-reveal 0.8s ease-out ${index * 0.1}s forwards, letter-bounce 2s ease-in-out ${index * 0.1 + 0.8}s infinite`,
-                    opacity: 1
-                  }}
-                >
-                  {char === ' ' ? '\u00A0' : char}
-                </span>
-              ))}
-            </span>
-            
-            {/* Space between */}
-            <span className="inline-block mx-2 sm:mx-3 md:mx-4"> </span>
-            
-            {/* Animated Amharic text with gradient */}
-            <span className="text-3xl sm:text-4xl md:text-5xl inline-block">
-              {'አቻ ደሊቨሪ'.split('').map((char, index) => (
-                <span
-                  key={`amharic-${index}`}
-                  className={`letter-reveal letter-bounce glow-pulse ${
-                    index === 0 ? 'letter-bounce-delay-1' :
-                    index === 1 ? 'letter-bounce-delay-2' :
-                    index === 2 ? 'letter-bounce-delay-3' : 'letter-bounce-delay-4'
-                  }`}
-                  style={{
-                    animationDelay: `${(index + 10) * 0.1}s`,
-                    display: 'inline-block',
-                    transformStyle: 'preserve-3d',
-                    perspective: '1000px',
-                    color: '#ffffff',
-                    textShadow: '0 2px 8px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.3)',
-                    background: 'linear-gradient(90deg, #ffffff 0%, #E3F2FD 50%, #ffffff 100%)',
-                    backgroundSize: '200% auto',
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    animation: `gradient-wave 3s linear infinite, letter-reveal 0.8s ease-out ${(index + 10) * 0.1}s forwards`,
-                    opacity: 1
-                  }}
-                >
-                  {char === ' ' ? '\u00A0' : char}
-                </span>
-              ))}
-            </span>
-          </h1>
-        </div>
-
         {/* Hero Content */}
         <div className="flex-1 flex  w-full">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-4 pb-4 md:pt-0 md:pb-0">
@@ -88,8 +21,18 @@ function Home() {
               <div className="absolute -bottom-8 -right-8 w-48 h-48 rounded-full opacity-8 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)', animationDelay: '1.5s' }}></div>
               <div className="absolute top-1/2 -left-4 w-24 h-24 rounded-full opacity-12 blur-2xl animate-float" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 50%, #1E88E5 100%)', animationDelay: '0.75s' }}></div>
 
+              {/* Acha Delivery Title */}
+              <div className="mb-4 md:mb-6 relative z-10 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-1">
+                  Acha Delivery
+                </h2>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-700">
+                  አቻ ደሊቨሪ
+                </h3>
+              </div>
+
               {/* Animated title with staggered entrance */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 md:mb-4 leading-tight relative z-10">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold mb-2 md:mb-3 leading-tight relative z-10">
                 <span className="inline-block text-gray-900 animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
             {t('home.hero.title')}{' '}
                 </span>
@@ -108,7 +51,7 @@ function Home() {
           </h1>
 
               {/* Animated subtitle with fade and slide */}
-              <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-3 md:mb-4 leading-relaxed relative z-10 animate-fade-in-up mx-auto lg:mx-0 max-w-xl lg:max-w-none" style={{ animationDelay: '0.6s' }}>
+              <p className="text-sm sm:text-base md:text-lg text-gray-700 mb-3 md:mb-4 leading-relaxed relative z-10 animate-fade-in-up mx-auto lg:mx-0 max-w-xl lg:max-w-none" style={{ animationDelay: '0.6s' }}>
             {t('home.hero.subtitle')}
           </p>
 

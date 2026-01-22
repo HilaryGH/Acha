@@ -38,7 +38,7 @@ function TripsAndOrdersSection() {
       setLoading(true);
       
       // Fetch trips
-      const tripsResponse = await api.travellers.getAll();
+      const tripsResponse = await api.travellers.getAll() as { status?: string; data?: any[] };
       if (tripsResponse.status === 'success') {
         const activeTrips = (tripsResponse.data || [])
           .filter((trip: Trip) => trip.status === 'active' || trip.status === 'verified' || trip.status === 'pending')
@@ -47,7 +47,7 @@ function TripsAndOrdersSection() {
       }
 
       // Fetch orders
-      const ordersResponse = await api.buyers.getAll();
+      const ordersResponse = await api.buyers.getAll() as { status?: string; data?: any[] };
       if (ordersResponse.status === 'success') {
         const activeOrders = (ordersResponse.data || [])
           .filter((order: Order) => order.status === 'active' || order.status === 'verified' || order.status === 'pending')

@@ -28,7 +28,7 @@ function BuyerForm() {
     setMessage(null);
 
     try {
-      const response = await api.buyers.create(formData);
+      const response = await api.buyers.create(formData) as { status?: string; message?: string };
       
       if (response.status === 'success') {
         setMessage({ type: 'success', text: 'Buyer registered successfully!' });

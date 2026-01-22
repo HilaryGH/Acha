@@ -93,7 +93,7 @@ function GiftDeliveryPartnerForm({ onSuccess, isModal = false }: GiftDeliveryPar
         }))
       };
 
-      const response = await api.partners.create(submitData);
+      const response = await api.partners.create(submitData) as { status?: string; message?: string };
       
       if (response.status === 'success') {
         setMessage({ type: 'success', text: 'Gift Delivery Partner application submitted successfully!' });

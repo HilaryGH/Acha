@@ -28,7 +28,7 @@ function ReceiverForm() {
     setMessage(null);
 
     try {
-      const response = await api.receivers.create(formData);
+      const response = await api.receivers.create(formData) as { status?: string; message?: string };
       
       if (response.status === 'success') {
         setMessage({ type: 'success', text: 'Receiver registered successfully!' });

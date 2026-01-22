@@ -54,7 +54,7 @@ function PremiumForm() {
     setMessage(null);
 
     try {
-      const response = await api.premium.create(formData);
+      const response = await api.premium.create(formData) as { status?: string; message?: string };
       
       if (response.status === 'success') {
         setMessage({ type: 'success', text: 'Premium subscription application submitted successfully!' });

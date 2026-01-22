@@ -59,7 +59,7 @@ function IndividualForm() {
       }
       
       console.log('Registering user with data:', { ...registrationData, password: '***' });
-      const userResponse = await api.users.register(registrationData);
+      const userResponse = await api.users.register(registrationData) as { status?: string; message?: string; data?: { user?: { id: string }; token?: string } };
       console.log('Registration response:', userResponse);
       
       if (userResponse.status === 'success') {
@@ -71,12 +71,17 @@ function IndividualForm() {
           localStorage.setItem('token', userResponse.data.token);
         }
         // Then create individual profile with additional data
+        if (!userResponse.data?.user?.id) {
+          setMessage({ type: 'error', text: 'User registration failed: User ID not found' });
+          setLoading(false);
+          return;
+        }
         const { password, confirmPassword, ...individualData } = {
           ...formData,
           userId: userResponse.data.user.id
         };
         
-        const response = await api.buyers.create(individualData);
+        const response = await api.buyers.create(individualData) as { status?: string; message?: string };
         
         if (response.status === 'success') {
           setMessage({ type: 'success', text: 'Individual registered successfully! Redirecting to dashboard...' });

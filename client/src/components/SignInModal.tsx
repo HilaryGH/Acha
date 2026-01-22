@@ -4,8 +4,9 @@ import { api } from '../services/api';
 import IndividualForm from './forms/IndividualForm';
 import DeliveryPartnerForm from './forms/DeliveryPartnerForm';
 import AchaSistersDeliveryPartnerForm from './forms/AchaSistersDeliveryPartnerForm';
+import GiftDeliveryPartnerForm from './forms/GiftDeliveryPartnerForm';
 
-type RegistrationType = 'individual' | 'delivery-partner' | 'acha-sisters-delivery-partner' | null;
+type RegistrationType = 'individual' | 'delivery-partner' | 'acha-sisters-delivery-partner' | 'gift-delivery-partner' | null;
 type ViewMode = 'signin' | 'register';
 
 interface SignInModalProps {
@@ -32,7 +33,7 @@ function SignInModal({ isOpen, onClose }: SignInModalProps) {
     setSignInLoading(true);
 
     try {
-      const response = await api.users.login(signInData);
+      const response = await api.users.login(signInData) as { status?: string; message?: string; data?: { user?: any; token?: string } };
       
       if (response.status === 'success' && response.data) {
         // Store user data and token
@@ -101,6 +102,7 @@ function SignInModal({ isOpen, onClose }: SignInModalProps) {
             {registrationType === 'individual' && <IndividualForm />}
             {registrationType === 'delivery-partner' && <DeliveryPartnerForm />}
             {registrationType === 'acha-sisters-delivery-partner' && <AchaSistersDeliveryPartnerForm />}
+            {registrationType === 'gift-delivery-partner' && <GiftDeliveryPartnerForm isModal={true} onSuccess={handleClose} />}
           </div>
         </div>
       </div>
@@ -113,6 +115,7 @@ function SignInModal({ isOpen, onClose }: SignInModalProps) {
       { id: 'individual' as const, title: 'Individual', description: 'Register as an individual user', icon: '👤' },
       { id: 'delivery-partner' as const, title: 'Delivery Partner', description: 'Join our delivery network and start earning', icon: '🚚' },
       { id: 'acha-sisters-delivery-partner' as const, title: 'Acha Sisters Delivery Partner', description: 'Join our delivery network and start earning', icon: '👩‍🚚' },
+      { id: 'gift-delivery-partner' as const, title: 'Acha Surprise Gift Delivery Partner', description: 'Register as a gift delivery partner and offer your gift services', icon: '🎁' },
     ];
 
     return (
@@ -131,22 +134,21 @@ function SignInModal({ isOpen, onClose }: SignInModalProps) {
           </div>
           <div className="p-6">
             <p className="text-gray-600 mb-6 text-center">Choose your role to get started</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
               {registrationTypes.map((type) => (
                 <div
                   key={type.id}
                   onClick={() => setRegistrationType(type.id)}
-                  className="bg-gray-50 rounded-lg p-3 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-2 border-transparent hover:border-blue-500"
+                  className="bg-gray-50 rounded-lg p-2 cursor-pointer transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 border border-gray-200 hover:border-blue-500"
                 >
-                  <div className="text-xl mb-1.5 text-center">{type.icon}</div>
-                  <h3 className="text-base font-bold text-gray-900 mb-1 text-center">
+                  <h3 className="text-xs font-semibold text-gray-900 mb-0.5 text-center">
                     {type.title}
                   </h3>
-                  <p className="text-gray-600 text-center text-xs mb-2">
+                  <p className="text-gray-600 text-center text-[10px] mb-1.5 leading-tight">
                     {type.description}
                   </p>
                   <button
-                    className="w-full py-1 px-3 rounded-lg text-white font-semibold transition-all duration-300 hover:shadow-lg text-xs"
+                    className="w-full py-0.5 px-2 rounded text-white font-medium transition-all duration-300 hover:shadow text-[10px]"
                     style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
                   >
                     Register as {type.title}

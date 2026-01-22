@@ -89,7 +89,7 @@ function Register() {
     { id: 'individual' as const, title: 'Individual', description: 'Register as an individual user', icon: '👤' },
     { id: 'delivery-partner' as const, title: 'Delivery Partner', description: 'Join our delivery network and start earning.', icon: '🚚' },
     { id: 'acha-sisters-delivery-partner' as const, title: 'Acha Sisters Delivery Partner', description: 'Join our delivery network and start earning.', icon: '👩‍🚚' },
-    { id: 'gift-delivery-partner' as const, title: 'Acha Surprise Gift Delivery Partner', description: 'Register as a gift delivery partner and offer your gift services.', icon: '🎁' },
+    { id: 'gift-delivery-partner' as const, title: 'Acha Surprise Gift Delivery Partner', description: 'Register as a gift delivery partner. Add your gift types, partner information, and business documents.', icon: '🎁' },
   ];
 
   return (

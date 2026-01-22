@@ -9,7 +9,7 @@ function BrowseTrips() {
     departureCity: '',
     destinationCity: '',
     travellerType: '',
-    status: 'active'
+    status: ''
   });
 
   useEffect(() => {
@@ -19,14 +19,30 @@ function BrowseTrips() {
   const fetchTrips = async () => {
     try {
       setLoading(true);
-      const response = await api.travellers.getAll();
-      if (response.status === 'success') {
-        setTrips(response.data || []);
+      setError(null);
+      const response = await api.travellers.getAll() as any;
+      
+      // Handle different response structures
+      if (response && response.status === 'success') {
+        // Standard API response format
+        setTrips(Array.isArray(response.data) ? response.data : []);
+      } else if (Array.isArray(response)) {
+        // If response is directly an array
+        setTrips(response);
+      } else if (response && response.data && Array.isArray(response.data)) {
+        // Handle cases where data exists but status might not be 'success'
+        setTrips(response.data);
       } else {
-        setError(response.message || 'Failed to fetch trips');
+        // No trips found or unexpected response format
+        setTrips([]);
+        if (response && response.message) {
+          console.warn('API response warning:', response.message);
+        }
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      console.error('Error fetching trips:', err);
+      setError(err.message || 'Failed to fetch trips. Please try again later.');
+      setTrips([]);
     } finally {
       setLoading(false);
     }

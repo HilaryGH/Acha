@@ -82,7 +82,7 @@ function TravellerForm() {
         });
       }
 
-      const response = await api.travellers.create(submitData);
+      const response = await api.travellers.create(submitData) as { status?: string; message?: string };
       
       if (response.status === 'success') {
         setMessage({ type: 'success', text: 'Traveller registered successfully!' });

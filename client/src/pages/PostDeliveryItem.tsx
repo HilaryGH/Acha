@@ -102,7 +102,7 @@ function PostDeliveryItem() {
         }
       });
 
-      const response = await api.senders.create(submitData);
+      const response = await api.senders.create(submitData) as { status?: string; message?: string };
       
       if (response.status === 'success') {
         setMessage({ type: 'success', text: 'Delivery item posted successfully! Your item is now visible to travelers.' });

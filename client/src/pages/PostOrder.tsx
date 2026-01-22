@@ -102,7 +102,7 @@ function PostOrder() {
         }
       });
 
-      const response = await api.buyers.create(submitData);
+      const response = await api.buyers.create(submitData) as { status?: string; message?: string };
       
       if (response.status === 'success') {
         setMessage({ type: 'success', text: 'Order posted successfully! Your order is now visible to travelers.' });

@@ -18,12 +18,12 @@ function FindDeliveryItem() {
   const fetchSenders = async () => {
     try {
       setLoading(true);
-      const response = await api.senders.getAll();
+      const response = await api.senders.getAll() as { status?: string; data?: any[]; message?: string };
       if (response.status === 'success') {
         // Filter senders that have delivery item information
-        const sendersWithItems = response.data.filter((sender: any) => 
+        const sendersWithItems = response.data?.filter((sender: any) => 
           sender.deliveryItemInfo && sender.deliveryItemInfo.productName
-        );
+        ) || [];
         setSenders(sendersWithItems);
       } else {
         setError(response.message || 'Failed to fetch delivery items');

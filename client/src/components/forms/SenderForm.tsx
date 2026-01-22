@@ -28,7 +28,7 @@ function SenderForm() {
     setMessage(null);
 
     try {
-      const response = await api.senders.create(formData);
+      const response = await api.senders.create(formData) as { status?: string; message?: string };
       
       if (response.status === 'success') {
         setMessage({ type: 'success', text: 'Sender registered successfully!' });

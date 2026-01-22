@@ -44,7 +44,7 @@ function WomenInitiativesForm() {
         age: ageNum
       };
 
-      const response = await api.womenInitiatives.create(submitData);
+      const response = await api.womenInitiatives.create(submitData) as { status?: string; message?: string };
       
       if (response.status === 'success') {
         setMessage({ type: 'success', text: 'Application submitted successfully!' });

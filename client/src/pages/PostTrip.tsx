@@ -137,7 +137,7 @@ function PostTrip() {
         };
       }
 
-      const response = await api.travellers.create(submitData);
+      const response = await api.travellers.create(submitData) as { status?: string; message?: string };
       
       if (response.status === 'success') {
         setMessage({ type: 'success', text: 'Trip posted successfully! Your trip is now visible to others.' });

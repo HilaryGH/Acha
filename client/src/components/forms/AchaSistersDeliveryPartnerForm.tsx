@@ -91,7 +91,7 @@ function AchaSistersDeliveryPartnerForm() {
         registrationData.phone = formData.phone.trim();
       }
       
-      const userResponse = await api.users.register(registrationData);
+      const userResponse = await api.users.register(registrationData) as { status?: string; message?: string; data?: { user?: { id: string } } };
       
       if (userResponse.status === 'success') {
         // Then create acha sisters delivery partner profile with additional data
