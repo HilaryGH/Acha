@@ -66,31 +66,31 @@ function Home() {
               >
                 {slide.isSpecial ? (
                   /* Special Layout for Second Slide - Two Sections with Blended Transition */
-                  <div className="flex flex-row h-full relative">
+                  <div className="flex flex-col md:flex-row h-full relative">
                     {/* Blending Gradient Overlay for Smooth Transition */}
                     <div className="absolute inset-0 z-0 pointer-events-none">
                       <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-green-600 via-green-500 to-transparent opacity-100"></div>
                       <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-blue-600 via-blue-500 to-transparent opacity-100"></div>
-                      <div className="absolute left-1/2 top-0 bottom-0 w-16 md:w-32 transform -translate-x-1/2 bg-gradient-to-r from-green-500 via-green-400/50 to-blue-400/50 opacity-80 blur-xl"></div>
+                      <div className="absolute left-1/2 top-0 bottom-0 w-32 transform -translate-x-1/2 bg-gradient-to-r from-green-500 via-green-400/50 to-blue-400/50 opacity-80 blur-xl"></div>
                     </div>
 
                     {/* First Section - Content with Amharic (50% width) */}
-                    <div className="w-1/2 flex flex-col justify-center px-2 sm:px-3 md:px-6 lg:px-8 text-white relative z-10 py-2 md:py-0">
+                    <div className="w-full md:w-1/2 flex flex-col justify-center px-4 md:px-6 lg:px-8 text-white relative z-10 py-4 md:py-0">
                       <div className="animate-fade-in-up">
-                        <h2 className="text-lg sm:text-xl md:text-3xl lg:text-5xl xl:text-6xl font-bold mb-1 md:mb-3 text-white animate-slide-in-left">
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 text-white animate-slide-in-left">
                           {slide.title}
                 </h2>
-                        <h3 className="text-sm sm:text-base md:text-2xl lg:text-4xl xl:text-5xl font-bold mb-1 md:mb-4 animate-fade-in-up" style={{ animationDelay: '0.3s', color: '#2563eb' }}>
+                        <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 animate-fade-in-up" style={{ animationDelay: '0.3s', color: '#2563eb' }}>
                           {slide.subtitle}
                 </h3>
-                        <p className="text-xs sm:text-sm md:text-base lg:text-xl xl:text-2xl mb-2 md:mb-4 text-white/90 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                        <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-4 text-white/90 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
                           {slide.description}
                         </p>
                       </div>
               </div>
 
                     {/* Second Section - Delivery SVG with Blue Wave Background (50% width) */}
-                    <div className="w-1/2 flex items-center justify-center relative overflow-hidden min-h-[150px] md:min-h-0">
+                    <div className="w-full md:w-1/2 flex items-center justify-center relative overflow-hidden min-h-[150px] md:min-h-0">
                       {/* Animated Wave Background with Blended Transition */}
                       <div className="absolute inset-0">
                         <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
@@ -119,7 +119,7 @@ function Home() {
                       </div>
                       {/* Delivery SVG */}
                       <div className="relative z-10 text-center animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
-                        <div className="w-full h-full flex items-center justify-center p-2 sm:p-3 md:p-6 animate-float">
+                        <div className="w-full h-full flex items-center justify-center p-4 md:p-6 animate-float">
                           <img 
                             src="/Delivery.svg" 
                             alt="Delivery" 
@@ -131,22 +131,22 @@ function Home() {
                   </div>
                 ) : slide.isSVG ? (
                   /* SVG Layout for Third Slide */
-                  <div className="flex flex-row h-full">
+                  <div className="flex flex-col md:flex-row h-full">
                     {/* Left Side - Content */}
-                    <div className="w-1/2 flex flex-col justify-center px-2 sm:px-3 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-2 md:py-0">
+                    <div className="w-full md:w-1/2 flex flex-col justify-center px-5 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-4 md:py-0">
                       <div className="animate-fade-in-up">
-                        <h2 className="text-sm sm:text-base md:text-xl lg:text-3xl xl:text-4xl font-bold mb-1 md:mb-3 text-white">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-white">
                           {slide.title}
                         </h2>
-                        <h3 className="text-xs sm:text-sm md:text-base lg:text-xl xl:text-2xl font-semibold mb-1 md:mb-3 text-green-100">
+                        <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-3 text-green-100">
                           {slide.subtitle}
                         </h3>
-                        <p className="text-xs sm:text-xs md:text-sm lg:text-base xl:text-lg mb-2 md:mb-6 text-white/90 leading-relaxed">
+                        <p className="text-xs sm:text-sm md:text-base lg:text-lg mb-4 md:mb-6 text-white/90 leading-relaxed">
                           {slide.description}
                         </p>
                         <Link
                           to="/register"
-                          className="inline-block bg-white text-green-600 hover:bg-gray-50 px-2 sm:px-3 md:px-5 lg:px-6 py-1 sm:py-1.5 md:py-2 lg:py-2.5 rounded-full font-bold text-xs sm:text-xs md:text-sm lg:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
+                          className="inline-block bg-white text-green-600 hover:bg-gray-50 px-5 md:px-6 py-2 md:py-2.5 rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
                         >
                           {slide.cta}
                         </Link>
@@ -154,10 +154,10 @@ function Home() {
                     </div>
 
                     {/* Right Side - Brand Color SVG (50% width, no padding/margin) */}
-                    <div className="w-1/2 flex items-center justify-center relative">
+                    <div className="w-full md:w-1/2 flex items-center justify-center relative">
                       <div className="relative w-full h-full flex items-center justify-center">
                         {/* Animated SVG - Full width of the 50% container */}
-                        <div className="relative animate-float w-full h-full overflow-hidden rounded-lg md:rounded-xl lg:rounded-2xl" style={{ animationDelay: `${index * 0.2}s` }}>
+                        <div className="relative animate-float w-full h-full overflow-hidden rounded-xl md:rounded-2xl" style={{ animationDelay: `${index * 0.2}s` }}>
                           <svg
                             className="w-full h-full"
                             viewBox="0 0 400 400"
@@ -270,22 +270,22 @@ function Home() {
                   </div>
                 ) : (
                   /* Regular Layout for Other Slides */
-                  <div className="flex flex-row h-full">
+                  <div className="flex flex-col md:flex-row h-full">
                     {/* Left Side - Content */}
-                    <div className="w-1/2 flex flex-col justify-center px-2 sm:px-3 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-2 md:py-0">
+                    <div className="w-full md:w-1/2 flex flex-col justify-center px-5 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-4 md:py-0">
                       <div className="animate-fade-in-up">
-                        <h2 className="text-sm sm:text-base md:text-xl lg:text-3xl xl:text-4xl font-bold mb-1 md:mb-3 text-white">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-white">
                           {slide.title}
                         </h2>
-                        <h3 className="text-xs sm:text-sm md:text-base lg:text-xl xl:text-2xl font-semibold mb-1 md:mb-3 text-green-100">
+                        <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-3 text-green-100">
                           {slide.subtitle}
                         </h3>
-                        <p className="text-xs sm:text-xs md:text-sm lg:text-base xl:text-lg mb-2 md:mb-6 text-white/90 leading-relaxed">
+                        <p className="text-xs sm:text-sm md:text-base lg:text-lg mb-4 md:mb-6 text-white/90 leading-relaxed">
                           {slide.description}
                         </p>
                         <Link
                           to="/register"
-                          className="inline-block bg-white text-green-600 hover:bg-gray-50 px-2 sm:px-3 md:px-5 lg:px-6 py-1 sm:py-1.5 md:py-2 lg:py-2.5 rounded-full font-bold text-xs sm:text-xs md:text-sm lg:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
+                          className="inline-block bg-white text-green-600 hover:bg-gray-50 px-5 md:px-6 py-2 md:py-2.5 rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
                         >
                           {slide.cta}
                         </Link>
@@ -293,17 +293,17 @@ function Home() {
                     </div>
 
                     {/* Right Side - Image with Animation (50% width, no padding/margin) */}
-                    <div className="w-1/2 flex items-center justify-center relative">
+                    <div className="w-full md:w-1/2 flex items-center justify-center relative">
                       <div className="relative w-full h-full flex items-center justify-center">
                         {/* Animated Image - Full width of the 50% container */}
-                        <div className="relative animate-float w-full h-full overflow-hidden rounded-lg md:rounded-xl lg:rounded-2xl" style={{ animationDelay: `${index * 0.2}s` }}>
+                        <div className="relative animate-float w-full h-full overflow-hidden rounded-xl md:rounded-2xl" style={{ animationDelay: `${index * 0.2}s` }}>
                           <img
                             src={slide.image}
                             alt={slide.title}
-                            className="w-full h-full object-cover shadow-2xl transform hover:scale-105 transition-transform duration-500 rounded-lg md:rounded-xl lg:rounded-2xl"
+                            className="w-full h-full object-cover shadow-2xl transform hover:scale-105 transition-transform duration-500 rounded-xl md:rounded-2xl"
                           />
                           {/* Glow effect */}
-                          <div className="absolute inset-0 bg-green-400/20 blur-2xl -z-10 animate-pulse rounded-lg md:rounded-xl lg:rounded-2xl"></div>
+                          <div className="absolute inset-0 bg-green-400/20 blur-2xl -z-10 animate-pulse rounded-xl md:rounded-2xl"></div>
                         </div>
                         
                         {/* Decorative elements - hidden on mobile */}
