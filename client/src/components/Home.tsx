@@ -1,512 +1,502 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import TripsAndOrdersSection from './TripsAndOrdersSection'
 
 function Home() {
   const { t } = useTranslation();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Slide data
+  const slides = [
+    {
+      title: 'Fast & Reliable Delivery',
+      subtitle: 'Connect with travelers worldwide',
+      description: 'Send and receive items through our trusted network of travelers',
+      image: '/acha hero.jpg',
+      cta: 'Get Started'
+    },
+    {
+      title: 'Acha Delivery',
+      subtitle: 'አቻ ደሊቨሪ',
+      description: 'Your trusted delivery partner',
+      image: '/acha.png',
+      cta: 'Get Started',
+      isSpecial: true
+    },
+    {
+      title: 'Global Network',
+      subtitle: 'Reach anywhere, anytime',
+      description: 'Connect with delivery partners across the globe',
+      image: '/hero2.png',
+      cta: 'Join Now'
+    }
+  ];
+
+  // Auto-slide functionality
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [slides.length]);
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
   return (
-    <div className="w-full">
-      {/* Hero Section with Title */}
-      <section 
-        className="relative h-screen flex flex-col bg-gray-50 overflow-hidden"
-      >
-        {/* Hero Content */}
-        <div className="flex-1 flex  w-full">
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-4 pb-4 md:pt-0 md:pb-0">
-            <div className="flex flex-col lg:flex-row  gap-6 lg:gap-12">
-            {/* Content - Left Half */}
-            <div className="w-full lg:w-1/2 flex flex-col justify-center relative text-center lg:text-left">
-              {/* Animated gradient orbs - floating background decoration */}
-              <div className="absolute -top-8 -left-8 w-40 h-40 rounded-full opacity-10 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}></div>
-              <div className="absolute -bottom-8 -right-8 w-48 h-48 rounded-full opacity-8 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)', animationDelay: '1.5s' }}></div>
-              <div className="absolute top-1/2 -left-4 w-24 h-24 rounded-full opacity-12 blur-2xl animate-float" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 50%, #1E88E5 100%)', animationDelay: '0.75s' }}></div>
+    <div className="w-full bg-white">
+      {/* Hero Section with Sliding Carousel */}
+      <section className="relative h-[45vh] min-h-[350px] flex items-center justify-center overflow-hidden bg-gray-100 py-4">
+        <div className="w-[95%] max-w-7xl h-full mx-auto relative overflow-hidden">
+          {/* Sliding Container */}
+          <div 
+            className="flex h-full transition-transform duration-700 ease-in-out"
+            style={{ 
+              transform: `translateX(-${currentSlide * 100}%)`
+            }}
+          >
+            {slides.map((slide, index) => (
+              <div
+                key={index}
+                className="min-w-full h-full flex-shrink-0 bg-gradient-to-br from-green-600 via-green-500 to-green-700 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden relative"
+              >
+                {slide.isSpecial ? (
+                  /* Special Layout for Second Slide - Three Sections */
+                  <div className="flex flex-col md:flex-row h-full">
+                    {/* First Section - Content with Amharic */}
+                    <div className="w-full md:w-1/3 flex flex-col justify-center px-4 md:px-6 text-white relative z-10 py-4 md:py-0">
+                      <div className="animate-fade-in-up">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 text-white animate-slide-in-left">
+                          {slide.title}
+                        </h2>
+                        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 animate-fade-in-up" style={{ animationDelay: '0.3s', color: '#2563eb' }}>
+                          {slide.subtitle}
+                        </h3>
+                        <p className="text-sm md:text-base mb-4 text-white/90 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                          {slide.description}
+                        </p>
+                      </div>
+                    </div>
 
-              {/* Acha Delivery Title */}
-              <div className="mb-4 md:mb-6 relative z-10 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-1">
-                  Acha Delivery
-                </h2>
-                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-700">
-                  አቻ ደሊቨሪ
+                    {/* Second Section - Wave with Green */}
+                    <div className="w-full md:w-1/3 flex items-center justify-center relative overflow-hidden min-h-[150px] md:min-h-0">
+                      {/* Animated Wave Background */}
+                      <div className="absolute inset-0">
+                        <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
+                          <defs>
+                            <linearGradient id={`waveGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                              <stop offset="0%" stopColor="#22c55e" stopOpacity="0.8" />
+                              <stop offset="50%" stopColor="#16a34a" stopOpacity="0.9" />
+                              <stop offset="100%" stopColor="#15803d" stopOpacity="0.8" />
+                            </linearGradient>
+                          </defs>
+                          <path
+                            fill={`url(#waveGradient-${index})`}
+                            d="M0,100 Q50,50 100,100 T200,100 L200,200 L0,200 Z"
+                          >
+                            <animate
+                              attributeName="d"
+                              values="M0,100 Q50,50 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,150 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,50 100,100 T200,100 L200,200 L0,200 Z"
+                              dur="3s"
+                              repeatCount="indefinite"
+                            />
+                          </path>
+                        </svg>
+                      </div>
+                      {/* Content in Wave Section */}
+                      <div className="relative z-10 text-center animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
+                        <div className="w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto animate-float">
+                          <img src="/acha.png" alt="Acha Logo" className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Third Section - Buttons */}
+                    <div className="w-full md:w-1/3 flex flex-col justify-center items-center px-4 md:px-6 gap-3 md:gap-4 py-4 md:py-0">
+                      <Link
+                        to="/register"
+                        className="w-full bg-white text-green-600 hover:bg-gray-50 px-6 py-3 rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105 animate-fade-in-up"
+                        style={{ animationDelay: '0.9s' }}
+                      >
+                        Get Started
+                      </Link>
+                      <Link
+                        to="/about"
+                        className="w-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border-2 border-white/50 px-6 py-3 rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-lg hover:-translate-y-1 hover:scale-105 animate-fade-in-up"
+                        style={{ animationDelay: '1.1s' }}
+                      >
+                        Learn More
+                      </Link>
+                      <Link
+                        to="/post-trip"
+                        className="w-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border-2 border-white/50 px-6 py-3 rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-lg hover:-translate-y-1 hover:scale-105 animate-fade-in-up"
+                        style={{ animationDelay: '1.3s' }}
+                      >
+                        Post Trip
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  /* Regular Layout for Other Slides */
+                  <div className="flex flex-col md:flex-row h-full">
+                    {/* Left Side - Content */}
+                    <div className="w-full md:w-1/2 flex flex-col justify-center px-5 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-4 md:py-0">
+                      <div className="animate-fade-in-up">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-white">
+                          {slide.title}
+                        </h2>
+                        <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-3 text-green-100">
+                          {slide.subtitle}
+                        </h3>
+                        <p className="text-xs sm:text-sm md:text-base lg:text-lg mb-4 md:mb-6 text-white/90 leading-relaxed">
+                          {slide.description}
+                        </p>
+                        <Link
+                          to="/register"
+                          className="inline-block bg-white text-green-600 hover:bg-gray-50 px-5 md:px-6 py-2 md:py-2.5 rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
+                        >
+                          {slide.cta}
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Right Side - Image with Animation */}
+                    <div className="w-full md:w-1/2 flex items-center justify-center p-3 md:p-6 relative">
+                      <div className="relative w-full h-full flex items-center justify-center">
+                        {/* Animated Image */}
+                        <div className="relative animate-float" style={{ animationDelay: `${index * 0.2}s` }}>
+                          <img
+                            src={slide.image}
+                            alt={slide.title}
+                            className="w-full h-auto max-h-[180px] sm:max-h-[220px] md:max-h-[260px] lg:max-h-[300px] object-contain rounded-xl md:rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
+                          />
+                          {/* Glow effect */}
+                          <div className="absolute inset-0 bg-green-400/20 rounded-xl md:rounded-2xl blur-2xl -z-10 animate-pulse"></div>
+                        </div>
+                        
+                        {/* Decorative elements - hidden on mobile */}
+                        <div className="hidden md:block absolute top-8 right-8 w-24 h-24 bg-white/10 rounded-full blur-xl animate-float" style={{ animationDelay: `${index * 0.3}s` }}></div>
+                        <div className="hidden md:block absolute bottom-8 left-8 w-20 h-20 bg-white/10 rounded-full blur-xl animate-float" style={{ animationDelay: `${index * 0.4}s` }}></div>
+                  </div>
+                </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-green-600 p-2 md:p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-20"
+            aria-label="Previous slide"
+          >
+            <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-green-600 p-2 md:p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-20"
+            aria-label="Next slide"
+          >
+            <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {/* Slide Indicators */}
+          <div className="absolute bottom-4 md:bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`h-2 md:h-3 rounded-full transition-all duration-300 ${
+                  currentSlide === index
+                    ? 'bg-white w-6 md:w-8'
+                    : 'bg-white/50 w-2 md:w-3 hover:bg-white/75'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+                  </div>
+                </div>
+      </section>
+
+      {/* Catalogue Section - Compact */}
+      <section className="relative py-6 md:py-8 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
+        <div className="max-w-7xl mx-auto">
+          {/* Service Cards Grid - Compact */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Delivery Partners */}
+            <div className="bg-white rounded-r-full shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex">
+              <div className="w-16 flex-shrink-0 bg-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+                  </div>
+              <div className="flex-1 p-4 flex flex-col justify-center bg-green-50/30">
+                <h3 className="text-sm font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">
+                  Delivery Partners
                 </h3>
-              </div>
-
-              {/* Animated title with staggered entrance */}
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold mb-2 md:mb-3 leading-tight relative z-10">
-                <span className="inline-block text-gray-900 animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
-            {t('home.hero.title')}{' '}
-                </span>
-                <span 
-                  className="inline-block animate-gradient-shift bg-clip-text text-transparent"
-                  style={{ 
-                    background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
-                    backgroundSize: '200% 200%',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    animationDelay: '0.4s'
-                  }}
+                <p className="text-xs text-gray-600 mb-2">
+                  Professional delivery partners ready to serve you
+                </p>
+                <Link
+                  to="/catalogue?type=delivery-partners"
+                  className="text-green-600 hover:text-green-700 font-semibold text-xs flex items-center gap-1"
                 >
-              {t('home.hero.titleHighlight')}
-            </span>
-          </h1>
-
-              {/* Animated subtitle with fade and slide */}
-              <p className="text-sm sm:text-base md:text-lg text-gray-700 mb-3 md:mb-4 leading-relaxed relative z-10 animate-fade-in-up mx-auto lg:mx-0 max-w-xl lg:max-w-none" style={{ animationDelay: '0.6s' }}>
-            {t('home.hero.subtitle')}
-          </p>
-
-              {/* Animated feature badges with brand colors */}
-              <div className="flex flex-wrap gap-2 mb-3 md:mb-4 relative z-10 animate-fade-in-up justify-center lg:justify-start" style={{ animationDelay: '0.8s' }}>
-                <div className="group relative overflow-hidden px-4 py-2 rounded-full transition-all duration-300 hover:scale-105" style={{ background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.1) 0%, rgba(38, 198, 218, 0.1) 50%, rgba(67, 160, 71, 0.1) 100%)' }}>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}></div>
-                    <span className="text-xs font-semibold" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Fast Delivery</span>
-                  </div>
-                </div>
-                <div className="group relative overflow-hidden px-4 py-2 rounded-full transition-all duration-300 hover:scale-105" style={{ background: 'linear-gradient(135deg, rgba(38, 198, 218, 0.1) 0%, rgba(67, 160, 71, 0.1) 50%, rgba(30, 136, 229, 0.1) 100%)' }}>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 50%, #1E88E5 100%)', animationDelay: '0.3s' }}></div>
-                    <span className="text-xs font-semibold" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 50%, #1E88E5 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Secure & Safe</span>
-                  </div>
-                </div>
-                <div className="group relative overflow-hidden px-4 py-2 rounded-full transition-all duration-300 hover:scale-105" style={{ background: 'linear-gradient(135deg, rgba(67, 160, 71, 0.1) 0%, rgba(30, 136, 229, 0.1) 50%, rgba(38, 198, 218, 0.1) 100%)' }}>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 50%, #26C6DA 100%)', animationDelay: '0.6s' }}></div>
-                    <span className="text-xs font-semibold" style={{ background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 50%, #26C6DA 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Global Network</span>
-                  </div>
+                  View More
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
                 </div>
               </div>
 
-              {/* Animated CTA button with gradient animation */}
-              <div className="relative z-10 animate-fade-in-up flex justify-center lg:justify-start" style={{ animationDelay: '1s' }}>
+            {/* Acha Sisters Delivery Partner */}
+            <div className="bg-white rounded-r-full shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex">
+              <div className="w-16 flex-shrink-0 bg-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div className="flex-1 p-4 flex flex-col justify-center bg-green-50/30">
+                <h3 className="text-sm font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">
+                  Acha Sisters Delivery Partner
+                </h3>
+                <p className="text-xs text-gray-600 mb-2">
+                  Empowering women in delivery services
+                </p>
                 <Link 
-                  to="/register" 
-                  className="group relative inline-block overflow-hidden px-6 py-3 rounded-full text-white font-semibold text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 active:translate-y-0"
-                  style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
+                  to="/catalogue?type=acha-sisters"
+                  className="text-green-600 hover:text-green-700 font-semibold text-xs flex items-center gap-1"
                 >
-                  <span className="relative z-10 flex items-center gap-2">
-                    {t('home.cta.getStarted')}
-                    <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  View More
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
-                  </span>
-                  <div 
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-shift"
-                    style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)', backgroundSize: '200% 200%' }}
-                  ></div>
                 </Link>
               </div>
             </div>
             
-            {/* Image - Right Half */}
-            <div className="w-full lg:w-1/2 flex items-start justify-center lg:items-center">
-              <img 
-                src="/acha hero.jpg" 
-                alt="Acha Hero" 
-                className="w-full h-auto max-h-[500px] md:max-h-[600px] object-contain rounded-lg shadow-xl"
-              />
+            {/* Acha Surprise Gift */}
+            <div className="bg-white rounded-r-full shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex">
+              <div className="w-16 flex-shrink-0 bg-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                </svg>
+              </div>
+              <div className="flex-1 p-4 flex flex-col justify-center bg-green-50/30">
+                <h3 className="text-sm font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">
+                  Acha Surprise Gift
+                </h3>
+                <p className="text-xs text-gray-600 mb-2">
+                  Gift Products, Gift Packages, Gift Bundles - Beautifully curated gifts for every occasion
+                </p>
+                <Link
+                  to="/catalogue?type=surprise-gift"
+                  className="text-green-600 hover:text-green-700 font-semibold text-xs flex items-center gap-1"
+                >
+                  View More
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+
+            {/* Acha Movers & Packers */}
+            <div className="bg-white rounded-r-full shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex">
+              <div className="w-16 flex-shrink-0 bg-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <div className="flex-1 p-4 flex flex-col justify-center bg-green-50/30">
+                <h3 className="text-sm font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">
+                  Acha Movers & Packers
+                </h3>
+                <p className="text-xs text-gray-600 mb-2">
+                  Professional moving and packing services
+                </p>
+                <Link
+                  to="/catalogue?type=movers-packers"
+                  className="text-green-600 hover:text-green-700 font-semibold text-xs flex items-center gap-1"
+                >
+                  View More
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
             </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section - Hanging Cards */}
-      <section className="relative py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white overflow-hidden">
-        {/* Decorative top connection line */}
-        <div className="absolute top-0 left-0 right-0 h-px opacity-20" style={{ background: 'linear-gradient(90deg, transparent 0%, #1E88E5 25%, #26C6DA 50%, #43A047 75%, transparent 100%)' }}></div>
-        
+      {/* Features Section */}
+      <section className="relative py-20 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 lg:gap-20 relative">
+          <div className="text-center mb-16 md:mb-20 animate-fade-in-up">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+              How It Works
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Connect with travelers and delivery partners to send and receive items safely and efficiently
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             {/* Feature Card 1 - Post Your Trip */}
-            <div className="relative group animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-              {/* Hanging Rope/Chain */}
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 z-0">
-                <div className="relative w-1 h-16 mx-auto" style={{ 
-                  background: 'linear-gradient(180deg, rgba(30, 136, 229, 0.3) 0%, rgba(30, 136, 229, 0.1) 100%)',
-                  boxShadow: '0 0 10px rgba(30, 136, 229, 0.2)'
-                }}>
-                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full border-2" style={{ 
-                    borderColor: '#1E88E5',
-                    background: 'radial-gradient(circle, rgba(30, 136, 229, 0.3) 0%, transparent 70%)'
-                  }}></div>
-                  {/* Connection point */}
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full animate-pulse" style={{ 
-                    background: '#1E88E5',
-                    boxShadow: '0 0 15px rgba(30, 136, 229, 0.6)'
-                  }}></div>
-                </div>
-              </div>
-
-              {/* Card */}
-              <div className="relative bg-gradient-to-br from-white to-blue-50/30 p-8 sm:p-10 lg:p-12 rounded-3xl text-center transition-all duration-500 shadow-xl hover:shadow-2xl border-t-4 hover:-translate-y-3 transform origin-top" 
-                style={{ 
-                  borderTopColor: '#1E88E5',
-                  boxShadow: '0 20px 40px rgba(30, 136, 229, 0.15), 0 0 0 1px rgba(30, 136, 229, 0.1)'
-                }}
-                onMouseEnter={(e) => { 
-                  e.currentTarget.style.borderTopColor = '#26C6DA';
-                  e.currentTarget.style.boxShadow = '0 30px 60px rgba(30, 136, 229, 0.25), 0 0 0 2px rgba(38, 198, 218, 0.2)';
-                }} 
-                onMouseLeave={(e) => { 
-                  e.currentTarget.style.borderTopColor = '#1E88E5';
-                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(30, 136, 229, 0.15), 0 0 0 1px rgba(30, 136, 229, 0.1)';
-                }}>
-                {/* Glowing top border */}
-                <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ 
-                  background: 'linear-gradient(90deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
-                  boxShadow: '0 0 20px rgba(30, 136, 229, 0.6)'
-                }}></div>
-
+            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-4 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                 {/* Icon Container */}
-                <div className="relative mb-6 md:mb-8">
-                  <div className="relative inline-block">
-                    <div className="absolute inset-0 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity" style={{ 
-                      background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
-                      transform: 'scale(1.5)'
-                    }}></div>
-                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center text-4xl md:text-5xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl" style={{ 
-                      background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
-                      boxShadow: '0 10px 30px rgba(30, 136, 229, 0.4)'
-                    }}>
-                      ✈️
-                    </div>
+              <div className="mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg group-hover:shadow-green-500/50">
+                  ✈️
                   </div>
                 </div>
 
                 {/* Content */}
-                <h3 className="text-2xl sm:text-3xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300" style={{ 
-                  background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
                 {t('home.features.postTrip.title')}
               </h3>
-                <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-medium">
+              <p className="text-gray-600 leading-relaxed">
                 {t('home.features.postTrip.description')}
               </p>
-              </div>
             </div>
 
             {/* Feature Card 2 - Find Travelers */}
-            <div className="relative group animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              {/* Hanging Rope/Chain */}
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 z-0">
-                <div className="relative w-1 h-16 mx-auto" style={{ 
-                  background: 'linear-gradient(180deg, rgba(38, 198, 218, 0.3) 0%, rgba(38, 198, 218, 0.1) 100%)',
-                  boxShadow: '0 0 10px rgba(38, 198, 218, 0.2)'
-                }}>
-                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full border-2" style={{ 
-                    borderColor: '#26C6DA',
-                    background: 'radial-gradient(circle, rgba(38, 198, 218, 0.3) 0%, transparent 70%)'
-                  }}></div>
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full animate-pulse" style={{ 
-                    background: '#26C6DA',
-                    boxShadow: '0 0 15px rgba(38, 198, 218, 0.6)',
-                    animationDelay: '0.3s'
-                  }}></div>
+            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-4 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              {/* Icon Container */}
+              <div className="mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg group-hover:shadow-green-500/50">
+                  📦
                 </div>
               </div>
 
-              {/* Card */}
-              <div className="relative bg-gradient-to-br from-white to-cyan-50/30 p-8 sm:p-10 lg:p-12 rounded-3xl text-center transition-all duration-500 shadow-xl hover:shadow-2xl border-t-4 hover:-translate-y-3 transform origin-top" 
-                style={{ 
-                  borderTopColor: '#26C6DA',
-                  boxShadow: '0 20px 40px rgba(38, 198, 218, 0.15), 0 0 0 1px rgba(38, 198, 218, 0.1)'
-                }}
-                onMouseEnter={(e) => { 
-                  e.currentTarget.style.borderTopColor = '#43A047';
-                  e.currentTarget.style.boxShadow = '0 30px 60px rgba(38, 198, 218, 0.25), 0 0 0 2px rgba(67, 160, 71, 0.2)';
-                }} 
-                onMouseLeave={(e) => { 
-                  e.currentTarget.style.borderTopColor = '#26C6DA';
-                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(38, 198, 218, 0.15), 0 0 0 1px rgba(38, 198, 218, 0.1)';
-                }}>
-                <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ 
-                  background: 'linear-gradient(90deg, #26C6DA 0%, #43A047 50%, #1E88E5 100%)',
-                  boxShadow: '0 0 20px rgba(38, 198, 218, 0.6)'
-                }}></div>
-
-                <div className="relative mb-6 md:mb-8">
-                  <div className="relative inline-block">
-                    <div className="absolute inset-0 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity" style={{ 
-                      background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)',
-                      transform: 'scale(1.5)'
-                    }}></div>
-                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center text-4xl md:text-5xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl" style={{ 
-                      background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)',
-                      boxShadow: '0 10px 30px rgba(38, 198, 218, 0.4)'
-                    }}>
-                      📦
-                    </div>
-                  </div>
-                </div>
-
-                <h3 className="text-2xl sm:text-3xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300" style={{ 
-                  background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}>
+              {/* Content */}
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
                 {t('home.features.findTravelers.title')}
               </h3>
-                <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-medium">
+              <p className="text-gray-600 leading-relaxed">
                 {t('home.features.findTravelers.description')}
               </p>
-              </div>
             </div>
 
             {/* Feature Card 3 - Connect & Deliver */}
-            <div className="relative group animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-              {/* Hanging Rope/Chain */}
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 z-0">
-                <div className="relative w-1 h-16 mx-auto" style={{ 
-                  background: 'linear-gradient(180deg, rgba(67, 160, 71, 0.3) 0%, rgba(67, 160, 71, 0.1) 100%)',
-                  boxShadow: '0 0 10px rgba(67, 160, 71, 0.2)'
-                }}>
-                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full border-2" style={{ 
-                    borderColor: '#43A047',
-                    background: 'radial-gradient(circle, rgba(67, 160, 71, 0.3) 0%, transparent 70%)'
-                  }}></div>
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full animate-pulse" style={{ 
-                    background: '#43A047',
-                    boxShadow: '0 0 15px rgba(67, 160, 71, 0.6)',
-                    animationDelay: '0.6s'
-                  }}></div>
+            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-4 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+              {/* Icon Container */}
+              <div className="mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg group-hover:shadow-green-500/50">
+                  🤝
                 </div>
               </div>
 
-              {/* Card */}
-              <div className="relative bg-gradient-to-br from-white to-green-50/30 p-8 sm:p-10 lg:p-12 rounded-3xl text-center transition-all duration-500 shadow-xl hover:shadow-2xl border-t-4 hover:-translate-y-3 transform origin-top" 
-                style={{ 
-                  borderTopColor: '#43A047',
-                  boxShadow: '0 20px 40px rgba(67, 160, 71, 0.15), 0 0 0 1px rgba(67, 160, 71, 0.1)'
-                }}
-                onMouseEnter={(e) => { 
-                  e.currentTarget.style.borderTopColor = '#1E88E5';
-                  e.currentTarget.style.boxShadow = '0 30px 60px rgba(67, 160, 71, 0.25), 0 0 0 2px rgba(30, 136, 229, 0.2)';
-                }} 
-                onMouseLeave={(e) => { 
-                  e.currentTarget.style.borderTopColor = '#43A047';
-                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(67, 160, 71, 0.15), 0 0 0 1px rgba(67, 160, 71, 0.1)';
-                }}>
-                <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ 
-                  background: 'linear-gradient(90deg, #43A047 0%, #1E88E5 50%, #26C6DA 100%)',
-                  boxShadow: '0 0 20px rgba(67, 160, 71, 0.6)'
-                }}></div>
-
-                <div className="relative mb-6 md:mb-8">
-                  <div className="relative inline-block">
-                    <div className="absolute inset-0 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity" style={{ 
-                      background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 100%)',
-                      transform: 'scale(1.5)'
-                    }}></div>
-                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center text-4xl md:text-5xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl" style={{ 
-                      background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 100%)',
-                      boxShadow: '0 10px 30px rgba(67, 160, 71, 0.4)'
-                    }}>
-                      🤝
-                    </div>
-                  </div>
-                </div>
-
-                <h3 className="text-2xl sm:text-3xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300" style={{ 
-                  background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}>
+              {/* Content */}
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
                 {t('home.features.connectDeliver.title')}
               </h3>
-                <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-medium">
+              <p className="text-gray-600 leading-relaxed">
                 {t('home.features.connectDeliver.description')}
               </p>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 overflow-hidden">
-        {/* Animated SVG Wave Background */}
-        <div className="absolute inset-0 overflow-hidden">
-          <svg 
-            className="absolute bottom-0 left-0 w-full h-full"
-            viewBox="0 0 1440 320" 
-            preserveAspectRatio="none"
-            style={{ height: '100%', width: '100%' }}
-          >
-            <defs>
-              <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#1E88E5" stopOpacity="0.15">
-                  <animate attributeName="stop-opacity" values="0.15;0.25;0.15" dur="4s" repeatCount="indefinite" />
-                </stop>
-                <stop offset="50%" stopColor="#26C6DA" stopOpacity="0.2">
-                  <animate attributeName="stop-opacity" values="0.2;0.3;0.2" dur="4s" repeatCount="indefinite" />
-                </stop>
-                <stop offset="100%" stopColor="#43A047" stopOpacity="0.15">
-                  <animate attributeName="stop-opacity" values="0.15;0.25;0.15" dur="4s" repeatCount="indefinite" />
-                </stop>
-              </linearGradient>
-              <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#43A047" stopOpacity="0.1">
-                  <animate attributeName="stop-opacity" values="0.1;0.2;0.1" dur="5s" repeatCount="indefinite" />
-                </stop>
-                <stop offset="50%" stopColor="#26C6DA" stopOpacity="0.15">
-                  <animate attributeName="stop-opacity" values="0.15;0.25;0.15" dur="5s" repeatCount="indefinite" />
-                </stop>
-                <stop offset="100%" stopColor="#1E88E5" stopOpacity="0.1">
-                  <animate attributeName="stop-opacity" values="0.1;0.2;0.1" dur="5s" repeatCount="indefinite" />
-                </stop>
-              </linearGradient>
-            </defs>
-            <path 
-              fill="url(#waveGradient1)" 
-              d="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,133.3C672,117,768,107,864,112C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-            >
-              <animate 
-                attributeName="d" 
-                values="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,133.3C672,117,768,107,864,112C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z;M0,128L48,138.7C96,149,192,171,288,165.3C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,154.7C1248,149,1344,139,1392,133.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z;M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,133.3C672,117,768,107,864,112C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-                dur="8s" 
-                repeatCount="indefinite" 
-              />
-            </path>
-            <path 
-              fill="url(#waveGradient2)" 
-              d="M0,192L48,197.3C96,203,192,213,288,208C384,203,480,181,576,181.3C672,181,768,203,864,208C960,213,1056,203,1152,197.3C1248,192,1344,192,1392,192L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-              opacity="0.7"
-            >
-              <animate 
-                attributeName="d" 
-                values="M0,192L48,197.3C96,203,192,213,288,208C384,203,480,181,576,181.3C672,181,768,203,864,208C960,213,1056,203,1152,197.3C1248,192,1344,192,1392,192L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z;M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,208C672,213,768,203,864,197.3C960,192,1056,192,1152,197.3C1248,203,1344,213,1392,218.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z;M0,192L48,197.3C96,203,192,213,288,208C384,203,480,181,576,181.3C672,181,768,203,864,208C960,213,1056,203,1152,197.3C1248,192,1344,192,1392,192L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-                dur="10s" 
-                repeatCount="indefinite" 
-              />
-            </path>
-          </svg>
-        </div>
-
-        {/* Floating Gradient Orbs */}
-        <div className="absolute top-20 left-10 w-32 h-32 rounded-full opacity-20 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%)', animationDelay: '0s' }}></div>
-        <div className="absolute top-40 right-20 w-40 h-40 rounded-full opacity-15 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 50%)', animationDelay: '1.5s' }}></div>
-        <div className="absolute bottom-20 left-1/4 w-36 h-36 rounded-full opacity-18 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 50%)', animationDelay: '3s' }}></div>
-        <div className="absolute bottom-40 right-1/3 w-28 h-28 rounded-full opacity-20 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #43A047 50%)', animationDelay: '2s' }}></div>
-
-        <div className="relative max-w-7xl mx-auto z-10">
-          <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-6 relative inline-block">
-              <span className="relative z-10 bg-clip-text text-transparent animate-gradient-shift" style={{ 
-                background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
-                backgroundSize: '200% 200%',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
+      <section className="relative py-20 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gradient-to-br from-gray-50 via-white to-green-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 md:mb-20 animate-fade-in-up">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
             {t('home.benefits.title')}
-              </span>
           </h2>
-            <p className="text-center text-gray-700 text-lg sm:text-xl max-w-2xl mx-auto font-medium">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             {t('home.benefits.subtitle')}
           </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Section - Acha Logo */}
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <div className="relative">
+                <div className="absolute inset-0 bg-green-500/20 rounded-full blur-3xl animate-float"></div>
               <img 
                 src="/acha.png" 
                 alt="Acha Logo" 
-                className="w-full h-auto max-w-lg object-contain"
+                  className="relative w-full h-auto max-w-lg object-contain transform hover:scale-105 transition-transform duration-500"
               />
+              </div>
             </div>
 
-            {/* Right Section - Creative Bullet Points */}
-            <div className="space-y-6 md:space-y-8">
-              {/* Cost Effective Bullet */}
-              <div className="group relative flex items-start gap-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                {/* Animated Bullet Point */}
-                <div className="relative flex-shrink-0">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg" style={{ 
-                    background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
-                    boxShadow: '0 4px 15px rgba(30, 136, 229, 0.3)'
-                  }}>
-                    💰
-                  </div>
-                  {/* Connecting Line */}
-                  <div className="absolute left-1/2 top-full w-0.5 h-8 transform -translate-x-1/2 opacity-30 group-hover:opacity-60 transition-opacity" style={{ 
-                    background: 'linear-gradient(180deg, #1E88E5 0%, transparent 100%)'
-                  }}></div>
+            {/* Right Section - Benefits List */}
+            <div className="space-y-8">
+              {/* Cost Effective */}
+              <div className="group flex items-start gap-6 p-6 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-white hover:shadow-lg transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                  💰
                 </div>
-                {/* Content */}
-                <div className="flex-1 pt-2">
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
                     {t('home.benefits.costEffective.title')}
                   </h3>
-                  <p className="text-gray-600 text-base leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed text-lg">
                     {t('home.benefits.costEffective.description')}
                   </p>
                 </div>
               </div>
 
-              {/* Fast Delivery Bullet */}
-              <div className="group relative flex items-start gap-4 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                <div className="relative flex-shrink-0">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg" style={{ 
-                    background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)',
-                    boxShadow: '0 4px 15px rgba(38, 198, 218, 0.3)'
-                  }}>
-                    ⚡
-                  </div>
-                  <div className="absolute left-1/2 top-full w-0.5 h-8 transform -translate-x-1/2 opacity-30 group-hover:opacity-60 transition-opacity" style={{ 
-                    background: 'linear-gradient(180deg, #26C6DA 0%, transparent 100%)'
-                  }}></div>
+              {/* Fast Delivery */}
+              <div className="group flex items-start gap-6 p-6 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-white hover:shadow-lg transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                  ⚡
                 </div>
-                <div className="flex-1 pt-2">
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 group-hover:text-cyan-600 transition-colors">
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
                     {t('home.benefits.fastDelivery.title')}
                   </h3>
-                  <p className="text-gray-600 text-base leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed text-lg">
                     {t('home.benefits.fastDelivery.description')}
                   </p>
                 </div>
               </div>
 
-              {/* Secure & Safe Bullet */}
-              <div className="group relative flex items-start gap-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-                <div className="relative flex-shrink-0">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg" style={{ 
-                    background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 100%)',
-                    boxShadow: '0 4px 15px rgba(67, 160, 71, 0.3)'
-                  }}>
-                    🔒
-                  </div>
-                  <div className="absolute left-1/2 top-full w-0.5 h-8 transform -translate-x-1/2 opacity-30 group-hover:opacity-60 transition-opacity" style={{ 
-                    background: 'linear-gradient(180deg, #43A047 0%, transparent 100%)'
-                  }}></div>
+              {/* Secure & Safe */}
+              <div className="group flex items-start gap-6 p-6 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-white hover:shadow-lg transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                  🔒
                 </div>
-                <div className="flex-1 pt-2">
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
                     {t('home.benefits.secureSafe.title')}
                   </h3>
-                  <p className="text-gray-600 text-base leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed text-lg">
                     {t('home.benefits.secureSafe.description')}
                   </p>
                 </div>
               </div>
 
-              {/* Global Network Bullet */}
-              <div className="group relative flex items-start gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                <div className="relative flex-shrink-0">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg" style={{ 
-                    background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
-                    boxShadow: '0 4px 15px rgba(30, 136, 229, 0.3)'
-                  }}>
-                    🌍
-                  </div>
+              {/* Global Network */}
+              <div className="group flex items-start gap-6 p-6 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-white hover:shadow-lg transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                  🌍
                 </div>
-                <div className="flex-1 pt-2">
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
                     {t('home.benefits.globalNetwork.title')}
                   </h3>
-                  <p className="text-gray-600 text-base leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed text-lg">
                     {t('home.benefits.globalNetwork.description')}
                   </p>
             </div>
@@ -517,139 +507,41 @@ function Home() {
       </section>
 
       {/* About Us Section Preview */}
-      <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 overflow-hidden">
-        {/* Animated SVG Waves Background */}
-        <div className="absolute inset-0 z-0">
-          <svg className="absolute bottom-0 left-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" fill="url(#waveGradient1)" opacity="0.1" style={{ animation: 'wave 15s ease-in-out infinite' }} />
-            <path d="M0,192L48,197.3C96,203,192,213,288,213.3C384,213,480,203,576,181.3C672,160,768,128,864,122.7C960,117,1056,139,1152,154.7C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" fill="url(#waveGradient2)" opacity="0.15" style={{ animation: 'wave 20s ease-in-out infinite reverse' }} />
-            <defs>
-              <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#1E88E5" />
-                <stop offset="50%" stopColor="#26C6DA" />
-                <stop offset="100%" stopColor="#43A047" />
-              </linearGradient>
-              <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#43A047" />
-                <stop offset="50%" stopColor="#26C6DA" />
-                <stop offset="100%" stopColor="#1E88E5" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-
-        {/* Floating Orbs */}
-        <div className="absolute top-20 right-10 w-32 h-32 rounded-full opacity-20 blur-2xl animate-float" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)', animationDelay: '0s' }}></div>
-        <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full opacity-20 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)', animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 right-1/4 w-24 h-24 rounded-full opacity-15 blur-xl animate-float" style={{ background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 100%)', animationDelay: '4s' }}></div>
-
-        <div className="relative max-w-5xl mx-auto z-10">
+      <section className="relative py-20 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
+        <div className="max-w-5xl mx-auto">
           {/* Title Section */}
-          <div className="text-center mb-12 md:mb-16 animate-fade-in-up">
-            <div className="inline-block mb-4">
-              <div className="relative">
-                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold relative z-10">
-                  <span className="bg-clip-text text-transparent animate-gradient-shift" style={{ 
-                    background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
-                    backgroundSize: '200% 200%',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    filter: 'drop-shadow(0 4px 8px rgba(30, 136, 229, 0.3))'
-                  }}>
+          <div className="text-center mb-16 animate-fade-in-up">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
                     About Us
-                  </span>
           </h2>
-                {/* Glowing underline effect */}
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 rounded-full animate-glow-pulse" style={{ 
-                  background: 'linear-gradient(90deg, transparent 0%, #1E88E5 50%, transparent 100%)',
-                  boxShadow: '0 0 20px rgba(30, 136, 229, 0.6)'
-                }}></div>
-              </div>
-            </div>
-            <p className="text-gray-600 text-lg md:text-xl mt-6 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Discover Our Story & Mission
             </p>
           </div>
 
           {/* Main Content Card */}
-          <div className="group relative bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 lg:p-16 border border-white/20 overflow-hidden transition-all duration-500 hover:shadow-3xl hover:-translate-y-2">
-            {/* Animated gradient border */}
-            <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-shift" style={{ 
-              background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
-              backgroundSize: '200% 200%',
-              padding: '2px'
-            }}>
-              <div className="w-full h-full bg-white/95 backdrop-blur-md rounded-3xl"></div>
-            </div>
+          <div className="bg-gradient-to-br from-white to-green-50/30 rounded-3xl shadow-2xl p-8 md:p-12 border border-green-100 hover:shadow-green-500/20 transition-all duration-500 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <div className="mb-8">
+              <p className="text-gray-800 text-xl leading-relaxed mb-6">
+                <span className="font-bold text-green-600">Acha Delivery</span> is a peer-to-peer delivery and local delivery partner marketplace platform headquartered in <span className="font-bold text-gray-900">Addis Ababa, Ethiopia</span>.
+              </p>
 
-            {/* Decorative corner elements */}
-            <div className="absolute top-0 right-0 w-32 h-32 opacity-5 group-hover:opacity-10 transition-opacity">
-              <div className="absolute top-4 right-4 w-16 h-16 rounded-full" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)' }}></div>
-              <div className="absolute top-8 right-8 w-8 h-8 rounded-full" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 100%)' }}></div>
-            </div>
-            <div className="absolute bottom-0 left-0 w-32 h-32 opacity-5 group-hover:opacity-10 transition-opacity">
-              <div className="absolute bottom-4 left-4 w-16 h-16 rounded-full" style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 100%)' }}></div>
-              <div className="absolute bottom-8 left-8 w-8 h-8 rounded-full" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #1E88E5 100%)' }}></div>
-            </div>
-
-            {/* Content */}
-            <div className="relative z-10">
-              <div className="flex items-start gap-4 mb-6">
-                <div className="flex-shrink-0 mt-1">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg" style={{ 
-                    background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
-                    boxShadow: '0 4px 15px rgba(30, 136, 229, 0.4)'
-                  }}>
-                    🚀
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <p className="text-gray-800 text-lg md:text-xl leading-relaxed mb-6 font-medium">
-                    <span className="font-bold bg-clip-text text-transparent" style={{ 
-                      background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent'
-                    }}>
-                      Acha Delivery
-                    </span> is a peer-to-peer delivery and local delivery partner marketplace platform headquartered in <span className="font-bold text-gray-900">Addis Ababa, Ethiopia</span>.
-                  </p>
-
-                  <p className="text-gray-700 text-base md:text-lg leading-relaxed mb-8">
+              <p className="text-gray-700 text-lg leading-relaxed">
                     As a peer-to-peer marketplace, it links international and domestic travelers (acting as carriers) with buyers, senders, and recipients. Additionally, Acha Delivery serves as a delivery partner marketplace, connecting clients with verified local delivery partners...
                   </p>
-                </div>
               </div>
 
               {/* Call to Action Button */}
               <div className="text-center mt-10">
                 <Link
                   to="/about"
-                  className="group relative inline-block overflow-hidden px-10 py-4 rounded-full text-white font-bold text-base md:text-lg transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-2 active:translate-y-0"
-                  style={{ 
-                    background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
-                    boxShadow: '0 10px 30px rgba(30, 136, 229, 0.4)'
-                  }}
-                >
-                  <span className="relative z-10 flex items-center gap-3">
+                className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
+              >
                     <span>Read More About Us</span>
-                    <svg className="w-6 h-6 transition-transform duration-300 group-hover:translate-x-2 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
-                  </span>
-                  <div 
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-shift"
-                    style={{ 
-                      background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)', 
-                      backgroundSize: '200% 200%',
-                      boxShadow: '0 10px 40px rgba(67, 160, 71, 0.5)'
-                    }}
-                  ></div>
-                  {/* Shimmer effect */}
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" style={{ 
-                    background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)'
-                  }}></div>
                 </Link>
-              </div>
             </div>
                 </div>
               </div>
@@ -659,84 +551,72 @@ function Home() {
       <TripsAndOrdersSection />
 
       {/* Partner With Us, Women Initiatives & Premium Section */}
-      <section className="py-8 sm:py-10 md:py-12 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gray-50">
+      <section className="py-20 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gradient-to-br from-gray-50 via-white to-green-50">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Partner With Us */}
-            <div className="text-center">
-              <h2 className="text-xl sm:text-2xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">
+            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl text-center transition-all duration-500 hover:-translate-y-4 hover:scale-105 border border-gray-100 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                🤝
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
                 Partner With Us
               </h2>
-              <p className="text-gray-600 mb-4 md:mb-5 text-sm sm:text-base">
+              <p className="text-gray-600 mb-8 text-lg leading-relaxed">
                 Invest / Partner With Us - Join us in revolutionizing the delivery and travel industry
               </p>
               <Link 
                 to="/partner-with-us"
-                className="group relative inline-block overflow-hidden px-5 py-2.5 rounded-full text-white font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
-                style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full font-bold text-base transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
               >
-                <span className="relative z-10 flex items-center gap-1.5">
                   Join In
-                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
-                </span>
-                <div 
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-shift"
-                  style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)', backgroundSize: '200% 200%' }}
-                ></div>
               </Link>
             </div>
 
             {/* Women Initiatives */}
-            <div className="text-center">
-              <h2 className="text-xl sm:text-2xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">
-                👩 Women Initiatives
+            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl text-center transition-all duration-500 hover:-translate-y-4 hover:scale-105 border border-gray-100 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                👩
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
+                Women Initiatives
               </h2>
-              <p className="text-gray-600 mb-4 md:mb-5 text-sm sm:text-base">
+              <p className="text-gray-600 mb-8 text-lg leading-relaxed">
                 Join Women Initiatives - Empower yourself and join our community of amazing women
               </p>
               <Link 
                 to="/women-initiatives"
-                className="group relative inline-block overflow-hidden px-5 py-2.5 rounded-full text-white font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
-                style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full font-bold text-base transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
               >
-                <span className="relative z-10 flex items-center gap-1.5">
                   Join In
-                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
-                </span>
-                <div 
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-shift"
-                  style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)', backgroundSize: '200% 200%' }}
-                ></div>
               </Link>
             </div>
 
             {/* Premium Community */}
-            <div className="text-center">
-              <h2 className="text-xl sm:text-2xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">
-                ⭐ Acha Premium Community
+            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl text-center transition-all duration-500 hover:-translate-y-4 hover:scale-105 border border-gray-100 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                ⭐
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
+                Acha Premium Community
               </h2>
-              <p className="text-gray-600 mb-4 md:mb-5 text-sm sm:text-base">
+              <p className="text-gray-600 mb-8 text-lg leading-relaxed">
                 Join our premium community - Exclusive benefits for delivery partners and corporate clients
               </p>
               <Link 
                 to="/premium"
-                className="group relative inline-block overflow-hidden px-5 py-2.5 rounded-full text-white font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
-                style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full font-bold text-base transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
               >
-                <span className="relative z-10 flex items-center gap-1.5">
                   Join In
-                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
-                </span>
-                <div 
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-shift"
-                  style={{ background: 'linear-gradient(135deg, #43A047 0%, #26C6DA 50%, #1E88E5 100%)', backgroundSize: '200% 200%' }}
-                ></div>
               </Link>
             </div>
           </div>
@@ -744,21 +624,38 @@ function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 xl:px-12" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)' }}>
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-8 md:mb-10 lg:mb-12">
+      <section 
+        className="relative py-20 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 overflow-hidden"
+        style={{
+          backgroundImage: 'url(/background.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-green-600/95 via-green-600/90 to-green-700/95"></div>
+        
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-10 left-10 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-10 right-10 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }}></div>
+        </div>
+
+        <div className="relative z-10 max-w-4xl mx-auto text-center animate-fade-in-up">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
             {t('home.cta.title')}
           </h2>
-          <p className="text-xl sm:text-2xl text-white/90 mb-10 md:mb-12 lg:mb-14 leading-relaxed">
+          <p className="text-xl sm:text-2xl text-white/95 mb-10 leading-relaxed">
             {t('home.cta.subtitle')}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center">
-            <Link to="/register" className="w-full sm:w-auto bg-white text-gray-900 px-6 sm:px-8 md:px-10 py-3 sm:py-3 md:py-4 rounded-full text-base sm:text-lg font-semibold transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-xl active:translate-y-0 whitespace-nowrap text-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Link to="/register" className="bg-white text-green-600 hover:bg-gray-50 px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-2xl hover:shadow-white/50 hover:-translate-y-1 hover:scale-105">
               {t('home.cta.getStarted')}
             </Link>
-            <button className="w-full sm:w-auto bg-transparent text-white border-2 border-white px-6 sm:px-8 md:px-10 py-3 sm:py-3 md:py-4 rounded-full text-base sm:text-lg font-semibold transition-all duration-300 hover:bg-white hover:text-gray-900 hover:-translate-y-1 active:translate-y-0 whitespace-nowrap">
+            <Link to="/about" className="bg-transparent text-white border-3 border-white hover:bg-white hover:text-green-600 px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 hover:scale-105">
               {t('home.cta.learnMore')}
-            </button>
+            </Link>
           </div>
         </div>
       </section>

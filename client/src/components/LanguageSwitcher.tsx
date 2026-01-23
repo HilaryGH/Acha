@@ -15,7 +15,7 @@ function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm hover:text-[#1E88E5] transition-colors rounded-lg hover:bg-gray-50"
+        className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm hover:text-green-600 transition-colors rounded-lg hover:bg-gray-50"
         aria-label="Change language"
       >
         <svg 
@@ -59,7 +59,7 @@ function LanguageSwitcher() {
               <button
                 onClick={() => changeLanguage('en')}
                 className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
-                  i18n.language === 'en' ? 'bg-gray-50 text-[#1E88E5] font-semibold' : 'text-gray-700'
+                  i18n.language === 'en' ? 'bg-gray-50 text-green-600 font-semibold' : 'text-gray-700'
                 }`}
               >
                 English
@@ -67,7 +67,7 @@ function LanguageSwitcher() {
               <button
                 onClick={() => changeLanguage('am')}
                 className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
-                  i18n.language === 'am' ? 'bg-gray-50 text-[#1E88E5] font-semibold' : 'text-gray-700'
+                  i18n.language === 'am' ? 'bg-gray-50 text-green-600 font-semibold' : 'text-gray-700'
                 }`}
               >
                 አማርኛ
