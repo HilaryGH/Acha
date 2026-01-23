@@ -29,7 +29,8 @@ function Home() {
       subtitle: 'Reach anywhere, anytime',
       description: 'Connect with delivery partners across the globe',
       image: '/hero2.png',
-      cta: 'Join Now'
+      cta: 'Join Now',
+      isSVG: true
     }
   ];
 
@@ -44,14 +45,6 @@ function Home() {
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
-  };
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
   return (
@@ -72,33 +65,43 @@ function Home() {
                 className="min-w-full h-full flex-shrink-0 bg-gradient-to-br from-green-600 via-green-500 to-green-700 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden relative"
               >
                 {slide.isSpecial ? (
-                  /* Special Layout for Second Slide - Three Sections */
-                  <div className="flex flex-col md:flex-row h-full">
-                    {/* First Section - Content with Amharic */}
-                    <div className="w-full md:w-1/3 flex flex-col justify-center px-4 md:px-6 text-white relative z-10 py-4 md:py-0">
+                  /* Special Layout for Second Slide - Two Sections with Blended Transition */
+                  <div className="flex flex-row h-full relative">
+                    {/* Blending Gradient Overlay for Smooth Transition */}
+                    <div className="absolute inset-0 z-0 pointer-events-none">
+                      <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-green-600 via-green-500 to-transparent opacity-100"></div>
+                      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-blue-600 via-blue-500 to-transparent opacity-100"></div>
+                      <div className="absolute left-1/2 top-0 bottom-0 w-16 md:w-32 transform -translate-x-1/2 bg-gradient-to-r from-green-500 via-green-400/50 to-blue-400/50 opacity-80 blur-xl"></div>
+                    </div>
+
+                    {/* First Section - Content with Amharic (50% width) */}
+                    <div className="w-1/2 flex flex-col justify-center px-2 sm:px-3 md:px-6 lg:px-8 text-white relative z-10 py-2 md:py-0">
                       <div className="animate-fade-in-up">
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 text-white animate-slide-in-left">
+                        <h2 className="text-lg sm:text-xl md:text-3xl lg:text-5xl xl:text-6xl font-bold mb-1 md:mb-3 text-white animate-slide-in-left">
                           {slide.title}
-                        </h2>
-                        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 animate-fade-in-up" style={{ animationDelay: '0.3s', color: '#2563eb' }}>
+                </h2>
+                        <h3 className="text-sm sm:text-base md:text-2xl lg:text-4xl xl:text-5xl font-bold mb-1 md:mb-4 animate-fade-in-up" style={{ animationDelay: '0.3s', color: '#2563eb' }}>
                           {slide.subtitle}
-                        </h3>
-                        <p className="text-sm md:text-base mb-4 text-white/90 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                </h3>
+                        <p className="text-xs sm:text-sm md:text-base lg:text-xl xl:text-2xl mb-2 md:mb-4 text-white/90 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
                           {slide.description}
                         </p>
                       </div>
-                    </div>
+              </div>
 
-                    {/* Second Section - Wave with Green */}
-                    <div className="w-full md:w-1/3 flex items-center justify-center relative overflow-hidden min-h-[150px] md:min-h-0">
-                      {/* Animated Wave Background */}
+                    {/* Second Section - Delivery SVG with Blue Wave Background (50% width) */}
+                    <div className="w-1/2 flex items-center justify-center relative overflow-hidden min-h-[150px] md:min-h-0">
+                      {/* Animated Wave Background with Blended Transition */}
                       <div className="absolute inset-0">
                         <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
                           <defs>
                             <linearGradient id={`waveGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                              <stop offset="0%" stopColor="#22c55e" stopOpacity="0.8" />
-                              <stop offset="50%" stopColor="#16a34a" stopOpacity="0.9" />
-                              <stop offset="100%" stopColor="#15803d" stopOpacity="0.8" />
+                              <stop offset="0%" stopColor="#16a34a" stopOpacity="0.6" />
+                              <stop offset="20%" stopColor="#22c55e" stopOpacity="0.5" />
+                              <stop offset="40%" stopColor="#3b82f6" stopOpacity="0.7" />
+                              <stop offset="60%" stopColor="#2563eb" stopOpacity="0.9" />
+                              <stop offset="80%" stopColor="#2563eb" stopOpacity="0.9" />
+                              <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.8" />
                             </linearGradient>
                           </defs>
                           <path
@@ -114,107 +117,205 @@ function Home() {
                           </path>
                         </svg>
                       </div>
-                      {/* Content in Wave Section */}
+                      {/* Delivery SVG */}
                       <div className="relative z-10 text-center animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
-                        <div className="w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto animate-float">
-                          <img src="/acha.png" alt="Acha Logo" className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain" />
+                        <div className="w-full h-full flex items-center justify-center p-2 sm:p-3 md:p-6 animate-float">
+                          <img 
+                            src="/Delivery.svg" 
+                            alt="Delivery" 
+                            className="w-full h-full max-w-full max-h-full object-contain filter drop-shadow-2xl" 
+                          />
                         </div>
                       </div>
                     </div>
-
-                    {/* Third Section - Buttons */}
-                    <div className="w-full md:w-1/3 flex flex-col justify-center items-center px-4 md:px-6 gap-3 md:gap-4 py-4 md:py-0">
-                      <Link
-                        to="/register"
-                        className="w-full bg-white text-green-600 hover:bg-gray-50 px-6 py-3 rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105 animate-fade-in-up"
-                        style={{ animationDelay: '0.9s' }}
-                      >
-                        Get Started
-                      </Link>
-                      <Link
-                        to="/about"
-                        className="w-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border-2 border-white/50 px-6 py-3 rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-lg hover:-translate-y-1 hover:scale-105 animate-fade-in-up"
-                        style={{ animationDelay: '1.1s' }}
-                      >
-                        Learn More
-                      </Link>
-                      <Link
-                        to="/post-trip"
-                        className="w-full bg-white/10 backdrop-blur-md hover:bg-white/20 text-white border-2 border-white/50 px-6 py-3 rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-lg hover:-translate-y-1 hover:scale-105 animate-fade-in-up"
-                        style={{ animationDelay: '1.3s' }}
-                      >
-                        Post Trip
-                      </Link>
-                    </div>
                   </div>
-                ) : (
-                  /* Regular Layout for Other Slides */
-                  <div className="flex flex-col md:flex-row h-full">
+                ) : slide.isSVG ? (
+                  /* SVG Layout for Third Slide */
+                  <div className="flex flex-row h-full">
                     {/* Left Side - Content */}
-                    <div className="w-full md:w-1/2 flex flex-col justify-center px-5 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-4 md:py-0">
+                    <div className="w-1/2 flex flex-col justify-center px-2 sm:px-3 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-2 md:py-0">
                       <div className="animate-fade-in-up">
-                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-white">
+                        <h2 className="text-sm sm:text-base md:text-xl lg:text-3xl xl:text-4xl font-bold mb-1 md:mb-3 text-white">
                           {slide.title}
                         </h2>
-                        <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-2 md:mb-3 text-green-100">
+                        <h3 className="text-xs sm:text-sm md:text-base lg:text-xl xl:text-2xl font-semibold mb-1 md:mb-3 text-green-100">
                           {slide.subtitle}
                         </h3>
-                        <p className="text-xs sm:text-sm md:text-base lg:text-lg mb-4 md:mb-6 text-white/90 leading-relaxed">
+                        <p className="text-xs sm:text-xs md:text-sm lg:text-base xl:text-lg mb-2 md:mb-6 text-white/90 leading-relaxed">
                           {slide.description}
                         </p>
                         <Link
                           to="/register"
-                          className="inline-block bg-white text-green-600 hover:bg-gray-50 px-5 md:px-6 py-2 md:py-2.5 rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
+                          className="inline-block bg-white text-green-600 hover:bg-gray-50 px-2 sm:px-3 md:px-5 lg:px-6 py-1 sm:py-1.5 md:py-2 lg:py-2.5 rounded-full font-bold text-xs sm:text-xs md:text-sm lg:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
                         >
                           {slide.cta}
                         </Link>
                       </div>
                     </div>
 
-                    {/* Right Side - Image with Animation */}
-                    <div className="w-full md:w-1/2 flex items-center justify-center p-3 md:p-6 relative">
+                    {/* Right Side - Brand Color SVG (50% width, no padding/margin) */}
+                    <div className="w-1/2 flex items-center justify-center relative">
                       <div className="relative w-full h-full flex items-center justify-center">
-                        {/* Animated Image */}
-                        <div className="relative animate-float" style={{ animationDelay: `${index * 0.2}s` }}>
+                        {/* Animated SVG - Full width of the 50% container */}
+                        <div className="relative animate-float w-full h-full overflow-hidden rounded-lg md:rounded-xl lg:rounded-2xl" style={{ animationDelay: `${index * 0.2}s` }}>
+                          <svg
+                            className="w-full h-full"
+                            viewBox="0 0 400 400"
+                            preserveAspectRatio="xMidYMid meet"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <defs>
+                              {/* Blue to Green Gradient */}
+                              <linearGradient id={`blueGreenGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#2563eb" stopOpacity="0.9" />
+                                <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.8" />
+                                <stop offset="100%" stopColor="#16a34a" stopOpacity="0.9" />
+                              </linearGradient>
+                              {/* Green to Blue Gradient */}
+                              <linearGradient id={`greenBlueGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#16a34a" stopOpacity="0.9" />
+                                <stop offset="50%" stopColor="#22c55e" stopOpacity="0.8" />
+                                <stop offset="100%" stopColor="#2563eb" stopOpacity="0.9" />
+                              </linearGradient>
+                              {/* Radial Gradient for Glow */}
+                              <radialGradient id={`radialGlow-${index}`} cx="50%" cy="50%">
+                                <stop offset="0%" stopColor="#2563eb" stopOpacity="0.6" />
+                                <stop offset="50%" stopColor="#16a34a" stopOpacity="0.4" />
+                                <stop offset="100%" stopColor="#16a34a" stopOpacity="0" />
+                              </radialGradient>
+                            </defs>
+                            
+                            {/* Background Circle with Gradient */}
+                            <circle cx="200" cy="200" r="180" fill={`url(#blueGreenGradient-${index})`} opacity="0.3">
+                              <animate attributeName="r" values="180;200;180" dur="4s" repeatCount="indefinite" />
+                            </circle>
+                            
+                            {/* Network Nodes - Blue */}
+                            <circle cx="100" cy="120" r="12" fill="#2563eb" opacity="0.9">
+                              <animate attributeName="opacity" values="0.9;0.5;0.9" dur="2s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="300" cy="120" r="12" fill="#2563eb" opacity="0.9">
+                              <animate attributeName="opacity" values="0.9;0.5;0.9" dur="2.5s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="100" cy="280" r="12" fill="#16a34a" opacity="0.9">
+                              <animate attributeName="opacity" values="0.9;0.5;0.9" dur="2.2s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="300" cy="280" r="12" fill="#16a34a" opacity="0.9">
+                              <animate attributeName="opacity" values="0.9;0.5;0.9" dur="2.8s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="200" cy="80" r="15" fill="#2563eb" opacity="0.95">
+                              <animate attributeName="opacity" values="0.95;0.6;0.95" dur="2.3s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="200" cy="320" r="15" fill="#16a34a" opacity="0.95">
+                              <animate attributeName="opacity" values="0.95;0.6;0.95" dur="2.7s" repeatCount="indefinite" />
+                            </circle>
+                            
+                            {/* Center Hub - Blended */}
+                            <circle cx="200" cy="200" r="25" fill={`url(#blueGreenGradient-${index})`} opacity="0.95">
+                              <animate attributeName="r" values="25;30;25" dur="3s" repeatCount="indefinite" />
+                            </circle>
+                            
+                            {/* Connection Lines - Blended Colors */}
+                            <line x1="200" y1="200" x2="100" y2="120" stroke={`url(#blueGreenGradient-${index})`} strokeWidth="2" opacity="0.6">
+                              <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2s" repeatCount="indefinite" />
+                            </line>
+                            <line x1="200" y1="200" x2="300" y2="120" stroke={`url(#blueGreenGradient-${index})`} strokeWidth="2" opacity="0.6">
+                              <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2.5s" repeatCount="indefinite" />
+                            </line>
+                            <line x1="200" y1="200" x2="100" y2="280" stroke={`url(#greenBlueGradient-${index})`} strokeWidth="2" opacity="0.6">
+                              <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2.2s" repeatCount="indefinite" />
+                            </line>
+                            <line x1="200" y1="200" x2="300" y2="280" stroke={`url(#greenBlueGradient-${index})`} strokeWidth="2" opacity="0.6">
+                              <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2.8s" repeatCount="indefinite" />
+                            </line>
+                            <line x1="200" y1="200" x2="200" y2="80" stroke={`url(#blueGreenGradient-${index})`} strokeWidth="2" opacity="0.6">
+                              <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2.3s" repeatCount="indefinite" />
+                            </line>
+                            <line x1="200" y1="200" x2="200" y2="320" stroke={`url(#greenBlueGradient-${index})`} strokeWidth="2" opacity="0.6">
+                              <animate attributeName="opacity" values="0.6;0.3;0.6" dur="2.7s" repeatCount="indefinite" />
+                            </line>
+                            
+                            {/* Glow Effect */}
+                            <circle cx="200" cy="200" r="150" fill={`url(#radialGlow-${index})`} opacity="0.4">
+                              <animate attributeName="opacity" values="0.4;0.6;0.4" dur="3s" repeatCount="indefinite" />
+                            </circle>
+                            
+                            {/* Floating Particles */}
+                            <circle cx="150" cy="150" r="4" fill="#2563eb" opacity="0.7">
+                              <animate attributeName="cy" values="150;140;150" dur="3s" repeatCount="indefinite" />
+                              <animate attributeName="opacity" values="0.7;0.3;0.7" dur="3s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="250" cy="250" r="4" fill="#16a34a" opacity="0.7">
+                              <animate attributeName="cy" values="250;260;250" dur="3.5s" repeatCount="indefinite" />
+                              <animate attributeName="opacity" values="0.7;0.3;0.7" dur="3.5s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="150" cy="250" r="4" fill="#3b82f6" opacity="0.7">
+                              <animate attributeName="cx" values="150;160;150" dur="2.8s" repeatCount="indefinite" />
+                              <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2.8s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="250" cy="150" r="4" fill="#22c55e" opacity="0.7">
+                              <animate attributeName="cx" values="250;240;250" dur="3.2s" repeatCount="indefinite" />
+                              <animate attributeName="opacity" values="0.7;0.3;0.7" dur="3.2s" repeatCount="indefinite" />
+                            </circle>
+                          </svg>
+                          {/* Glow effect overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-green-500/20 to-blue-600/20 blur-2xl -z-10 animate-pulse rounded-xl md:rounded-2xl"></div>
+                        </div>
+                        
+                        {/* Decorative elements - hidden on mobile */}
+                        <div className="hidden md:block absolute top-8 right-8 w-24 h-24 bg-blue-500/20 rounded-full blur-xl animate-float" style={{ animationDelay: `${index * 0.3}s` }}></div>
+                        <div className="hidden md:block absolute bottom-8 left-8 w-20 h-20 bg-green-500/20 rounded-full blur-xl animate-float" style={{ animationDelay: `${index * 0.4}s` }}></div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* Regular Layout for Other Slides */
+                  <div className="flex flex-row h-full">
+                    {/* Left Side - Content */}
+                    <div className="w-1/2 flex flex-col justify-center px-2 sm:px-3 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-2 md:py-0">
+                      <div className="animate-fade-in-up">
+                        <h2 className="text-sm sm:text-base md:text-xl lg:text-3xl xl:text-4xl font-bold mb-1 md:mb-3 text-white">
+                          {slide.title}
+                        </h2>
+                        <h3 className="text-xs sm:text-sm md:text-base lg:text-xl xl:text-2xl font-semibold mb-1 md:mb-3 text-green-100">
+                          {slide.subtitle}
+                        </h3>
+                        <p className="text-xs sm:text-xs md:text-sm lg:text-base xl:text-lg mb-2 md:mb-6 text-white/90 leading-relaxed">
+                          {slide.description}
+                        </p>
+                        <Link
+                          to="/register"
+                          className="inline-block bg-white text-green-600 hover:bg-gray-50 px-2 sm:px-3 md:px-5 lg:px-6 py-1 sm:py-1.5 md:py-2 lg:py-2.5 rounded-full font-bold text-xs sm:text-xs md:text-sm lg:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
+                        >
+                          {slide.cta}
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Right Side - Image with Animation (50% width, no padding/margin) */}
+                    <div className="w-1/2 flex items-center justify-center relative">
+                      <div className="relative w-full h-full flex items-center justify-center">
+                        {/* Animated Image - Full width of the 50% container */}
+                        <div className="relative animate-float w-full h-full overflow-hidden rounded-lg md:rounded-xl lg:rounded-2xl" style={{ animationDelay: `${index * 0.2}s` }}>
                           <img
                             src={slide.image}
                             alt={slide.title}
-                            className="w-full h-auto max-h-[180px] sm:max-h-[220px] md:max-h-[260px] lg:max-h-[300px] object-contain rounded-xl md:rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
+                            className="w-full h-full object-cover shadow-2xl transform hover:scale-105 transition-transform duration-500 rounded-lg md:rounded-xl lg:rounded-2xl"
                           />
                           {/* Glow effect */}
-                          <div className="absolute inset-0 bg-green-400/20 rounded-xl md:rounded-2xl blur-2xl -z-10 animate-pulse"></div>
+                          <div className="absolute inset-0 bg-green-400/20 blur-2xl -z-10 animate-pulse rounded-lg md:rounded-xl lg:rounded-2xl"></div>
                         </div>
                         
                         {/* Decorative elements - hidden on mobile */}
                         <div className="hidden md:block absolute top-8 right-8 w-24 h-24 bg-white/10 rounded-full blur-xl animate-float" style={{ animationDelay: `${index * 0.3}s` }}></div>
                         <div className="hidden md:block absolute bottom-8 left-8 w-20 h-20 bg-white/10 rounded-full blur-xl animate-float" style={{ animationDelay: `${index * 0.4}s` }}></div>
-                  </div>
-                </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
             ))}
-          </div>
-
-          {/* Navigation Arrows */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-green-600 p-2 md:p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-20"
-            aria-label="Previous slide"
-          >
-            <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button
-            onClick={nextSlide}
-            className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-green-600 p-2 md:p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-20"
-            aria-label="Next slide"
-          >
-            <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+                </div>
 
           {/* Slide Indicators */}
           <div className="absolute bottom-4 md:bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
@@ -240,9 +341,9 @@ function Home() {
           {/* Service Cards Grid - Compact */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Delivery Partners */}
-            <div className="bg-white rounded-r-full shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex">
-              <div className="w-16 flex-shrink-0 bg-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex relative" style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(37, 99, 235, 0.1), 0 4px 12px -2px rgba(37, 99, 235, 0.2)', borderRadius: '0 2rem 0 2rem' }}>
+              <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
                   </div>
@@ -263,12 +364,14 @@ function Home() {
                   </svg>
                 </Link>
                 </div>
+              {/* Blue brand shadow accent in rounded corner */}
+              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-[#2563eb]/20 blur-sm group-hover:blur-md transition-all duration-300" style={{ borderRadius: '0 2rem 0 0' }}></div>
               </div>
 
             {/* Acha Sisters Delivery Partner */}
-            <div className="bg-white rounded-r-full shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex">
-              <div className="w-16 flex-shrink-0 bg-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex relative" style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(37, 99, 235, 0.1), 0 4px 12px -2px rgba(37, 99, 235, 0.2)', borderRadius: '0 2rem 0 2rem' }}>
+              <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
@@ -289,12 +392,14 @@ function Home() {
                     </svg>
                 </Link>
               </div>
+              {/* Blue brand shadow accent in rounded corner */}
+              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-[#2563eb]/20 blur-sm group-hover:blur-md transition-all duration-300" style={{ borderRadius: '0 2rem 0 0' }}></div>
             </div>
             
             {/* Acha Surprise Gift */}
-            <div className="bg-white rounded-r-full shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex">
-              <div className="w-16 flex-shrink-0 bg-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex relative" style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(37, 99, 235, 0.1), 0 4px 12px -2px rgba(37, 99, 235, 0.2)', borderRadius: '0 2rem 0 2rem' }}>
+              <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
                 </svg>
               </div>
@@ -315,12 +420,14 @@ function Home() {
                   </svg>
                 </Link>
               </div>
+              {/* Blue brand shadow accent in rounded corner */}
+              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-[#2563eb]/20 blur-sm group-hover:blur-md transition-all duration-300" style={{ borderRadius: '0 2rem 0 0' }}></div>
             </div>
 
             {/* Acha Movers & Packers */}
-            <div className="bg-white rounded-r-full shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex">
-              <div className="w-16 flex-shrink-0 bg-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex relative" style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(37, 99, 235, 0.1), 0 4px 12px -2px rgba(37, 99, 235, 0.2)', borderRadius: '0 2rem 0 2rem' }}>
+              <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
@@ -341,6 +448,8 @@ function Home() {
                   </svg>
                 </Link>
             </div>
+            {/* Blue brand shadow accent in rounded corner */}
+            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-[#2563eb]/20 blur-sm group-hover:blur-md transition-all duration-300" style={{ borderRadius: '0 2rem 0 0' }}></div>
             </div>
           </div>
         </div>
