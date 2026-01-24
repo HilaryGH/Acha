@@ -69,17 +69,25 @@ function Home() {
                   <div className="flex flex-col md:flex-row h-full relative">
                     {/* Background Image/SVG for Mobile */}
                     <div className="absolute inset-0 md:hidden z-0">
-                      {/* Animated Wave Background with Blended Transition */}
+                      {/* Delivery SVG as Background - More visible */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <img 
+                          src="/Delivery.svg" 
+                          alt="Delivery" 
+                          className="w-full h-full object-cover opacity-50" 
+                        />
+                      </div>
+                      {/* Animated Wave Background with Blended Transition - Only bottom part */}
                       <div className="absolute inset-0">
                         <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
                           <defs>
                             <linearGradient id={`waveGradient-mobile-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                              <stop offset="0%" stopColor="#16a34a" stopOpacity="0.6" />
-                              <stop offset="20%" stopColor="#22c55e" stopOpacity="0.5" />
-                              <stop offset="40%" stopColor="#3b82f6" stopOpacity="0.7" />
-                              <stop offset="60%" stopColor="#2563eb" stopOpacity="0.9" />
-                              <stop offset="80%" stopColor="#2563eb" stopOpacity="0.9" />
-                              <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.8" />
+                              <stop offset="0%" stopColor="#16a34a" stopOpacity="0.2" />
+                              <stop offset="20%" stopColor="#22c55e" stopOpacity="0.3" />
+                              <stop offset="40%" stopColor="#3b82f6" stopOpacity="0.4" />
+                              <stop offset="60%" stopColor="#2563eb" stopOpacity="0.6" />
+                              <stop offset="80%" stopColor="#2563eb" stopOpacity="0.7" />
+                              <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.6" />
                             </linearGradient>
                           </defs>
                           <path
@@ -95,16 +103,8 @@ function Home() {
                           </path>
                         </svg>
                       </div>
-                      {/* Delivery SVG as Background */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <img 
-                          src="/Delivery.svg" 
-                          alt="Delivery" 
-                          className="w-full h-full object-cover opacity-30" 
-                        />
-                      </div>
-                      {/* Dark overlay for better text readability */}
-                      <div className="absolute inset-0 bg-black/30"></div>
+                      {/* Gradient overlay - lighter at top, darker at bottom for text readability */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20"></div>
                     </div>
 
                     {/* Blending Gradient Overlay for Smooth Transition - Desktop Only */}
@@ -115,15 +115,15 @@ function Home() {
                     </div>
 
                     {/* First Section - Content with Amharic - Overlaid on top for mobile, side-by-side for desktop */}
-                    <div className="w-full md:w-1/2 flex flex-col justify-start md:justify-center px-4 md:px-6 lg:px-8 text-white relative z-10 pt-3 md:pt-0 md:py-0 order-2">
+                    <div className="w-full md:w-1/2 flex flex-col justify-start md:justify-center px-4 md:px-6 lg:px-8 text-white relative z-10 pt-4 md:pt-0 md:py-0 order-2">
                       <div className="animate-fade-in-up">
-                        <h2 className="text-base sm:text-lg md:text-5xl lg:text-6xl font-bold mb-1 md:mb-3 text-white animate-slide-in-left leading-tight">
+                        <h2 className="text-lg sm:text-xl md:text-5xl lg:text-6xl font-bold mb-2 md:mb-3 text-white animate-slide-in-left leading-tight drop-shadow-lg">
                           {slide.title}
                 </h2>
-                        <h3 className="text-sm sm:text-base md:text-4xl lg:text-5xl font-bold mb-1 md:mb-4 animate-fade-in-up leading-tight" style={{ animationDelay: '0.3s', color: '#2563eb' }}>
+                        <h3 className="text-base sm:text-lg md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 animate-fade-in-up leading-tight drop-shadow-lg" style={{ animationDelay: '0.3s', color: '#2563eb' }}>
                           {slide.subtitle}
                 </h3>
-                        <p className="text-xs sm:text-sm md:text-xl lg:text-2xl mb-1 md:mb-4 text-white/90 leading-tight animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                        <p className="text-sm sm:text-base md:text-xl lg:text-2xl mb-2 md:mb-4 text-white/95 leading-tight animate-fade-in-up drop-shadow-md" style={{ animationDelay: '0.5s' }}>
                           {slide.description}
                         </p>
                       </div>
@@ -173,20 +173,20 @@ function Home() {
                   /* SVG Layout for Third Slide */
                   <div className="flex flex-row h-full">
                     {/* Left Side - Content */}
-                    <div className="w-1/2 md:w-1/2 flex flex-col justify-center px-2 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-1 md:py-0">
+                    <div className="w-1/2 md:w-1/2 flex flex-col justify-center px-3 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-2 md:py-0">
                       <div className="animate-fade-in-up">
-                        <h2 className="text-sm sm:text-base md:text-3xl lg:text-4xl font-bold mb-1 md:mb-3 text-white leading-tight">
+                        <h2 className="text-base sm:text-lg md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-white leading-tight">
                           {slide.title}
                         </h2>
-                        <h3 className="text-xs sm:text-sm md:text-xl lg:text-2xl font-semibold mb-1 md:mb-3 text-green-100 leading-tight">
+                        <h3 className="text-sm sm:text-base md:text-xl lg:text-2xl font-semibold mb-2 md:mb-3 text-green-100 leading-tight">
                           {slide.subtitle}
                         </h3>
-                        <p className="text-[10px] sm:text-xs md:text-base lg:text-lg mb-1 md:mb-6 text-white/90 leading-tight">
+                        <p className="text-xs sm:text-sm md:text-base lg:text-lg mb-2 md:mb-6 text-white/90 leading-tight">
                           {slide.description}
                         </p>
                         <Link
                           to="/register"
-                          className="inline-block bg-white text-green-600 hover:bg-gray-50 px-2 md:px-6 py-1 md:py-2.5 rounded-full font-bold text-[10px] md:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
+                          className="inline-block bg-white text-green-600 hover:bg-gray-50 px-3 md:px-6 py-1.5 md:py-2.5 rounded-full font-bold text-xs md:text-base transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
                         >
                           {slide.cta}
                         </Link>
@@ -195,9 +195,9 @@ function Home() {
 
                     {/* Right Side - Brand Color SVG (50% width, no padding/margin) */}
                     <div className="w-1/2 md:w-1/2 flex items-center justify-center relative">
-                      <div className="relative w-full h-full flex items-center justify-center p-1 md:p-0">
+                      <div className="relative w-full h-full flex items-center justify-center p-2 md:p-0">
                         {/* Animated SVG - Full width of the 50% container */}
-                        <div className="relative animate-float w-full h-full overflow-hidden rounded-xl md:rounded-2xl max-h-[80px] sm:max-h-[100px] md:max-h-full" style={{ animationDelay: `${index * 0.2}s` }}>
+                        <div className="relative animate-float w-full h-full overflow-hidden rounded-xl md:rounded-2xl max-h-[120px] sm:max-h-[140px] md:max-h-full" style={{ animationDelay: `${index * 0.2}s` }}>
                           <svg
                             className="w-full h-full"
                             viewBox="0 0 400 400"
