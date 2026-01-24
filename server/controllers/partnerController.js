@@ -152,3 +152,4 @@ exports.deletePartner = async (req, res) => {
 
 
 
+

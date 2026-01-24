@@ -74,8 +74,8 @@ function Home() {
                       <div className="absolute left-1/2 top-0 bottom-0 w-32 transform -translate-x-1/2 bg-gradient-to-r from-green-500 via-green-400/50 to-blue-400/50 opacity-80 blur-xl"></div>
                     </div>
 
-                    {/* First Section - Content with Amharic (50% width) */}
-                    <div className="w-full md:w-1/2 flex flex-col justify-center px-4 md:px-6 lg:px-8 text-white relative z-10 py-4 md:py-0">
+                    {/* First Section - Content with Amharic (50% width) - LEFT on mobile, RIGHT on desktop */}
+                    <div className="w-full md:w-1/2 flex flex-col justify-center px-4 md:px-6 lg:px-8 text-white relative z-10 py-4 md:py-0 order-1 md:order-2">
                       <div className="animate-fade-in-up">
                         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 text-white animate-slide-in-left">
                           {slide.title}
@@ -89,8 +89,8 @@ function Home() {
                       </div>
               </div>
 
-                    {/* Second Section - Delivery SVG with Blue Wave Background (50% width) */}
-                    <div className="w-full md:w-1/2 flex items-center justify-center relative overflow-hidden min-h-[150px] md:min-h-0">
+                    {/* Second Section - Delivery SVG with Blue Wave Background (50% width) - RIGHT on mobile, LEFT on desktop */}
+                    <div className="w-full md:w-1/2 flex items-center justify-center relative overflow-hidden min-h-[80px] md:min-h-0 order-2 md:order-1">
                       {/* Animated Wave Background with Blended Transition */}
                       <div className="absolute inset-0">
                         <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
@@ -119,11 +119,11 @@ function Home() {
                       </div>
                       {/* Delivery SVG */}
                       <div className="relative z-10 text-center animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
-                        <div className="w-full h-full flex items-center justify-center p-4 md:p-6 animate-float">
+                        <div className="w-full h-full flex items-center justify-center p-2 md:p-6 animate-float">
                           <img 
                             src="/Delivery.svg" 
                             alt="Delivery" 
-                            className="w-full h-full max-w-full max-h-full object-contain filter drop-shadow-2xl" 
+                            className="w-24 h-24 md:w-full md:h-full max-w-[100px] md:max-w-full max-h-[100px] md:max-h-full object-contain filter drop-shadow-2xl" 
                           />
                         </div>
                       </div>

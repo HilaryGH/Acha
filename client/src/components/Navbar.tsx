@@ -62,114 +62,264 @@ function Navbar() {
     }
   };
 
+  const handleLocationFinder = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          // You can use these coordinates for location-based search
+          console.log('Location found:', latitude, longitude);
+          // Navigate to location-based search or update search query
+          navigate(`/search?lat=${latitude}&lng=${longitude}`);
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          alert('Unable to retrieve your location. Please enable location services.');
+        }
+      );
+    } else {
+      alert('Geolocation is not supported by your browser.');
+    }
+  };
+
   return (
     <div className="sticky top-0 z-50">
       {/* Main Navbar */}
       <nav className="w-full bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-          <div className="relative flex justify-between items-center h-16 md:h-20 overflow-visible">
-          {/* Left Section: Logo */}
-          <Link to="/" className="flex items-center gap-2 sm:gap-3 text-gray-900 font-bold hover:opacity-80 transition-opacity duration-300">
-            <img 
-              src="/acha.png" 
-              alt="Acha Logo" 
-              className="h-10 sm:h-12 md:h-14 w-auto"
-            />
-            <div className="flex flex-col">
-              <span className="text-lg sm:text-xl md:text-2xl leading-tight text-gray-900">Acha Delivery</span>
-              <span className="text-xs sm:text-sm md:text-base leading-tight text-gray-600">አቻ ደሊቨሪ</span>
-            </div>
-          </Link>
-
-          {/* Center Section: Desktop Menu */}
-          <div className={`hidden md:flex items-center gap-6 lg:gap-8 absolute left-1/2 transform -translate-x-1/2`}>
-            <Link 
-              to="/" 
-              className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-gray-900 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Home
-            </Link>
-            <Link 
-              to="/post-trip" 
-              className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-gray-900 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Post Trip
-            </Link>
-            <Link 
-              to="/post-order" 
-              className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-gray-900 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Post Order
-            </Link>
-            <Link 
-              to="/about" 
-              className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-gray-900 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              About
-            </Link>
-          </div>
-
-          {/* Right Section: Language Switcher + Search Input + Sign In/Dashboard Button */}
-          <div className="flex items-center justify-end gap-3 sm:gap-4 flex-1">
-            {/* Language Switcher */}
-            <div className="hidden md:block">
-              <LanguageSwitcher />
-            </div>
-            
-            {/* Search Input */}
-            <form onSubmit={handleSearch} className="hidden md:flex items-center">
-              <div className="relative w-full max-w-xs">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 bg-gray-50 rounded-full text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:bg-white transition-all"
+          {/* Desktop Navbar */}
+          <div className="hidden md:block">
+            <div className="relative flex justify-between items-center h-20 overflow-visible">
+              {/* Left Section: Logo */}
+              <Link to="/" className="flex items-center gap-2 sm:gap-3 text-gray-900 font-bold hover:opacity-80 transition-opacity duration-300">
+                <img 
+                  src="/acha.png" 
+                  alt="Acha Logo" 
+                  className="h-12 md:h-14 w-auto"
                 />
-                <svg 
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-            </form>
-            {isLoggedIn ? (
-              <Link
-                to="/dashboard"
-                className="bg-green-600 hover:bg-green-700 text-white px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg active:translate-y-0 whitespace-nowrap flex items-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                {userName ? userName.split(' ')[0] : 'Dashboard'}
+                <div className="flex flex-col">
+                  <span className="text-xl md:text-2xl leading-tight text-gray-900">Acha Delivery</span>
+                  <span className="text-sm md:text-base leading-tight text-gray-600">አቻ ደሊቨሪ</span>
+                </div>
               </Link>
-            ) : (
-              <button 
-                className="bg-green-600 hover:bg-green-700 text-white px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg active:translate-y-0 whitespace-nowrap flex items-center gap-2"
-                onClick={() => setIsSignInModalOpen(true)}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                Login
-              </button>
-            )}
+
+              {/* Center Section: Desktop Menu */}
+              <div className={`flex items-center gap-6 lg:gap-8 absolute left-[44%] transform -translate-x-1/2`}>
+                <Link 
+                  to="/" 
+                  className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-gray-900 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
+                >
+                  Home
+                </Link>
+                <Link 
+                  to="/post-trip" 
+                  className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-gray-900 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
+                >
+                  Post Trip
+                </Link>
+                <Link 
+                  to="/post-order" 
+                  className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-gray-900 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
+                >
+                  Post Order
+                </Link>
+                <Link 
+                  to="/about" 
+                  className="text-gray-700 font-medium text-base relative py-2 transition-colors duration-300 hover:text-gray-900 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-green-500 after:transition-all after:duration-300 hover:after:w-full"
+                >
+                  About
+                </Link>
+              </div>
+
+              {/* Right Section: Language Switcher + Search Input + Sign In/Dashboard Button */}
+              <div className="flex items-center justify-end gap-3 sm:gap-4 flex-1">
+                {/* Language Switcher */}
+                <div>
+                  <LanguageSwitcher />
+                </div>
+                
+                {/* Search Input with Location Finder */}
+                <form onSubmit={handleSearch} className="flex items-center">
+                  <div className="relative w-full max-w-xs">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search..."
+                      className="w-full pl-10 pr-12 py-2 border border-gray-300 bg-gray-50 rounded-tr-xl rounded-bl-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:bg-white transition-all"
+                    />
+                    <svg 
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <button
+                      type="button"
+                      onClick={handleLocationFinder}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1.5 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-full transition-colors duration-300"
+                      aria-label="Find location"
+                      title="Find my location"
+                    >
+                      <svg 
+                        className="w-4 h-4" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={2} 
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" 
+                        />
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={2} 
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" 
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </form>
+                {isLoggedIn ? (
+                  <Link
+                    to="/dashboard"
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg active:translate-y-0 whitespace-nowrap flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    {userName ? userName.split(' ')[0] : 'Dashboard'}
+                  </Link>
+                ) : (
+                  <button 
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg active:translate-y-0 whitespace-nowrap flex items-center gap-2"
+                    onClick={() => setIsSignInModalOpen(true)}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Login
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button 
-            className={`md:hidden flex flex-col gap-1.5 bg-transparent border-none cursor-pointer p-2 ${isMenuOpen ? 'active' : ''}`}
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
-            <span className={`w-6 h-0.5 bg-gray-700 rounded transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-            <span className={`w-6 h-0.5 bg-gray-700 rounded transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></span>
-            <span className={`w-6 h-0.5 bg-gray-700 rounded transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
-          </button>
-        </div>
+          {/* Mobile Navbar */}
+          <div className="md:hidden">
+            {/* Top Row: Logo, Language Switcher, Login Icon */}
+            <div className="flex justify-between items-center h-14 py-2">
+              {/* Left Section: Logo */}
+              <Link to="/" className="flex items-center gap-2 text-gray-900 font-bold hover:opacity-80 transition-opacity duration-300">
+                <img 
+                  src="/acha.png" 
+                  alt="Acha Logo" 
+                  className="h-10 w-auto"
+                />
+                <div className="flex flex-col">
+                  <span className="text-lg leading-tight text-gray-900">Acha Delivery</span>
+                  <span className="text-xs leading-tight text-gray-600">አቻ ደሊቨሪ</span>
+                </div>
+              </Link>
+
+              {/* Right Section: Language Switcher + Login Icon */}
+              <div className="flex items-center gap-3">
+                {/* Language Switcher */}
+                <LanguageSwitcher />
+                
+                {/* Login Button - Icon Only */}
+                {isLoggedIn ? (
+                  <Link
+                    to="/dashboard"
+                    className="text-gray-700 hover:text-green-600 p-2 transition-colors duration-300"
+                    aria-label="Dashboard"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </Link>
+                ) : (
+                  <button 
+                    className="text-gray-700 hover:text-green-600 p-2 transition-colors duration-300"
+                    onClick={() => setIsSignInModalOpen(true)}
+                    aria-label="Login"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </button>
+                )}
+
+                {/* Mobile Menu Button */}
+                <button 
+                  className={`flex flex-col gap-1.5 bg-transparent border-none cursor-pointer p-2 ${isMenuOpen ? 'active' : ''}`}
+                  onClick={toggleMenu}
+                  aria-label="Toggle menu"
+                >
+                  <span className={`w-6 h-0.5 bg-gray-700 rounded transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+                  <span className={`w-6 h-0.5 bg-gray-700 rounded transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></span>
+                  <span className={`w-6 h-0.5 bg-gray-700 rounded transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+                </button>
+              </div>
+            </div>
+
+            {/* Search Input Row - Below Top Navbar */}
+            <div className="pb-3">
+              <div className="flex items-center gap-2">
+                <form onSubmit={handleSearch} className="flex-1">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search..."
+                      className="w-full pl-10 pr-4 py-2.5 border border-gray-300 bg-gray-50 rounded-tr-xl rounded-bl-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:bg-white transition-all"
+                    />
+                    <svg 
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                </form>
+                <button
+                  type="button"
+                  onClick={handleLocationFinder}
+                  className="bg-green-600 hover:bg-green-700 text-white px-3 py-2.5 rounded-tr-xl rounded-bl-xl transition-colors duration-300 flex-shrink-0"
+                  aria-label="Find location"
+                  title="Find my location"
+                >
+                  <svg 
+                    className="w-4 h-4" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" 
+                    />
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" 
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Mobile Menu Overlay */}
@@ -207,32 +357,6 @@ function Navbar() {
             
             {/* Mobile Menu Links */}
             <div className="flex flex-col flex-1 py-4 px-4 gap-2">
-              {/* Language Switcher - Mobile */}
-              <div className="px-4 py-2 border-b border-gray-200">
-                <LanguageSwitcher />
-              </div>
-              
-              {/* Search Input - Above Links */}
-              <form onSubmit={handleSearch} className="px-4 py-2">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search..."
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                  <svg 
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              </form>
-              
               <Link 
                 to="/" 
                 className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-green-600 hover:bg-gray-50"
