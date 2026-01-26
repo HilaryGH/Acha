@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import TripsAndOrdersSection from './TripsAndOrdersSection'
+import CommunicationWidget from './CommunicationWidget'
 
 function Home() {
   const { t } = useTranslation();
@@ -109,8 +110,51 @@ function Home() {
 
                     {/* Blending Gradient Overlay for Smooth Transition - Desktop Only */}
                     <div className="hidden md:block absolute inset-0 z-0 pointer-events-none">
+                      {/* Left side - Green gradient */}
                       <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-green-600 via-green-500 to-transparent opacity-100"></div>
-                      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-blue-600 via-blue-500 to-transparent opacity-100"></div>
+                      {/* Right side - White/Transparent upper part with blue floating wave */}
+                      <div className="absolute right-0 top-0 bottom-0 w-1/2">
+                        {/* White/Transparent gradient from top */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/50 to-transparent"></div>
+                        {/* Blue floating wave overlay */}
+                        <div className="absolute inset-0">
+                          <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
+                            <defs>
+                              <linearGradient id={`blueWaveGradient-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stopColor="#2563eb" stopOpacity="0.3" />
+                                <stop offset="30%" stopColor="#3b82f6" stopOpacity="0.4" />
+                                <stop offset="60%" stopColor="#2563eb" stopOpacity="0.5" />
+                                <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.2" />
+                              </linearGradient>
+                            </defs>
+                            <path
+                              fill={`url(#blueWaveGradient-${index})`}
+                              d="M0,50 Q50,30 100,50 T200,50 L200,200 L0,200 Z"
+                            >
+                              <animate
+                                attributeName="d"
+                                values="M0,50 Q50,30 100,50 T200,50 L200,200 L0,200 Z;M0,50 Q50,70 100,50 T200,50 L200,200 L0,200 Z;M0,50 Q50,30 100,50 T200,50 L200,200 L0,200 Z"
+                                dur="4s"
+                                repeatCount="indefinite"
+                              />
+                            </path>
+                            {/* Additional floating wave */}
+                            <path
+                              fill={`url(#blueWaveGradient-${index})`}
+                              d="M0,80 Q50,60 100,80 T200,80 L200,200 L0,200 Z"
+                              opacity="0.6"
+                            >
+                              <animate
+                                attributeName="d"
+                                values="M0,80 Q50,60 100,80 T200,80 L200,200 L0,200 Z;M0,80 Q50,100 100,80 T200,80 L200,200 L0,200 Z;M0,80 Q50,60 100,80 T200,80 L200,200 L0,200 Z"
+                                dur="5s"
+                                repeatCount="indefinite"
+                              />
+                            </path>
+                          </svg>
+                        </div>
+                      </div>
+                      {/* Blending transition in the middle */}
                       <div className="absolute left-1/2 top-0 bottom-0 w-32 transform -translate-x-1/2 bg-gradient-to-r from-green-500 via-green-400/50 to-blue-400/50 opacity-80 blur-xl"></div>
                     </div>
 
@@ -129,29 +173,58 @@ function Home() {
                       </div>
               </div>
 
-                    {/* Second Section - Delivery SVG with Blue Wave Background - Hidden on mobile, shown on desktop */}
+                    {/* Second Section - Delivery SVG with White/Transparent Upper Part and Blue Floating Wave - Hidden on mobile, shown on desktop */}
                     <div className="hidden md:flex w-1/2 items-center justify-center relative overflow-hidden order-1">
-                      {/* Animated Wave Background with Blended Transition */}
+                      {/* White/Transparent background with blue floating waves */}
                       <div className="absolute inset-0">
+                        {/* White/Transparent gradient from top */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-white/40"></div>
+                        {/* Blue floating wave background */}
                         <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
                           <defs>
-                            <linearGradient id={`waveGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                              <stop offset="0%" stopColor="#16a34a" stopOpacity="0.6" />
-                              <stop offset="20%" stopColor="#22c55e" stopOpacity="0.5" />
-                              <stop offset="40%" stopColor="#3b82f6" stopOpacity="0.7" />
-                              <stop offset="60%" stopColor="#2563eb" stopOpacity="0.9" />
-                              <stop offset="80%" stopColor="#2563eb" stopOpacity="0.9" />
-                              <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.8" />
+                            <linearGradient id={`blueFloatingWave-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" stopColor="#2563eb" stopOpacity="0.4" />
+                              <stop offset="25%" stopColor="#3b82f6" stopOpacity="0.5" />
+                              <stop offset="50%" stopColor="#2563eb" stopOpacity="0.6" />
+                              <stop offset="75%" stopColor="#1d4ed8" stopOpacity="0.5" />
+                              <stop offset="100%" stopColor="#2563eb" stopOpacity="0.3" />
                             </linearGradient>
                           </defs>
+                          {/* Main floating wave */}
                           <path
-                            fill={`url(#waveGradient-${index})`}
-                            d="M0,100 Q50,50 100,100 T200,100 L200,200 L0,200 Z"
+                            fill={`url(#blueFloatingWave-${index})`}
+                            d="M0,40 Q50,20 100,40 T200,40 L200,200 L0,200 Z"
                           >
                             <animate
                               attributeName="d"
-                              values="M0,100 Q50,50 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,150 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,50 100,100 T200,100 L200,200 L0,200 Z"
-                              dur="3s"
+                              values="M0,40 Q50,20 100,40 T200,40 L200,200 L0,200 Z;M0,40 Q50,60 100,40 T200,40 L200,200 L0,200 Z;M0,40 Q50,20 100,40 T200,40 L200,200 L0,200 Z"
+                              dur="4s"
+                              repeatCount="indefinite"
+                            />
+                          </path>
+                          {/* Secondary floating wave */}
+                          <path
+                            fill={`url(#blueFloatingWave-${index})`}
+                            d="M0,70 Q50,50 100,70 T200,70 L200,200 L0,200 Z"
+                            opacity="0.7"
+                          >
+                            <animate
+                              attributeName="d"
+                              values="M0,70 Q50,50 100,70 T200,70 L200,200 L0,200 Z;M0,70 Q50,90 100,70 T200,70 L200,200 L0,200 Z;M0,70 Q50,50 100,70 T200,70 L200,200 L0,200 Z"
+                              dur="5s"
+                              repeatCount="indefinite"
+                            />
+                          </path>
+                          {/* Tertiary floating wave */}
+                          <path
+                            fill={`url(#blueFloatingWave-${index})`}
+                            d="M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z"
+                            opacity="0.5"
+                          >
+                            <animate
+                              attributeName="d"
+                              values="M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,120 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z"
+                              dur="6s"
                               repeatCount="indefinite"
                             />
                           </path>
@@ -381,7 +454,7 @@ function Home() {
                       </div>
                     )}
                     
-                    {/* Image for First Slide on Desktop */}
+                    {/* Image for First Slide on Desktop - Exactly Half Width */}
                     {index === 0 && (
                       <div className="hidden md:flex w-1/2 items-center justify-center relative">
                         <div className="relative w-full h-full flex items-center justify-center p-0">
@@ -390,7 +463,7 @@ function Home() {
                             <img
                               src={slide.image}
                               alt={slide.title}
-                              className="w-full h-full object-contain shadow-2xl transform hover:scale-105 transition-transform duration-500 rounded-xl md:rounded-2xl"
+                              className="w-full h-full object-cover shadow-2xl transform hover:scale-105 transition-transform duration-500 rounded-xl md:rounded-2xl"
                             />
                             {/* Glow effect */}
                             <div className="absolute inset-0 bg-green-400/20 blur-2xl -z-10 animate-pulse rounded-xl md:rounded-2xl"></div>
@@ -859,6 +932,9 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* Communication Widget - Fixed at bottom right */}
+      <CommunicationWidget />
     </div>
   );
 }
