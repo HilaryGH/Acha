@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../services/api';
+import { logout } from '../../utils/auth';
 
 interface User {
   id: string;
@@ -11,6 +13,26 @@ interface User {
   createdAt: string;
 }
 
+interface Order {
+  _id: string;
+  uniqueId: string;
+  buyerId: string;
+  deliveryMethod: string;
+  status: string;
+  orderInfo: {
+    productName: string;
+    productDescription?: string;
+    preferredDeliveryDate?: string;
+  };
+  trackingUpdates: Array<{
+    status: string;
+    message?: string;
+    location?: string;
+    timestamp: string;
+  }>;
+  createdAt: string;
+}
+
 interface DeliveryPartnerDashboardProps {
   user: User;
 }
@@ -18,13 +40,101 @@ interface DeliveryPartnerDashboardProps {
 function DeliveryPartnerDashboard({ user }: DeliveryPartnerDashboardProps) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'earnings' | 'profile' | 'settings'>('overview');
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState({
+    activeDeliveries: 0,
+    completedToday: 0,
+    totalEarnings: 0
+  });
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+
+  useEffect(() => {
+    loadDashboardData();
+  }, [activeTab]);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      if (activeTab === 'overview' || activeTab === 'orders') {
+        await loadOrders();
+        await loadStats();
+      }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadOrders = async () => {
+    try {
+      // Fetch all orders and filter by assigned partner
+      const response = await api.orders.getAll() as { data?: { orders?: Order[] } };
+      const allOrders = response.data?.orders || [];
+      // Filter orders assigned to this partner
+      const myOrders = allOrders.filter((o: any) => 
+        o.assignedPartnerId === user.id || 
+        (o.assignedPartnerId && o.assignedPartnerId.toString() === user.id)
+      );
+      setOrders(myOrders);
+    } catch (error) {
+      console.error('Error loading orders:', error);
+    }
+  };
+
+  const loadStats = async () => {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const activeDeliveries = orders.filter(o => 
+        ['assigned', 'picked_up', 'in_transit'].includes(o.status)
+      ).length;
+
+      const completedToday = orders.filter(o => {
+        if (o.status === 'completed' || o.status === 'delivered') {
+          const completedDate = o.trackingUpdates?.find(t => 
+            t.status === 'completed' || t.status === 'delivered'
+          )?.timestamp;
+          if (completedDate) {
+            return new Date(completedDate) >= today;
+          }
+        }
+        return false;
+      }).length;
+
+      // Calculate earnings (placeholder - would need actual earnings data)
+      const totalEarnings = orders.filter(o => o.status === 'completed').length * 500; // Example: 500 per delivery
+
+      setStats({
+        activeDeliveries,
+        completedToday,
+        totalEarnings
+      });
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
+
+  const handleUpdateOrderStatus = async (orderId: string, status: string, message?: string, location?: string) => {
+    try {
+      await api.orders.updateStatus(orderId, status, message, location);
+      await loadOrders();
+      await loadStats();
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      alert('Failed to update order status');
+    }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.dispatchEvent(new Event('logout'));
-    navigate('/');
+    logout(navigate);
   };
+
+  const filteredOrders = orders.filter(o => 
+    filterStatus === 'all' || o.status === filterStatus
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -75,59 +185,185 @@ function DeliveryPartnerDashboard({ user }: DeliveryPartnerDashboardProps) {
 
         <div className="space-y-6">
           {activeTab === 'overview' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Active Deliveries</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
-                  </div>
-                  <div className="p-3 bg-green-100 rounded-lg">
-                    <span className="text-2xl">🚚</span>
-                  </div>
+            <>
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading statistics...</p>
                 </div>
-              </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Active Deliveries</p>
+                        <p className="text-3xl font-bold text-gray-900 mt-2">{stats.activeDeliveries}</p>
+                      </div>
+                      <div className="p-3 bg-green-100 rounded-lg">
+                        <span className="text-2xl">🚚</span>
+                      </div>
+                    </div>
+                  </div>
 
-              <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Completed Today</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Completed Today</p>
+                        <p className="text-3xl font-bold text-gray-900 mt-2">{stats.completedToday}</p>
+                      </div>
+                      <div className="p-3 bg-blue-100 rounded-lg">
+                        <span className="text-2xl">✅</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-3 bg-blue-100 rounded-lg">
-                    <span className="text-2xl">✅</span>
-                  </div>
-                </div>
-              </div>
 
-              <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Total Earnings</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">₦0</p>
-                  </div>
-                  <div className="p-3 bg-yellow-100 rounded-lg">
-                    <span className="text-2xl">💰</span>
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Total Earnings</p>
+                        <p className="text-3xl font-bold text-gray-900 mt-2">₦{stats.totalEarnings.toLocaleString()}</p>
+                      </div>
+                      <div className="p-3 bg-yellow-100 rounded-lg">
+                        <span className="text-2xl">💰</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           )}
 
           {activeTab === 'orders' && (
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">My Delivery Orders</h3>
-              <div className="text-center py-12">
-                <p className="text-gray-600">No orders assigned yet</p>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">My Delivery Orders</h3>
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                >
+                  <option value="all">All Status</option>
+                  <option value="assigned">Assigned</option>
+                  <option value="picked_up">Picked Up</option>
+                  <option value="in_transit">In Transit</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="completed">Completed</option>
+                </select>
               </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading orders...</p>
+                </div>
+              ) : filteredOrders.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-600 mb-4">No orders assigned yet</p>
+                  <p className="text-sm text-gray-500">Orders will appear here once assigned to you</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredOrders.map((order) => (
+                    <div key={order._id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="text-lg font-semibold text-gray-900">
+                              Order #{order.uniqueId || order._id.slice(-8)}
+                            </h4>
+                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                              order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                              order.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {order.status.replace('_', ' ')}
+                            </span>
+                          </div>
+                          <div className="text-sm text-gray-600 space-y-1">
+                            <p><span className="font-medium">Product:</span> {order.orderInfo?.productName || 'N/A'}</p>
+                            {order.orderInfo?.preferredDeliveryDate && (
+                              <p><span className="font-medium">Preferred Date:</span> {new Date(order.orderInfo.preferredDeliveryDate).toLocaleDateString()}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Status Update Actions */}
+                      {order.status === 'assigned' && (
+                        <div className="flex gap-2 mt-4">
+                          <button
+                            onClick={() => handleUpdateOrderStatus(order._id, 'picked_up', 'Item picked up')}
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                          >
+                            Mark as Picked Up
+                          </button>
+                        </div>
+                      )}
+                      {order.status === 'picked_up' && (
+                        <div className="flex gap-2 mt-4">
+                          <button
+                            onClick={() => handleUpdateOrderStatus(order._id, 'in_transit', 'Item in transit')}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                          >
+                            Mark as In Transit
+                          </button>
+                        </div>
+                      )}
+                      {order.status === 'in_transit' && (
+                        <div className="flex gap-2 mt-4">
+                          <button
+                            onClick={() => handleUpdateOrderStatus(order._id, 'delivered', 'Item delivered')}
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                          >
+                            Mark as Delivered
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Tracking Updates */}
+                      {order.trackingUpdates && order.trackingUpdates.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <h5 className="text-sm font-medium text-gray-900 mb-2">Tracking Updates</h5>
+                          <div className="space-y-2">
+                            {order.trackingUpdates.slice().reverse().map((update, idx) => (
+                              <div key={idx} className="text-xs text-gray-600">
+                                <span className="font-medium">{update.status.replace('_', ' ')}</span>
+                                {update.message && <span> - {update.message}</span>}
+                                {update.location && <span> at {update.location}</span>}
+                                <span className="text-gray-400 ml-2">
+                                  {new Date(update.timestamp).toLocaleString()}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {activeTab === 'earnings' && (
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">Earnings & Payments</h3>
-              <div className="text-center py-12">
-                <p className="text-gray-600">Earnings dashboard coming soon</p>
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6 border border-green-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Total Earnings</p>
+                      <p className="text-3xl font-bold text-gray-900 mt-2">₦{stats.totalEarnings.toLocaleString()}</p>
+                    </div>
+                    <div className="p-3 bg-green-100 rounded-lg">
+                      <span className="text-2xl">💰</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-center py-8 text-gray-600">
+                  <p>Detailed earnings breakdown coming soon</p>
+                  <p className="text-sm mt-2">Payment history and withdrawal options will be available here</p>
+                </div>
               </div>
             </div>
           )}
@@ -185,10 +421,26 @@ function DeliveryPartnerDashboard({ user }: DeliveryPartnerDashboardProps) {
                 <div className="p-4 border border-gray-200 rounded-lg">
                   <h4 className="font-medium text-gray-900 mb-2">Availability</h4>
                   <p className="text-sm text-gray-600">Manage your delivery availability</p>
+                  <div className="mt-4">
+                    <label className="flex items-center">
+                      <input type="checkbox" className="rounded border-gray-300 text-green-600 focus:ring-green-500" defaultChecked />
+                      <span className="ml-2 text-sm text-gray-700">Available for deliveries</span>
+                    </label>
+                  </div>
                 </div>
                 <div className="p-4 border border-gray-200 rounded-lg">
                   <h4 className="font-medium text-gray-900 mb-2">Notifications</h4>
                   <p className="text-sm text-gray-600">Configure delivery notifications</p>
+                  <div className="mt-4 space-y-2">
+                    <label className="flex items-center">
+                      <input type="checkbox" className="rounded border-gray-300 text-green-600 focus:ring-green-500" defaultChecked />
+                      <span className="ml-2 text-sm text-gray-700">Email notifications</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input type="checkbox" className="rounded border-gray-300 text-green-600 focus:ring-green-500" defaultChecked />
+                      <span className="ml-2 text-sm text-gray-700">SMS notifications</span>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -200,13 +452,3 @@ function DeliveryPartnerDashboard({ user }: DeliveryPartnerDashboardProps) {
 }
 
 export default DeliveryPartnerDashboard;
-
-
-
-
-
-
-
-
-
-

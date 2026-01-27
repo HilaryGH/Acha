@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 
 interface Trip {
   _id: string;
+  name?: string;
   currentLocation: string;
   destinationCity: string;
   departureDate: string;
+  arrivalDate?: string;
   travellerType: 'international' | 'domestic';
   status: string;
   createdAt: string;
@@ -14,24 +16,40 @@ interface Trip {
 
 interface Order {
   _id: string;
-  name: string;
-  currentCity: string;
+  uniqueId?: string;
+  buyerId?: {
+    name?: string;
+    currentCity?: string;
+  };
+  deliveryMethod: 'traveler' | 'partner';
   orderInfo?: {
     productName?: string;
     preferredDeliveryDate?: string;
+    countryOfOrigin?: string;
   };
   status: string;
+  assignedTravelerId?: string | null;
   createdAt: string;
 }
 
 function TripsAndOrdersSection() {
+  const navigate = useNavigate();
   const [trips, setTrips] = useState<Trip[]>([]);
+  const [allTrips, setAllTrips] = useState<Trip[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [allOrders, setAllOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [locationFilter, setLocationFilter] = useState('');
+  const [matching, setMatching] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    filterData();
+  }, [searchQuery, locationFilter, allTrips, allOrders]);
 
   const fetchData = async () => {
     try {
@@ -42,23 +60,99 @@ function TripsAndOrdersSection() {
       if (tripsResponse.status === 'success') {
         const activeTrips = (tripsResponse.data || [])
           .filter((trip: Trip) => trip.status === 'active' || trip.status === 'verified' || trip.status === 'pending')
-          .slice(0, 5); // Show latest 5
-        setTrips(activeTrips);
+          .sort((a: Trip, b: Trip) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setAllTrips(activeTrips);
+        setTrips(activeTrips.slice(0, 5));
       }
 
-      // Fetch orders
-      const ordersResponse = await api.buyers.getAll() as { status?: string; data?: any[] };
+      // Fetch orders from new Order API
+      const ordersResponse = await api.orders.getAll() as { status?: string; data?: any[] };
       if (ordersResponse.status === 'success') {
         const activeOrders = (ordersResponse.data || [])
-          .filter((order: Order) => order.status === 'active' || order.status === 'verified' || order.status === 'pending')
-          .slice(0, 5); // Show latest 5
-        setOrders(activeOrders);
+          .filter((order: Order) => order.status === 'pending' || order.status === 'matched' || order.status === 'assigned')
+          .sort((a: Order, b: Order) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setAllOrders(activeOrders);
+        setOrders(activeOrders.slice(0, 5));
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const filterData = () => {
+    let filteredTrips = [...allTrips];
+    let filteredOrders = [...allOrders];
+
+    // Filter trips by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filteredTrips = filteredTrips.filter(trip => 
+        trip.currentLocation?.toLowerCase().includes(query) ||
+        trip.destinationCity?.toLowerCase().includes(query) ||
+        trip.name?.toLowerCase().includes(query)
+      );
+    }
+
+    // Filter trips by location
+    if (locationFilter) {
+      const location = locationFilter.toLowerCase();
+      filteredTrips = filteredTrips.filter(trip =>
+        trip.currentLocation?.toLowerCase().includes(location) ||
+        trip.destinationCity?.toLowerCase().includes(location)
+      );
+    }
+
+    // Filter orders by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filteredOrders = filteredOrders.filter(order =>
+        order.orderInfo?.productName?.toLowerCase().includes(query) ||
+        order.buyerId?.currentCity?.toLowerCase().includes(query) ||
+        order.buyerId?.name?.toLowerCase().includes(query) ||
+        order.orderInfo?.countryOfOrigin?.toLowerCase().includes(query)
+      );
+    }
+
+    // Filter orders by location
+    if (locationFilter) {
+      const location = locationFilter.toLowerCase();
+      filteredOrders = filteredOrders.filter(order =>
+        order.buyerId?.currentCity?.toLowerCase().includes(location) ||
+        order.orderInfo?.countryOfOrigin?.toLowerCase().includes(location)
+      );
+    }
+
+    setTrips(filteredTrips.slice(0, 5));
+    setOrders(filteredOrders.slice(0, 5));
+  };
+
+  const handleMatchOrder = async (orderId: string) => {
+    if (!orderId) return;
+    
+    setMatching(orderId);
+    try {
+      // Navigate to match page
+      navigate(`/orders/match/${orderId}`);
+    } catch (error) {
+      console.error('Error matching order:', error);
+    } finally {
+      setMatching(null);
+    }
+  };
+
+  const findMatchingTravelers = (order: Order) => {
+    if (order.deliveryMethod !== 'traveler' || order.assignedTravelerId) {
+      return [];
+    }
+
+    // Find travelers that match the order's destination
+    const orderDestination = order.orderInfo?.countryOfOrigin || order.buyerId?.currentCity || '';
+    return allTrips.filter(trip => 
+      trip.destinationCity?.toLowerCase().includes(orderDestination.toLowerCase()) ||
+      orderDestination.toLowerCase().includes(trip.destinationCity?.toLowerCase() || '')
+    ).slice(0, 3); // Show top 3 matches
   };
 
   const formatDate = (dateString: string) => {
@@ -74,15 +168,66 @@ function TripsAndOrdersSection() {
     <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
         {/* Section Header */}
-        <div className="text-center mb-10 md:mb-12">
+        <div className="text-center mb-8 md:mb-10">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-cyan-500 to-green-600">
               Latest Activity
             </span>
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-6">
             Discover recent trips and orders from our community
           </p>
+
+          {/* Search and Filter Bar */}
+          <div className="max-w-4xl mx-auto mb-6">
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Search Input */}
+              <div className="flex-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search by product, name, or location..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                />
+              </div>
+
+              {/* Location Filter */}
+              <div className="sm:w-64 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Filter by location..."
+                  value={locationFilter}
+                  onChange={(e) => setLocationFilter(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                />
+              </div>
+
+              {/* Clear Filters */}
+              {(searchQuery || locationFilter) && (
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setLocationFilter('');
+                  }}
+                  className="px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-medium transition-colors text-sm whitespace-nowrap"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Two Cards Grid */}
@@ -209,38 +354,74 @@ function TripsAndOrdersSection() {
                     <p className="text-gray-500">No orders posted yet</p>
                   </div>
                 ) : (
-                  orders.map((order) => (
-                    <div
-                      key={order._id}
-                      className="p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-md transition-all duration-300 bg-gradient-to-r from-white to-gray-50"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">
-                              📦 Order
-                            </span>
-                            <span className="text-xs text-gray-500">{formatDate(order.createdAt)}</span>
+                  orders.map((order) => {
+                    const matchingTravelers = findMatchingTravelers(order);
+                    const canMatch = order.deliveryMethod === 'traveler' && !order.assignedTravelerId && matchingTravelers.length > 0;
+                    
+                    return (
+                      <div
+                        key={order._id}
+                        className="p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-md transition-all duration-300 bg-gradient-to-r from-white to-gray-50"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                order.deliveryMethod === 'traveler' 
+                                  ? 'bg-blue-100 text-blue-700' 
+                                  : 'bg-purple-100 text-purple-700'
+                              }`}>
+                                {order.deliveryMethod === 'traveler' ? '✈️ Traveler' : '🤝 Partner'}
+                              </span>
+                              {order.assignedTravelerId && (
+                                <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                                  ✓ Matched
+                                </span>
+                              )}
+                              <span className="text-xs text-gray-500">{formatDate(order.createdAt)}</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-1">
+                              {order.orderInfo?.productName || 'Product Order'}
+                            </h4>
+                            <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
+                              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                              <span>{order.buyerId?.currentCity || 'Location not specified'}</span>
+                            </div>
+                            {order.orderInfo?.preferredDeliveryDate && (
+                              <p className="text-xs text-gray-500 mb-2">
+                                Preferred: {formatDate(order.orderInfo.preferredDeliveryDate)}
+                              </p>
+                            )}
+                            
+                            {/* Matching Travelers Info */}
+                            {canMatch && (
+                              <div className="mt-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+                                <p className="text-xs text-blue-700 font-medium mb-1">
+                                  🎯 {matchingTravelers.length} traveler{matchingTravelers.length > 1 ? 's' : ''} found!
+                                </p>
+                                <button
+                                  onClick={() => handleMatchOrder(order._id)}
+                                  disabled={matching === order._id}
+                                  className="w-full mt-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  {matching === order._id ? 'Loading...' : 'Match with Traveler'}
+                                </button>
+                              </div>
+                            )}
+                            
+                            {order.deliveryMethod === 'traveler' && !order.assignedTravelerId && matchingTravelers.length === 0 && (
+                              <p className="text-xs text-gray-400 mt-2 italic">
+                                No matching travelers found yet
+                              </p>
+                            )}
                           </div>
-                          <h4 className="font-semibold text-gray-900 mb-1">
-                            {order.orderInfo?.productName || 'Product Order'}
-                          </h4>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span>{order.currentCity}</span>
-                          </div>
-                          {order.orderInfo?.preferredDeliveryDate && (
-                            <p className="text-xs text-gray-500 mt-1">
-                              Preferred: {formatDate(order.orderInfo.preferredDeliveryDate)}
-                            </p>
-                          )}
                         </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>

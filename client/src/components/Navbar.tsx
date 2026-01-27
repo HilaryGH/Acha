@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SignInModal from './SignInModal';
 import LanguageSwitcher from './LanguageSwitcher';
+import { logout } from '../utils/auth';
 
 function Navbar() {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Navigate to search results or handle search
+      // Navigate to search results page for travelers
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
     }
@@ -65,20 +66,26 @@ function Navbar() {
   const handleLocationFinder = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          // You can use these coordinates for location-based search
-          console.log('Location found:', latitude, longitude);
-          // Navigate to location-based search or update search query
-          navigate(`/search?lat=${latitude}&lng=${longitude}`);
+        async (_position) => {
+          // Coordinates available but not used for now - prompt user for city name
+          // In a production app, you'd reverse geocode to get the city name
+          try {
+            const cityName = prompt('Please enter your current city name for searching travelers:');
+            if (cityName) {
+              navigate(`/search?q=${encodeURIComponent(cityName.trim())}`);
+            }
+          } catch (error) {
+            console.error('Error with location:', error);
+            alert('Please enter your city name manually in the search box.');
+          }
         },
         (error) => {
           console.error('Error getting location:', error);
-          alert('Unable to retrieve your location. Please enable location services.');
+          alert('Unable to retrieve your location. Please enter your city name manually in the search box.');
         }
       );
     } else {
-      alert('Geolocation is not supported by your browser.');
+      alert('Geolocation is not supported by your browser. Please enter your city name manually in the search box.');
     }
   };
 
@@ -145,7 +152,7 @@ function Navbar() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search..."
+                      placeholder="Search travelers by destination or location..."
                       className="w-full pl-10 pr-12 py-2 border border-gray-300 bg-gray-50 rounded-tr-xl rounded-bl-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:bg-white transition-all"
                     />
                     <svg 
@@ -186,15 +193,31 @@ function Navbar() {
                   </div>
                 </form>
                 {isLoggedIn ? (
-                  <Link
-                    to="/dashboard"
-                    className="bg-green-600 hover:bg-green-700 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg active:translate-y-0 whitespace-nowrap flex items-center gap-2"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    {userName ? userName.split(' ')[0] : 'Dashboard'}
-                  </Link>
+                  <div className="relative group">
+                    <Link
+                      to="/dashboard"
+                      className="bg-green-600 hover:bg-green-700 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg active:translate-y-0 whitespace-nowrap flex items-center gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      {userName ? userName.split(' ')[0] : 'Dashboard'}
+                    </Link>
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <Link
+                        to="/dashboard"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={() => logout(navigate)}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
                 ) : (
                   <button 
                     className="bg-green-600 hover:bg-green-700 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg active:translate-y-0 whitespace-nowrap flex items-center gap-2"
@@ -234,15 +257,31 @@ function Navbar() {
                 
                 {/* Login Button - Icon Only */}
                 {isLoggedIn ? (
-                  <Link
-                    to="/dashboard"
-                    className="text-gray-700 hover:text-green-600 p-2 transition-colors duration-300"
-                    aria-label="Dashboard"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </Link>
+                  <div className="relative group">
+                    <Link
+                      to="/dashboard"
+                      className="text-gray-700 hover:text-green-600 p-2 transition-colors duration-300"
+                      aria-label="Dashboard"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </Link>
+                    <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <Link
+                        to="/dashboard"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={() => logout(navigate)}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
                 ) : (
                   <button 
                     className="text-gray-700 hover:text-green-600 p-2 transition-colors duration-300"
@@ -277,7 +316,7 @@ function Navbar() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search..."
+                      placeholder="Search travelers by destination or location..."
                       className="w-full pl-10 pr-4 py-2.5 border border-gray-300 bg-gray-50 rounded-tr-xl rounded-bl-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:bg-white transition-all"
                     />
                     <svg 
@@ -385,14 +424,35 @@ function Navbar() {
               >
                 About
               </Link>
-              {isLoggedIn && (
-                <Link 
-                  to="/dashboard" 
-                  className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-green-600 hover:bg-gray-50"
-                  onClick={() => setIsMenuOpen(false)}
+              {isLoggedIn ? (
+                <>
+                  <Link 
+                    to="/dashboard" 
+                    className="text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-green-600 hover:bg-gray-50"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      logout(navigate);
+                    }}
+                    className="text-left text-red-600 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsSignInModalOpen(true);
+                  }}
+                  className="text-left text-gray-700 font-medium text-base py-3 px-4 rounded-lg transition-colors duration-300 hover:text-green-600 hover:bg-gray-50"
                 >
-                  Dashboard
-                </Link>
+                  Login
+                </button>
               )}
               
               {/* Feature Badges */}

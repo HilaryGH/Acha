@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../services/api';
+import { logout } from '../../utils/auth';
 
 interface User {
   id: string;
@@ -9,6 +11,37 @@ interface User {
   role: string;
   status: string;
   createdAt: string;
+  department?: string;
+}
+
+interface Partner {
+  _id: string;
+  uniqueId: string;
+  name: string;
+  email: string;
+  phone: string;
+  registrationType: string;
+  status: string;
+  createdAt: string;
+}
+
+interface Order {
+  _id: string;
+  uniqueId: string;
+  status: string;
+  orderInfo: {
+    productName: string;
+  };
+  createdAt: string;
+}
+
+interface AuditLog {
+  _id: string;
+  action: string;
+  performedBy: string;
+  status: string;
+  timestamp: string;
+  ipAddress: string;
 }
 
 interface SuperAdminDashboardProps {
@@ -18,13 +51,129 @@ interface SuperAdminDashboardProps {
 function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'partners' | 'audit' | 'settings'>('overview');
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    pendingPartners: 0,
+    activeOrders: 0,
+    systemStatus: 'Online'
+  });
+  const [users, setUsers] = useState<User[]>([]);
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterRole, setFilterRole] = useState<string>('all');
+
+  useEffect(() => {
+    loadDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      if (activeTab === 'overview') {
+        await loadOverviewStats();
+      } else if (activeTab === 'users') {
+        await loadUsers();
+      } else if (activeTab === 'partners') {
+        await loadPartners();
+      } else if (activeTab === 'audit') {
+        await loadAuditLogs();
+      }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadOverviewStats = async () => {
+    try {
+      const [usersRes, partnersRes, ordersRes] = await Promise.all([
+        api.users.getAll().catch(() => ({ data: { users: [] } })),
+        api.partners.getAll().catch(() => ({ data: { partners: [] } })),
+        api.orders.getAll().catch(() => ({ data: { orders: [] } }))
+      ]) as Array<{ data?: { users?: User[]; partners?: Partner[]; orders?: Order[] } }>;
+
+      const allUsers = (usersRes as any).data?.users || [];
+      const allPartners = (partnersRes as any).data?.partners || [];
+      const allOrders = (ordersRes as any).data?.orders || [];
+
+      setStats({
+        totalUsers: allUsers.length,
+        pendingPartners: allPartners.filter((p: Partner) => p.status === 'pending').length,
+        activeOrders: allOrders.filter((o: any) => !['completed', 'cancelled'].includes(o.status)).length,
+        systemStatus: 'Online'
+      });
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
+
+  const loadUsers = async () => {
+    try {
+      const response = await api.users.getAll() as { data?: { users?: User[] } };
+      setUsers(response.data?.users || []);
+    } catch (error) {
+      console.error('Error loading users:', error);
+    }
+  };
+
+  const loadPartners = async () => {
+    try {
+      const response = await api.partners.getAll() as { data?: { partners?: Partner[] } };
+      setPartners(response.data?.partners || []);
+    } catch (error) {
+      console.error('Error loading partners:', error);
+    }
+  };
+
+  const loadAuditLogs = async () => {
+    try {
+      const response = await api.audit.getAll() as { data?: { logs?: any[] } };
+      setAuditLogs(response.data?.logs || []);
+    } catch (error) {
+      console.error('Error loading audit logs:', error);
+    }
+  };
+
+  const handleUpdateUserStatus = async (userId: string, newStatus: string) => {
+    try {
+      await api.users.update(userId, { status: newStatus });
+      await loadUsers();
+    } catch (error) {
+      console.error('Error updating user status:', error);
+      alert('Failed to update user status');
+    }
+  };
+
+  const handleUpdatePartnerStatus = async (partnerId: string, newStatus: string) => {
+    try {
+      await api.partners.update(partnerId, { status: newStatus });
+      await loadPartners();
+      await loadOverviewStats();
+    } catch (error) {
+      console.error('Error updating partner status:', error);
+      alert('Failed to update partner status');
+    }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.dispatchEvent(new Event('logout'));
-    navigate('/');
+    logout(navigate);
   };
+
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = !searchTerm || 
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = filterRole === 'all' || user.role === filterRole;
+    return matchesSearch && matchesRole;
+  });
+
+  const filteredPartners = partners.filter(partner => 
+    partner.status === 'pending' || activeTab === 'partners'
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -75,89 +224,283 @@ function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
 
         <div className="space-y-6">
           {activeTab === 'overview' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Total Users</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
-                  </div>
-                  <div className="p-3 bg-purple-100 rounded-lg">
-                    <span className="text-2xl">👥</span>
-                  </div>
+            <>
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading statistics...</p>
                 </div>
-              </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Total Users</p>
+                        <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalUsers}</p>
+                      </div>
+                      <div className="p-3 bg-purple-100 rounded-lg">
+                        <span className="text-2xl">👥</span>
+                      </div>
+                    </div>
+                  </div>
 
-              <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Pending Partners</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Pending Partners</p>
+                        <p className="text-3xl font-bold text-gray-900 mt-2">{stats.pendingPartners}</p>
+                      </div>
+                      <div className="p-3 bg-blue-100 rounded-lg">
+                        <span className="text-2xl">🤝</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-3 bg-blue-100 rounded-lg">
-                    <span className="text-2xl">🤝</span>
-                  </div>
-                </div>
-              </div>
 
-              <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Active Orders</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Active Orders</p>
+                        <p className="text-3xl font-bold text-gray-900 mt-2">{stats.activeOrders}</p>
+                      </div>
+                      <div className="p-3 bg-green-100 rounded-lg">
+                        <span className="text-2xl">📦</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-3 bg-green-100 rounded-lg">
-                    <span className="text-2xl">📦</span>
-                  </div>
-                </div>
-              </div>
 
-              <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">System Status</p>
-                    <p className="text-lg font-bold text-green-600 mt-2">✓ Online</p>
-                  </div>
-                  <div className="p-3 bg-yellow-100 rounded-lg">
-                    <span className="text-2xl">⚡</span>
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">System Status</p>
+                        <p className="text-lg font-bold text-green-600 mt-2">✓ {stats.systemStatus}</p>
+                      </div>
+                      <div className="p-3 bg-yellow-100 rounded-lg">
+                        <span className="text-2xl">⚡</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           )}
 
           {activeTab === 'users' && (
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
-                <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                <button 
+                  onClick={() => navigate('/register')}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                >
                   Create User
                 </button>
               </div>
-              <div className="text-center py-12">
-                <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                <p className="text-gray-600">User management interface coming soon</p>
+
+              {/* Filters */}
+              <div className="mb-6 flex gap-4">
+                <input
+                  type="text"
+                  placeholder="Search users..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+                <select
+                  value={filterRole}
+                  onChange={(e) => setFilterRole(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                >
+                  <option value="all">All Roles</option>
+                  <option value="super_admin">Super Admin</option>
+                  <option value="admin">Admin</option>
+                  <option value="marketing_team">Marketing Team</option>
+                  <option value="customer_support">Customer Support</option>
+                  <option value="individual">Individual</option>
+                  <option value="delivery_partner">Delivery Partner</option>
+                </select>
               </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading users...</p>
+                </div>
+              ) : filteredUsers.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-600">No users found</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {filteredUsers.map((u) => (
+                        <tr key={u.id}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">{u.name}</div>
+                            {u.phone && <div className="text-sm text-gray-500">{u.phone}</div>}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{u.email}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800 capitalize">
+                              {u.role.replace('_', ' ')}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              u.status === 'active' ? 'bg-green-100 text-green-800' :
+                              u.status === 'suspended' ? 'bg-red-100 text-red-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {u.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <select
+                              value={u.status}
+                              onChange={(e) => handleUpdateUserStatus(u.id, e.target.value)}
+                              className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500"
+                            >
+                              <option value="active">Active</option>
+                              <option value="inactive">Inactive</option>
+                              <option value="suspended">Suspended</option>
+                            </select>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
 
           {activeTab === 'partners' && (
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">Partner Applications</h3>
-              <div className="text-center py-12">
-                <p className="text-gray-600">Partner management interface coming soon</p>
-              </div>
+              
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading partners...</p>
+                </div>
+              ) : filteredPartners.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-600">No partner applications found</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredPartners.map((partner) => (
+                    <div key={partner._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="text-lg font-semibold text-gray-900">{partner.name}</h4>
+                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                              partner.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                              partner.status === 'approved' ? 'bg-green-100 text-green-800' :
+                              partner.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                              'bg-blue-100 text-blue-800'
+                            }`}>
+                              {partner.status}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                            <div>
+                              <span className="font-medium">Email:</span> {partner.email}
+                            </div>
+                            <div>
+                              <span className="font-medium">Phone:</span> {partner.phone}
+                            </div>
+                            <div>
+                              <span className="font-medium">Type:</span> {partner.registrationType}
+                            </div>
+                            <div>
+                              <span className="font-medium">ID:</span> {partner.uniqueId}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 ml-4">
+                          {partner.status === 'pending' && (
+                            <>
+                              <button
+                                onClick={() => handleUpdatePartnerStatus(partner._id, 'approved')}
+                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => handleUpdatePartnerStatus(partner._id, 'rejected')}
+                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                              >
+                                Reject
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {activeTab === 'audit' && (
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">Audit Logs</h3>
-              <div className="text-center py-12">
-                <p className="text-gray-600">Audit logs interface coming soon</p>
-              </div>
+              
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading audit logs...</p>
+                </div>
+              ) : auditLogs.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-600">No audit logs found</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {auditLogs.slice(0, 50).map((log) => (
+                        <tr key={log._id}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
+                            {log.action.replace('_', ' ')}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              log.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
+                              {log.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{log.ipAddress}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {new Date(log.timestamp).toLocaleString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
 
@@ -183,6 +526,13 @@ function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
 }
 
 export default SuperAdminDashboard;
+
+
+
+
+
+
+
 
 
 

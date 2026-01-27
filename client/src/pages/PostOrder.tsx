@@ -15,8 +15,11 @@ function PostOrder() {
     telegram: '',
     currentCity: '',
     location: '',
+    deliveryDestination: '',
     bankAccount: '',
     idDocument: '',
+    // Delivery Method
+    deliveryMethod: 'traveler' as 'traveler' | 'partner',
     // Order Information
     productName: '',
     productDescription: '',
@@ -69,8 +72,8 @@ function PostOrder() {
     setMessage(null);
 
     try {
-      // Prepare the data
-      const submitData: any = {
+      // Step 1: Create buyer first
+      const buyerData: any = {
         name: formData.name,
         phone: formData.phone,
         email: formData.email,
@@ -80,33 +83,69 @@ function PostOrder() {
         location: formData.location || undefined,
         bankAccount: formData.bankAccount,
         idDocument: formData.idDocument || undefined,
-        orderInfo: {
-          productName: formData.productName || undefined,
-          productDescription: formData.productDescription || undefined,
-          brand: formData.brand || undefined,
-          quantityType: formData.quantityType || undefined,
-          quantityDescription: formData.quantityDescription || undefined,
-          manufacturingDate: formData.manufacturingDate ? new Date(formData.manufacturingDate).toISOString() : undefined,
-          countryOfOrigin: formData.countryOfOrigin || undefined,
-          preferredDeliveryDate: formData.preferredDeliveryDate ? new Date(formData.preferredDeliveryDate).toISOString() : undefined,
-          photos: formData.photos.length > 0 ? formData.photos : undefined,
-          video: formData.video || undefined,
-          link: formData.link || undefined
-        }
+        deliveryMethod: formData.deliveryMethod
+      };
+
+      const buyerResponse = await api.buyers.create(buyerData) as { status?: string; data?: any; message?: string };
+      
+      if (buyerResponse.status !== 'success' || !buyerResponse.data?._id) {
+        throw new Error(buyerResponse.message || 'Failed to create buyer');
+      }
+
+      const buyerId = buyerResponse.data._id;
+
+      // Step 2: Create order
+      const orderInfo: any = {
+        productName: formData.productName,
+        productDescription: formData.productDescription || undefined,
+        brand: formData.brand || undefined,
+        quantityType: formData.quantityType || undefined,
+        quantityDescription: formData.quantityDescription || undefined,
+        manufacturingDate: formData.manufacturingDate ? new Date(formData.manufacturingDate).toISOString() : undefined,
+        countryOfOrigin: formData.countryOfOrigin || undefined,
+        deliveryDestination: formData.deliveryDestination || undefined,
+        preferredDeliveryDate: formData.preferredDeliveryDate ? new Date(formData.preferredDeliveryDate).toISOString() : undefined,
+        photos: formData.photos.length > 0 ? formData.photos : undefined,
+        video: formData.video || undefined,
+        link: formData.link || undefined
       };
 
       // Remove undefined values from orderInfo
-      Object.keys(submitData.orderInfo).forEach(key => {
-        if (submitData.orderInfo[key] === undefined) {
-          delete submitData.orderInfo[key];
+      Object.keys(orderInfo).forEach(key => {
+        if (orderInfo[key] === undefined) {
+          delete orderInfo[key];
         }
       });
 
-      const response = await api.buyers.create(submitData) as { status?: string; message?: string };
+      const orderData = {
+        buyerId,
+        deliveryMethod: formData.deliveryMethod,
+        orderInfo
+      };
+
+      const orderResponse = await api.orders.create(orderData) as { status?: string; data?: any; message?: string };
       
-      if (response.status === 'success') {
-        setMessage({ type: 'success', text: 'Order posted successfully! Your order is now visible to travelers.' });
-        // Reset form after 3 seconds and redirect
+      if (orderResponse.status === 'success') {
+        const orderId = orderResponse.data?._id;
+        const responseData = orderResponse.data;
+        const deliveryMethodText = formData.deliveryMethod === 'traveler' ? 'travelers' : 'partners';
+        
+        // Check if order was automatically matched
+        let successMessage = '';
+        if (responseData?.matched && responseData?.matchDetails) {
+          const matchType = responseData.matchDetails.type === 'traveler' ? 'traveler' : 'delivery partner';
+          const matchName = responseData.matchDetails.name;
+          successMessage = `Order posted successfully and automatically matched with ${matchType} ${matchName}! Order ID: ${orderResponse.data?.uniqueId || orderId}`;
+        } else {
+          successMessage = `Order posted successfully! Your order will be matched with ${deliveryMethodText}. Order ID: ${orderResponse.data?.uniqueId || orderId}`;
+        }
+        
+        setMessage({ 
+          type: 'success', 
+          text: successMessage
+        });
+        
+        // Reset form after 3 seconds and redirect to tracking
         setTimeout(() => {
           setFormData({
             name: '',
@@ -116,8 +155,10 @@ function PostOrder() {
             telegram: '',
             currentCity: '',
             location: '',
+            deliveryDestination: '',
             bankAccount: '',
             idDocument: '',
+            deliveryMethod: 'traveler',
             productName: '',
             productDescription: '',
             brand: '',
@@ -130,10 +171,14 @@ function PostOrder() {
             video: '',
             link: ''
           });
-          navigate('/');
+          if (orderId) {
+            navigate(`/orders/track/${orderId}`);
+          } else {
+            navigate('/');
+          }
         }, 3000);
       } else {
-        setMessage({ type: 'error', text: response.message || 'Failed to post order. Please try again.' });
+        setMessage({ type: 'error', text: orderResponse.message || 'Failed to create order. Please try again.' });
       }
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'An error occurred while posting your order' });
@@ -177,6 +222,62 @@ function PostOrder() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Delivery Method Selection */}
+            <div className="border-b border-gray-200 pb-6">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
+                <span className="text-2xl">🚚</span>
+                Choose Delivery Method
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label className={`relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                  formData.deliveryMethod === 'traveler' 
+                    ? 'border-blue-500 bg-blue-50' 
+                    : 'border-gray-300 hover:border-gray-400'
+                }`}>
+                  <input
+                    type="radio"
+                    name="deliveryMethod"
+                    value="traveler"
+                    checked={formData.deliveryMethod === 'traveler'}
+                    onChange={handleChange}
+                    className="sr-only"
+                  />
+                  <div className="flex-1">
+                    <div className="font-semibold text-lg text-gray-900 mb-1">Traveler</div>
+                    <div className="text-sm text-gray-600">Match with a traveler to deliver your order</div>
+                  </div>
+                  {formData.deliveryMethod === 'traveler' && (
+                    <svg className="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </label>
+                <label className={`relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                  formData.deliveryMethod === 'partner' 
+                    ? 'border-blue-500 bg-blue-50' 
+                    : 'border-gray-300 hover:border-gray-400'
+                }`}>
+                  <input
+                    type="radio"
+                    name="deliveryMethod"
+                    value="partner"
+                    checked={formData.deliveryMethod === 'partner'}
+                    onChange={handleChange}
+                    className="sr-only"
+                  />
+                  <div className="flex-1">
+                    <div className="font-semibold text-lg text-gray-900 mb-1">Partner</div>
+                    <div className="text-sm text-gray-600">Assign to a delivery partner</div>
+                  </div>
+                  {formData.deliveryMethod === 'partner' && (
+                    <svg className="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </label>
+              </div>
+            </div>
+
             {/* Buyer Information Section */}
             <div className="border-b border-gray-200 pb-6">
               <h2 className="text-2xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
@@ -304,6 +405,45 @@ function PostOrder() {
               </div>
             </div>
 
+            {/* Delivery Information Section */}
+            <div className="border-b border-gray-200 pb-6">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
+                <span className="text-2xl">📍</span>
+                Delivery Information
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Delivery Destination <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="deliveryDestination"
+                    required
+                    value={formData.deliveryDestination}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="e.g., Addis Ababa, New York, London"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">Enter the city or location where you want this item to be delivered</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Preferred Delivery Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    name="preferredDeliveryDate"
+                    required
+                    value={formData.preferredDeliveryDate}
+                    onChange={handleChange}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Order Information Section */}
             <div className="border-b border-gray-200 pb-6">
               <h2 className="text-2xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
@@ -404,20 +544,6 @@ function PostOrder() {
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="e.g., USA, China, etc."
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Preferred Delivery Date <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="preferredDeliveryDate"
-                    required
-                    value={formData.preferredDeliveryDate}
-                    onChange={handleChange}
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>

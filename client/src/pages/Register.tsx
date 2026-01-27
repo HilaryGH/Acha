@@ -3,8 +3,9 @@ import IndividualForm from '../components/forms/IndividualForm';
 import DeliveryPartnerForm from '../components/forms/DeliveryPartnerForm';
 import AchaSistersDeliveryPartnerForm from '../components/forms/AchaSistersDeliveryPartnerForm';
 import GiftDeliveryPartnerForm from '../components/forms/GiftDeliveryPartnerForm';
+import AdminRoleForm from '../components/forms/AdminRoleForm';
 
-type RegistrationType = 'individual' | 'delivery-partner' | 'acha-sisters-delivery-partner' | 'gift-delivery-partner' | null;
+type RegistrationType = 'individual' | 'delivery-partner' | 'acha-sisters-delivery-partner' | 'gift-delivery-partner' | 'super_admin' | 'admin' | 'customer_support' | 'marketing_team' | null;
 
 function Register() {
   const [selectedType, setSelectedType] = useState<RegistrationType>(null);
@@ -85,11 +86,34 @@ function Register() {
     );
   }
 
+  if (selectedType === 'super_admin' || selectedType === 'admin' || selectedType === 'customer_support' || selectedType === 'marketing_team') {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <button
+            onClick={() => setSelectedType(null)}
+            className="mb-6 flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Registration Types
+          </button>
+          <AdminRoleForm role={selectedType} />
+        </div>
+      </div>
+    );
+  }
+
   const registrationTypes = [
     { id: 'individual' as const, title: 'Individual', description: 'Register as an individual user', icon: '👤' },
     { id: 'delivery-partner' as const, title: 'Delivery Partner', description: 'Join our delivery network and start earning.', icon: '🚚' },
     { id: 'acha-sisters-delivery-partner' as const, title: 'Acha Sisters Delivery Partner', description: 'Join our delivery network and start earning.', icon: '👩‍🚚' },
     { id: 'gift-delivery-partner' as const, title: 'Acha Surprise Gift Delivery Partner', description: 'Register as a gift delivery partner. Add your gift types, partner information, and business documents.', icon: '🎁' },
+    { id: 'super_admin' as const, title: 'Super Admin', description: 'Register as a super administrator', icon: '👑' },
+    { id: 'admin' as const, title: 'Admin', description: 'Register as an administrator', icon: '🛡️' },
+    { id: 'customer_support' as const, title: 'Customer Support', description: 'Register as a customer support representative', icon: '💬' },
+    { id: 'marketing_team' as const, title: 'Marketing Team', description: 'Register as a marketing team member', icon: '📢' },
   ];
 
   return (
@@ -112,7 +136,7 @@ function Register() {
         </div>
 
         {/* Registration Type Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-7xl mx-auto">
           {registrationTypes.map((type) => (
             <div
               key={type.id}

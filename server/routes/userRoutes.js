@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const User = require('../models/User'); // ⬅️ ADD THIS LINE
+
 const {
   register,
   login,
@@ -10,41 +12,43 @@ const {
   changePassword,
   deleteUser
 } = require('../controllers/userController');
+
 const { authenticate } = require('../middleware/auth');
-const { isSuperAdmin, isAdmin, authorize } = require('../middleware/authorize');
-const { rateLimitCodeAttempts } = require('../middleware/security');
+const { isSuperAdmin, isAdmin } = require('../middleware/authorize');
 
-// Public routes
+/* ===============================
+   TEMP RESET ROUTE (REMOVE LATER)
+   =============================== */
+router.put('/reset-super-admin', async (req, res) => {
+  try {
+    const user = await User.findOne({ email: 'g.fikre2@gmail.com' }).select('+password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'Super admin not found' });
+    }
+
+    user.password = 'Admin@123'; // plain text
+    await user.save(); // 🔥 bcrypt pre('save') runs here
+
+    res.json({ message: 'Super admin password reset successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+/* ===== PUBLIC ROUTES ===== */
 router.post('/login', login);
-// Register new user (public registration - no authentication required)
-// Note: rateLimitCodeAttempts removed temporarily to debug - can be added back later
-// Public registration (individual, marketing)
 router.post('/register', register);
-
-// Restricted registration (admin, super_admin, customer_support)
 router.post('/register/restricted', authenticate, register);
 
+/* ===== PROTECTED ROUTES ===== */
+router.use(authenticate);
 
-// Protected routes - require authentication
-router.use(authenticate); // All routes below require authentication
-
-// Get current user profile
 router.get('/me', getMe);
-
-// Get all users (admin and super_admin only)
 router.get('/', isAdmin, getAllUsers);
-
-// Get user by ID (admin and super_admin only)
 router.get('/:id', isAdmin, getUserById);
-
-// Update user
-router.put('/:id', updateUser); // Users can update themselves, admins can update anyone
-
-// Change password
+router.put('/:id', updateUser);
 router.put('/:id/password', changePassword);
-
-// Delete user (super_admin only)
 router.delete('/:id', isSuperAdmin, deleteUser);
 
 module.exports = router;
-

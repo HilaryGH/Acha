@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../services/api';
+import { logout } from '../../utils/auth';
 
 interface User {
   id: string;
@@ -11,6 +13,26 @@ interface User {
   createdAt: string;
 }
 
+interface Order {
+  _id: string;
+  uniqueId: string;
+  buyerId: string;
+  deliveryMethod: string;
+  status: string;
+  orderInfo: {
+    productName: string;
+    productDescription?: string;
+    preferredDeliveryDate?: string;
+  };
+  trackingUpdates: Array<{
+    status: string;
+    message?: string;
+    location?: string;
+    timestamp: string;
+  }>;
+  createdAt: string;
+}
+
 interface IndividualDashboardProps {
   user: User;
 }
@@ -18,12 +40,66 @@ interface IndividualDashboardProps {
 function IndividualDashboard({ user }: IndividualDashboardProps) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'profile' | 'orders' | 'settings'>('overview');
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState({
+    totalOrders: 0,
+    activeOrders: 0
+  });
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, [activeTab]);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      if (activeTab === 'overview' || activeTab === 'orders') {
+        await loadOrders();
+      }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadOrders = async () => {
+    try {
+      // First, get buyer ID from user's buyer record
+      const buyersResponse = await api.buyers.getAll() as { data?: { buyers?: any[] } };
+      const buyers = buyersResponse.data?.buyers || [];
+      const myBuyer = buyers.find((b: any) => b.userId === user.id || b.email === user.email);
+      
+      if (myBuyer) {
+        const ordersResponse = await api.orders.getByBuyer(myBuyer._id) as { data?: { orders?: Order[] } };
+        const myOrders = ordersResponse.data?.orders || [];
+        setOrders(myOrders);
+        setStats({
+          totalOrders: myOrders.length,
+          activeOrders: myOrders.filter((o: Order) => !['completed', 'cancelled'].includes(o.status)).length
+        });
+      } else {
+        // If no buyer record, try to get orders by user ID
+        const allOrdersResponse = await api.orders.getAll() as { data?: { orders?: Order[] } };
+        const allOrders = allOrdersResponse.data?.orders || [];
+        // Filter orders where buyerId might match user
+        const myOrders = allOrders.filter((o: any) => 
+          o.buyerId === user.id || o.buyerId?.toString() === user.id
+        );
+        setOrders(myOrders);
+        setStats({
+          totalOrders: myOrders.length,
+          activeOrders: myOrders.filter((o: Order) => !['completed', 'cancelled'].includes(o.status)).length
+        });
+      }
+    } catch (error) {
+      console.error('Error loading orders:', error);
+    }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.dispatchEvent(new Event('logout'));
-    navigate('/');
+    logout(navigate);
   };
 
   return (
@@ -78,35 +154,42 @@ function IndividualDashboard({ user }: IndividualDashboardProps) {
         <div className="space-y-6">
           {/* Overview Tab */}
           {activeTab === 'overview' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Stats Cards */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Total Orders</p>
-                    <p className="text-2xl font-bold text-gray-900 mt-2">0</p>
-                  </div>
-                  <div className="p-3 bg-blue-100 rounded-lg">
-                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                  </div>
+            <>
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading dashboard...</p>
                 </div>
-              </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* Stats Cards */}
+                  <div className="bg-white rounded-lg shadow-sm p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Total Orders</p>
+                        <p className="text-2xl font-bold text-gray-900 mt-2">{stats.totalOrders}</p>
+                      </div>
+                      <div className="p-3 bg-blue-100 rounded-lg">
+                        <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
 
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Active Orders</p>
-                    <p className="text-2xl font-bold text-gray-900 mt-2">0</p>
+                  <div className="bg-white rounded-lg shadow-sm p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Active Orders</p>
+                        <p className="text-2xl font-bold text-gray-900 mt-2">{stats.activeOrders}</p>
+                      </div>
+                      <div className="p-3 bg-green-100 rounded-lg">
+                        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-3 bg-green-100 rounded-lg">
-                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
 
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <div className="flex items-center justify-between">
@@ -179,6 +262,8 @@ function IndividualDashboard({ user }: IndividualDashboardProps) {
                 </div>
               </div>
             </div>
+              )}
+            </>
           )}
 
           {/* Profile Tab */}
@@ -231,19 +316,105 @@ function IndividualDashboard({ user }: IndividualDashboardProps) {
           {/* Orders Tab */}
           {activeTab === 'orders' && (
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">My Orders</h3>
-              <div className="text-center py-12">
-                <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                <p className="text-gray-600 mb-4">No orders yet</p>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">My Orders</h3>
                 <button
                   onClick={() => navigate('/post-order')}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  Create Your First Order
+                  Create New Order
                 </button>
               </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading orders...</p>
+                </div>
+              ) : orders.length === 0 ? (
+                <div className="text-center py-12">
+                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                  <p className="text-gray-600 mb-4">No orders yet</p>
+                  <button
+                    onClick={() => navigate('/post-order')}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Create Your First Order
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {orders.map((order) => (
+                    <div 
+                      key={order._id} 
+                      className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer"
+                      onClick={() => navigate(`/order-tracking/${order._id}`)}
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="text-lg font-semibold text-gray-900">
+                              Order #{order.uniqueId || order._id.slice(-8)}
+                            </h4>
+                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                              order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                              order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                              order.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {order.status.replace('_', ' ')}
+                            </span>
+                          </div>
+                          <div className="text-sm text-gray-600 space-y-1">
+                            <p><span className="font-medium">Product:</span> {order.orderInfo?.productName || 'N/A'}</p>
+                            {order.orderInfo?.productDescription && (
+                              <p><span className="font-medium">Description:</span> {order.orderInfo.productDescription}</p>
+                            )}
+                            <p><span className="font-medium">Delivery Method:</span> {order.deliveryMethod}</p>
+                            {order.orderInfo?.preferredDeliveryDate && (
+                              <p><span className="font-medium">Preferred Date:</span> {new Date(order.orderInfo.preferredDeliveryDate).toLocaleDateString()}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Latest Tracking Update */}
+                      {order.trackingUpdates && order.trackingUpdates.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <h5 className="text-sm font-medium text-gray-900 mb-2">Latest Update</h5>
+                          {(() => {
+                            const latestUpdate = order.trackingUpdates[order.trackingUpdates.length - 1];
+                            return (
+                              <div className="text-sm text-gray-600">
+                                <span className="font-medium">{latestUpdate.status.replace('_', ' ')}</span>
+                                {latestUpdate.message && <span> - {latestUpdate.message}</span>}
+                                {latestUpdate.location && <span> at {latestUpdate.location}</span>}
+                                <span className="text-gray-400 ml-2">
+                                  {new Date(latestUpdate.timestamp).toLocaleString()}
+                                </span>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      )}
+
+                      <div className="mt-4">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/order-tracking/${order._id}`);
+                          }}
+                          className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                        >
+                          View Details →
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -277,6 +448,13 @@ function IndividualDashboard({ user }: IndividualDashboardProps) {
 }
 
 export default IndividualDashboard;
+
+
+
+
+
+
+
 
 
 

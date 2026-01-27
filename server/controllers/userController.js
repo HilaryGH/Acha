@@ -1,19 +1,16 @@
 const User = require('../models/User');
 const AuditLog = require('../models/AuditLog');
 const { generateToken } = require('../middleware/auth');
-const { verifyRoleCode } = require('../middleware/security');
 
 /**
- * Register a new user with enhanced security
- * - Restricted roles (super_admin, admin, customer_support) require special codes
- * - Only super_admin can create admin and customer_support roles
- * - Only super_admin can create other super_admin roles (with code)
- * - All role creations are logged for audit
+ * Register a new user
+ * - All roles are allowed for public registration
+ * - All role creations are logged for audit (when authenticated)
  */
 const register = async (req, res) => {
   try {
     console.log('Register endpoint called with body:', { ...req.body, password: '***' });
-    const { name, email, password, phone, role, department, code } = req.body;
+    const { name, email, password, phone, role, department } = req.body;
     const creatorRole = req.user?.role;
     const creatorId = req.user?.id;
     const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
@@ -27,113 +24,28 @@ const register = async (req, res) => {
       });
     }
     
-    // Define restricted roles that require codes
-    const restrictedRoles = ['super_admin', 'admin', 'customer_support'];
     // Default role for public registration is 'individual' if not specified
     const requestedRole = role || 'individual';
     
-    // Security Layer 1: Role-based restrictions
-    // Only super_admin can create admin, customer_support, or other super_admin
-    if (restrictedRoles.includes(requestedRole)) {
-      // For restricted roles, authentication is required
-      if (!req.user || creatorRole !== 'super_admin') {
-        // Log failed attempt
-        await AuditLog.create({
-          action: 'code_verification_failed',
-          performedBy: creatorId,
-          details: {
-            attemptedRole: requestedRole,
-            reason: 'Insufficient permissions - only super_admin can create restricted roles'
-          },
-          ipAddress,
-          userAgent,
-          status: 'failed',
-          errorMessage: 'Only super_admin can create restricted roles'
-        });
-        
-        return res.status(403).json({
-          status: 'error',
-          message: 'Only super_admin can create users with restricted roles (super_admin, admin, customer_support)'
-        });
-      }
-      
-      // Security Layer 2: Code verification required
-      if (!code) {
-        await AuditLog.create({
-          action: 'code_verification_failed',
-          performedBy: creatorId,
-          details: {
-            attemptedRole: requestedRole,
-            reason: 'Code not provided'
-          },
-          ipAddress,
-          userAgent,
-          status: 'failed',
-          errorMessage: 'Code required for restricted role'
-        });
-        
-        return res.status(403).json({
-          status: 'error',
-          message: `A special code is required to create a user with role: ${requestedRole}`
-        });
-      }
-      
-      // Security Layer 3: Verify code with enhanced security (rate limiting, timing-safe comparison)
+    // All roles are now allowed for public registration
+    // Log registration for audit (only if we have a creatorId, otherwise skip audit log for public registration)
+    if (creatorId) {
       try {
-        await verifyRoleCode(requestedRole, code, req);
-        
-        // Log successful code verification
         await AuditLog.create({
-          action: 'code_verification_success',
+          action: 'user_created',
           performedBy: creatorId,
           details: {
-            role: requestedRole
+            role: requestedRole,
+            email: email?.toLowerCase(),
+            registrationType: 'admin_created'
           },
           ipAddress,
           userAgent,
           status: 'success'
         });
-      } catch (codeError) {
-        // Log failed code verification
-        await AuditLog.create({
-          action: 'code_verification_failed',
-          performedBy: creatorId,
-          details: {
-            attemptedRole: requestedRole,
-            reason: 'Invalid code'
-          },
-          ipAddress,
-          userAgent,
-          status: 'failed',
-          errorMessage: codeError.message
-        });
-        
-        return res.status(403).json({
-          status: 'error',
-          message: codeError.message || 'Invalid code for the requested role'
-        });
-      }
-    } else {
-      // For non-restricted roles (individual, delivery_partner, etc.), public registration is allowed
-      // Log it for audit (only if we have a creatorId, otherwise skip audit log for public registration)
-      if (creatorId) {
-        try {
-          await AuditLog.create({
-            action: 'user_created',
-            performedBy: creatorId,
-            details: {
-              role: requestedRole,
-              email: email?.toLowerCase(),
-              registrationType: 'admin_created'
-            },
-            ipAddress,
-            userAgent,
-            status: 'success'
-          });
-        } catch (auditError) {
-          // Don't fail registration if audit log fails
-          console.error('Audit log error:', auditError);
-        }
+      } catch (auditError) {
+        // Don't fail registration if audit log fails
+        console.error('Audit log error:', auditError);
       }
     }
     

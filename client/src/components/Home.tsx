@@ -159,8 +159,8 @@ function Home() {
                     </div>
 
                     {/* First Section - Content with Amharic - Overlaid on top for mobile, side-by-side for desktop */}
-                    <div className="w-full md:w-1/2 flex flex-col justify-start md:justify-center px-4 md:px-6 lg:px-8 text-white relative z-10 pt-4 md:pt-0 md:py-0 order-2">
-                      <div className="animate-fade-in-up">
+                    <div className="w-full md:w-1/2 flex flex-col justify-start md:justify-center px-4 md:px-6 lg:px-8 text-white relative z-10 pt-4 md:pt-0 md:py-0 order-2 overflow-hidden">
+                      <div className="animate-fade-in-up relative z-10">
                         <h2 className="text-lg sm:text-xl md:text-5xl lg:text-6xl font-bold mb-2 md:mb-3 text-white animate-slide-in-left leading-tight drop-shadow-lg">
                           {slide.title}
                 </h2>
@@ -171,18 +171,11 @@ function Home() {
                           {slide.description}
                         </p>
                       </div>
-              </div>
-
-                    {/* Second Section - Delivery SVG with White/Transparent Upper Part and Blue Floating Wave - Hidden on mobile, shown on desktop */}
-                    <div className="hidden md:flex w-1/2 items-center justify-center relative overflow-hidden order-1">
-                      {/* White/Transparent background with blue floating waves */}
-                      <div className="absolute inset-0">
-                        {/* White/Transparent gradient from top */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-white/40"></div>
-                        {/* Blue floating wave background */}
+                      {/* Blue floating wave at the bottom of left section - Desktop only */}
+                      <div className="hidden md:block absolute bottom-0 left-0 right-0 h-1/3 z-0">
                         <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
                           <defs>
-                            <linearGradient id={`blueFloatingWave-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                            <linearGradient id={`blueFloatingWaveLeft-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
                               <stop offset="0%" stopColor="#2563eb" stopOpacity="0.4" />
                               <stop offset="25%" stopColor="#3b82f6" stopOpacity="0.5" />
                               <stop offset="50%" stopColor="#2563eb" stopOpacity="0.6" />
@@ -192,44 +185,50 @@ function Home() {
                           </defs>
                           {/* Main floating wave */}
                           <path
-                            fill={`url(#blueFloatingWave-${index})`}
-                            d="M0,40 Q50,20 100,40 T200,40 L200,200 L0,200 Z"
+                            fill={`url(#blueFloatingWaveLeft-${index})`}
+                            d="M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z"
                           >
                             <animate
                               attributeName="d"
-                              values="M0,40 Q50,20 100,40 T200,40 L200,200 L0,200 Z;M0,40 Q50,60 100,40 T200,40 L200,200 L0,200 Z;M0,40 Q50,20 100,40 T200,40 L200,200 L0,200 Z"
+                              values="M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,120 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z"
                               dur="4s"
                               repeatCount="indefinite"
                             />
                           </path>
                           {/* Secondary floating wave */}
                           <path
-                            fill={`url(#blueFloatingWave-${index})`}
-                            d="M0,70 Q50,50 100,70 T200,70 L200,200 L0,200 Z"
+                            fill={`url(#blueFloatingWaveLeft-${index})`}
+                            d="M0,130 Q50,110 100,130 T200,130 L200,200 L0,200 Z"
                             opacity="0.7"
                           >
                             <animate
                               attributeName="d"
-                              values="M0,70 Q50,50 100,70 T200,70 L200,200 L0,200 Z;M0,70 Q50,90 100,70 T200,70 L200,200 L0,200 Z;M0,70 Q50,50 100,70 T200,70 L200,200 L0,200 Z"
+                              values="M0,130 Q50,110 100,130 T200,130 L200,200 L0,200 Z;M0,130 Q50,150 100,130 T200,130 L200,200 L0,200 Z;M0,130 Q50,110 100,130 T200,130 L200,200 L0,200 Z"
                               dur="5s"
                               repeatCount="indefinite"
                             />
                           </path>
                           {/* Tertiary floating wave */}
                           <path
-                            fill={`url(#blueFloatingWave-${index})`}
-                            d="M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z"
+                            fill={`url(#blueFloatingWaveLeft-${index})`}
+                            d="M0,160 Q50,140 100,160 T200,160 L200,200 L0,200 Z"
                             opacity="0.5"
                           >
                             <animate
                               attributeName="d"
-                              values="M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,120 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z"
+                              values="M0,160 Q50,140 100,160 T200,160 L200,200 L0,200 Z;M0,160 Q50,180 100,160 T200,160 L200,200 L0,200 Z;M0,160 Q50,140 100,160 T200,160 L200,200 L0,200 Z"
                               dur="6s"
                               repeatCount="indefinite"
                             />
                           </path>
                         </svg>
                       </div>
+              </div>
+
+                    {/* Second Section - Delivery SVG - Hidden on mobile, shown on desktop */}
+                    <div className="hidden md:flex w-1/2 items-center justify-center relative overflow-hidden order-1">
+                      {/* Simple background for right section */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-100"></div>
                       {/* Delivery SVG */}
                       <div className="relative z-10 text-center animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
                         <div className="w-full h-full flex items-center justify-center p-6 animate-float">
@@ -620,68 +619,68 @@ function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="relative py-20 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
+      <section className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 md:mb-20 animate-fade-in-up">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+          <div className="text-center mb-10 md:mb-12 animate-fade-in-up">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
               How It Works
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Connect with travelers and delivery partners to send and receive items safely and efficiently
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {/* Feature Card 1 - Post Your Trip */}
-            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-4 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <div className="group bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-2 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                 {/* Icon Container */}
-              <div className="mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg group-hover:shadow-green-500/50">
+              <div className="mb-4 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:shadow-green-500/50">
                   ✈️
                   </div>
                 </div>
 
                 {/* Content */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
-                {t('home.features.postTrip.title')}
+              <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
+                Post Your Trip
               </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {t('home.features.postTrip.description')}
+              <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                Share your travel date, departure city, and destination. Help others while you travel.
               </p>
             </div>
 
             {/* Feature Card 2 - Find Travelers */}
-            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-4 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <div className="group bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-2 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               {/* Icon Container */}
-              <div className="mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg group-hover:shadow-green-500/50">
+              <div className="mb-4 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:shadow-green-500/50">
                   📦
                 </div>
               </div>
 
               {/* Content */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
-                {t('home.features.findTravelers.title')}
+              <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
+                Find Travelers
               </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {t('home.features.findTravelers.description')}
+              <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                Search for travelers going to your destination and request item delivery.
               </p>
             </div>
 
             {/* Feature Card 3 - Connect & Deliver */}
-            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-4 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            <div className="group bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-2 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
               {/* Icon Container */}
-              <div className="mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-4xl shadow-lg group-hover:shadow-green-500/50">
+              <div className="mb-4 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:shadow-green-500/50">
                   🤝
                 </div>
               </div>
 
               {/* Content */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">
-                {t('home.features.connectDeliver.title')}
+              <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
+                Connect & Deliver
               </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {t('home.features.connectDeliver.description')}
+              <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                Connect with travelers, coordinate pickup and delivery, and make shipping personal.
               </p>
             </div>
           </div>
@@ -689,9 +688,9 @@ function Home() {
       </section>
 
       {/* Benefits Section */}
-      <section className="relative py-20 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gradient-to-br from-gray-50 via-white to-green-50">
+      <section className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gradient-to-br from-gray-50 via-white to-green-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 md:mb-20 animate-fade-in-up">
+          <div className="text-center mb-10 md:mb-12 animate-fade-in-up">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
             {t('home.benefits.title')}
           </h2>
@@ -780,10 +779,10 @@ function Home() {
       </section>
 
       {/* About Us Section Preview */}
-      <section className="relative py-20 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
+      <section className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
         <div className="max-w-5xl mx-auto">
           {/* Title Section */}
-          <div className="text-center mb-16 animate-fade-in-up">
+          <div className="text-center mb-10 md:mb-12 animate-fade-in-up">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
                     About Us
           </h2>
@@ -824,7 +823,7 @@ function Home() {
       <TripsAndOrdersSection />
 
       {/* Partner With Us, Women Initiatives & Premium Section */}
-      <section className="py-20 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gradient-to-br from-gray-50 via-white to-green-50">
+      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gradient-to-br from-gray-50 via-white to-green-50">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Partner With Us */}
@@ -898,7 +897,7 @@ function Home() {
 
       {/* CTA Section */}
       <section 
-        className="relative py-20 sm:py-24 md:py-32 px-4 sm:px-6 lg:px-8 xl:px-12 overflow-hidden"
+        className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 xl:px-12 overflow-hidden"
         style={{
           backgroundImage: 'url(/background.jpg)',
           backgroundSize: 'cover',
