@@ -51,7 +51,7 @@ function Home() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section with Sliding Carousel */}
-      <section className="relative h-[30vh] min-h-[108px] sm:min-h-[220px] md:min-h-[300px] flex items-center justify-center overflow-hidden bg-gray-100 py-1 md:py-4">
+      <section className="relative h-[30vh] min-h-[86px] sm:min-h-[220px] md:min-h-[300px] flex items-center justify-center overflow-hidden bg-gray-100 py-1 md:py-4">
         <div className="w-[95%] max-w-7xl h-full mx-auto relative overflow-hidden">
           {/* Sliding Container */}
           <div 
@@ -109,13 +109,13 @@ function Home() {
                     {/* Left Side - Content */}
                     <div className="w-1/2 md:w-1/2 flex flex-col justify-center px-3 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-2 md:py-0">
                       <div className="animate-fade-in-up">
-                        <h2 className="text-base sm:text-lg md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-white leading-tight">
+                        <h2 className="text-lg sm:text-lg md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-white leading-tight">
                           {slide.title}
                         </h2>
-                        <h3 className="text-sm sm:text-base md:text-xl lg:text-2xl font-semibold mb-2 md:mb-3 text-white leading-tight">
+                        <h3 className="text-base sm:text-base md:text-xl lg:text-2xl font-semibold mb-2 md:mb-3 text-white leading-tight">
                           {slide.subtitle}
                         </h3>
-                        <p className="text-xs sm:text-sm md:text-base lg:text-lg mb-2 md:mb-6 text-white/90 leading-tight">
+                        <p className="text-sm sm:text-sm md:text-base lg:text-lg mb-2 md:mb-6 text-white/90 leading-tight">
                           {slide.description}
                         </p>
                       </div>
@@ -125,7 +125,7 @@ function Home() {
                     <div className="w-1/2 md:w-1/2 flex items-center justify-center relative">
                       <div className="relative w-full h-full flex items-center justify-center p-2 md:p-0">
                         {/* Animated Delivery SVG - Larger Size */}
-                        <div className="relative animate-float w-full h-full overflow-hidden rounded-xl md:rounded-2xl max-h-[120px] sm:max-h-[140px] md:max-h-full" style={{ animationDelay: `${index * 0.2}s` }}>
+                        <div className="relative animate-float w-full h-full overflow-hidden rounded-xl md:rounded-2xl max-h-[150px] sm:max-h-[140px] md:max-h-full" style={{ animationDelay: `${index * 0.2}s` }}>
                           <img
                             src="/Delivery.svg"
                             alt="Delivery"
