@@ -51,7 +51,7 @@ function Home() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section with Sliding Carousel */}
-      <section className="relative h-[30vh] min-h-[86px] sm:min-h-[220px] md:min-h-[300px] flex items-center justify-center overflow-hidden bg-gray-100 py-1 md:py-4">
+      <section className="relative h-[9vh] min-h-[26px] md:h-[30vh] sm:min-h-[220px] md:min-h-[300px] flex items-center justify-center overflow-hidden bg-gray-100 py-1 md:py-4">
         <div className="w-[95%] max-w-7xl h-full mx-auto relative overflow-hidden">
           {/* Sliding Container */}
           <div 
