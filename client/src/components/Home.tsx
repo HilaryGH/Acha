@@ -402,22 +402,6 @@ function Home() {
               className="relative shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-1 rounded-2xl h-32 md:h-48 flex flex-row md:flex-col"
               style={{ borderRadius: '0 2rem 0 2rem' }}
             >
-              {/* Content - Left side on mobile */}
-              <div className="w-1/2 md:w-full flex flex-col justify-center px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-gradient-to-t md:from-black/80 md:via-black/60 md:to-transparent relative" style={{ borderRadius: '0 0 0 2rem' }}>
-                {/* Icon in top left corner */}
-                <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
-                  <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                  </svg>
-                </div>
-                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white mb-1 md:mb-1.5 relative z-10">
-                  Delivery Partners
-                </h3>
-                <p className="text-[10px] md:text-xs text-gray-700 md:text-white/95 leading-tight md:leading-relaxed relative z-10">
-                  Professional delivery partners ready to serve you
-                </p>
-              </div>
-              
               {/* Background Image - Right side on mobile */}
               <div className="w-1/2 md:w-full md:absolute md:inset-0">
                 <img 
@@ -427,6 +411,23 @@ function Home() {
                   style={{ borderRadius: '0 2rem 0 2rem' }}
                 />
               </div>
+              
+              {/* Icon at top of card */}
+              <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+              </div>
+              
+              {/* Content - Left side on mobile, bottom on desktop */}
+              <div className="w-1/2 md:w-full md:absolute md:bottom-0 flex flex-col justify-center md:justify-end px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-transparent md:bg-gradient-to-b md:from-transparent md:via-black/10 md:to-black/30 relative" style={{ borderRadius: '0 0 0 2rem' }}>
+                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white md:drop-shadow-lg mb-1 md:mb-1.5 relative z-10">
+                  Delivery Partners
+                </h3>
+                <p className="text-[10px] md:text-xs text-gray-700 md:text-white md:drop-shadow-md leading-tight md:leading-relaxed relative z-10">
+                  Professional delivery partners ready to serve you
+                </p>
+              </div>
             </div>
 
             {/* Acha Sisters Delivery Partner */}
@@ -434,22 +435,6 @@ function Home() {
               className="relative shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-1 rounded-2xl h-32 md:h-48 flex flex-row md:flex-col"
               style={{ borderRadius: '0 2rem 0 2rem' }}
             >
-              {/* Content - Left side on mobile */}
-              <div className="w-1/2 md:w-full flex flex-col justify-center px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-gradient-to-t md:from-black/80 md:via-black/60 md:to-transparent relative" style={{ borderRadius: '0 0 0 2rem' }}>
-                {/* Icon in top left corner */}
-                <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
-                  <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white mb-1 md:mb-1.5 relative z-10">
-                  Acha Sisters Delivery Partner
-                </h3>
-                <p className="text-[10px] md:text-xs text-gray-700 md:text-white/95 leading-tight md:leading-relaxed relative z-10">
-                  Empowering women in delivery services
-                </p>
-              </div>
-              
               {/* Background Image - Right side on mobile */}
               <div className="w-1/2 md:w-full md:absolute md:inset-0">
                 <img 
@@ -459,6 +444,23 @@ function Home() {
                   style={{ borderRadius: '0 2rem 0 2rem' }}
                 />
               </div>
+              
+              {/* Icon at top of card */}
+              <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              
+              {/* Content - Left side on mobile, bottom on desktop */}
+              <div className="w-1/2 md:w-full md:absolute md:bottom-0 flex flex-col justify-center md:justify-end px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-transparent md:bg-gradient-to-b md:from-transparent md:via-black/10 md:to-black/30 relative" style={{ borderRadius: '0 0 0 2rem' }}>
+                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white md:drop-shadow-lg mb-1 md:mb-1.5 relative z-10">
+                  Acha Sisters Delivery Partner
+                </h3>
+                <p className="text-[10px] md:text-xs text-gray-700 md:text-white md:drop-shadow-md leading-tight md:leading-relaxed relative z-10">
+                  Empowering women in delivery services
+                </p>
+              </div>
             </div>
             
             {/* Acha Surprise Gift */}
@@ -466,22 +468,6 @@ function Home() {
               className="relative shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-1 rounded-2xl h-32 md:h-48 flex flex-row md:flex-col"
               style={{ borderRadius: '0 2rem 0 2rem' }}
             >
-              {/* Content - Left side on mobile */}
-              <div className="w-1/2 md:w-full flex flex-col justify-center px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-gradient-to-t md:from-black/80 md:via-black/60 md:to-transparent relative" style={{ borderRadius: '0 0 0 2rem' }}>
-                {/* Icon in top left corner */}
-                <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
-                  <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                  </svg>
-                </div>
-                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white mb-1 md:mb-1.5 relative z-10">
-                  Acha Surprise Gift
-                </h3>
-                <p className="text-[10px] md:text-xs text-gray-700 md:text-white/95 leading-tight md:leading-relaxed relative z-10">
-                  Gift Products, Gift Packages, Gift Bundles - Beautifully curated gifts for every occasion
-                </p>
-              </div>
-              
               {/* Background Image - Right side on mobile */}
               <div className="w-1/2 md:w-full md:absolute md:inset-0">
                 <img 
@@ -491,6 +477,23 @@ function Home() {
                   style={{ borderRadius: '0 2rem 0 2rem' }}
                 />
               </div>
+              
+              {/* Icon at top of card */}
+              <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                </svg>
+              </div>
+              
+              {/* Content - Left side on mobile, bottom on desktop */}
+              <div className="w-1/2 md:w-full md:absolute md:bottom-0 flex flex-col justify-center md:justify-end px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-transparent md:bg-gradient-to-b md:from-transparent md:via-black/10 md:to-black/30 relative" style={{ borderRadius: '0 0 0 2rem' }}>
+                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white md:drop-shadow-lg mb-1 md:mb-1.5 relative z-10">
+                  Acha Surprise Gift
+                </h3>
+                <p className="text-[10px] md:text-xs text-gray-700 md:text-white md:drop-shadow-md leading-tight md:leading-relaxed relative z-10">
+                  Gift Products, Gift Packages, Gift Bundles - Beautifully curated gifts for every occasion
+                </p>
+              </div>
             </div>
 
             {/* Acha Movers & Packers */}
@@ -498,22 +501,6 @@ function Home() {
               className="relative shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-1 rounded-2xl h-32 md:h-48 flex flex-row md:flex-col"
               style={{ borderRadius: '0 2rem 0 2rem' }}
             >
-              {/* Content - Left side on mobile */}
-              <div className="w-1/2 md:w-full flex flex-col justify-center px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-gradient-to-t md:from-black/80 md:via-black/60 md:to-transparent relative" style={{ borderRadius: '0 0 0 2rem' }}>
-                {/* Icon in top left corner */}
-                <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
-                  <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                </div>
-                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white mb-1 md:mb-1.5 relative z-10">
-                  Acha Movers & Packers
-                </h3>
-                <p className="text-[10px] md:text-xs text-gray-700 md:text-white/95 leading-tight md:leading-relaxed relative z-10">
-                  Professional moving and packing services
-                </p>
-              </div>
-              
               {/* Background Image - Right side on mobile */}
               <div className="w-1/2 md:w-full md:absolute md:inset-0">
                 <img 
@@ -522,6 +509,23 @@ function Home() {
                   className="w-full h-full object-cover"
                   style={{ borderRadius: '0 2rem 0 2rem' }}
                 />
+              </div>
+              
+              {/* Icon at top of card */}
+              <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              
+              {/* Content - Left side on mobile, bottom on desktop */}
+              <div className="w-1/2 md:w-full md:absolute md:bottom-0 flex flex-col justify-center md:justify-end px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-transparent md:bg-gradient-to-b md:from-transparent md:via-black/10 md:to-black/30 relative" style={{ borderRadius: '0 0 0 2rem' }}>
+                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white md:drop-shadow-lg mb-1 md:mb-1.5 relative z-10">
+                  Acha Movers & Packers
+                </h3>
+                <p className="text-[10px] md:text-xs text-gray-700 md:text-white md:drop-shadow-md leading-tight md:leading-relaxed relative z-10">
+                  Professional moving and packing services
+                </p>
               </div>
             </div>
           </div>
