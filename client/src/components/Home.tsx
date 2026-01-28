@@ -51,7 +51,7 @@ function Home() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section with Sliding Carousel */}
-      <section className="relative h-[30vh] min-h-[180px] sm:min-h-[220px] md:min-h-[300px] flex items-center justify-center overflow-hidden bg-gray-100 py-1 md:py-4">
+      <section className="relative h-[30vh] min-h-[108px] sm:min-h-[220px] md:min-h-[300px] flex items-center justify-center overflow-hidden bg-gray-100 py-1 md:py-4">
         <div className="w-[95%] max-w-7xl h-full mx-auto relative overflow-hidden">
           {/* Sliding Container */}
           <div 
@@ -66,176 +66,70 @@ function Home() {
                 className="min-w-full h-full flex-shrink-0 bg-gradient-to-br from-green-600 via-green-500 to-green-700 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden relative"
               >
                 {slide.isSpecial ? (
-                  /* Special Layout for Second Slide - Two Sections with Blended Transition */
-                  <div className="flex flex-col md:flex-row h-full relative">
-                    {/* Background Image/SVG for Mobile */}
-                    <div className="absolute inset-0 md:hidden z-0">
-                      {/* Delivery SVG as Background - More visible */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <img 
-                          src="/Delivery.svg" 
-                          alt="Delivery" 
-                          className="w-full h-full object-cover opacity-50" 
-                        />
-                      </div>
-                      {/* Animated Wave Background with Blended Transition - Only bottom part */}
-                      <div className="absolute inset-0">
-                        <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
+                  /* Special Layout for Second Slide - Two Sections with Green Background */
+                  <div className="flex flex-row h-full relative">
+                    {/* Green Background with Brand-Aligned Pattern */}
+                    <div className="absolute inset-0 z-0 bg-gradient-to-br from-green-600 via-green-500 to-green-700">
+                      {/* Subtle pattern overlay for brand alignment */}
+                      <div className="absolute inset-0 opacity-10">
+                        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                           <defs>
-                            <linearGradient id={`waveGradient-mobile-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                              <stop offset="0%" stopColor="#16a34a" stopOpacity="0.2" />
-                              <stop offset="20%" stopColor="#22c55e" stopOpacity="0.3" />
-                              <stop offset="40%" stopColor="#3b82f6" stopOpacity="0.4" />
-                              <stop offset="60%" stopColor="#2563eb" stopOpacity="0.6" />
-                              <stop offset="80%" stopColor="#2563eb" stopOpacity="0.7" />
-                              <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.6" />
-                            </linearGradient>
+                            <pattern id={`greenPattern-${index}`} x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                              <circle cx="10" cy="10" r="1" fill="#ffffff" opacity="0.3"/>
+                            </pattern>
                           </defs>
-                          <path
-                            fill={`url(#waveGradient-mobile-${index})`}
-                            d="M0,100 Q50,50 100,100 T200,100 L200,200 L0,200 Z"
-                          >
-                            <animate
-                              attributeName="d"
-                              values="M0,100 Q50,50 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,150 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,50 100,100 T200,100 L200,200 L0,200 Z"
-                              dur="3s"
-                              repeatCount="indefinite"
-                            />
-                          </path>
+                          <rect width="100" height="100" fill={`url(#greenPattern-${index})`} />
                         </svg>
                       </div>
-                      {/* Gradient overlay - lighter at top, darker at bottom for text readability */}
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20"></div>
-                    </div>
-
-                    {/* Blending Gradient Overlay for Smooth Transition - Desktop Only */}
-                    <div className="hidden md:block absolute inset-0 z-0 pointer-events-none">
-                      {/* Left side - Green gradient */}
-                      <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-green-600 via-green-500 to-transparent opacity-100"></div>
-                      {/* Right side - White/Transparent upper part with blue floating wave */}
-                      <div className="absolute right-0 top-0 bottom-0 w-1/2">
-                        {/* White/Transparent gradient from top */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/50 to-transparent"></div>
-                        {/* Blue floating wave overlay */}
-                        <div className="absolute inset-0">
-                          <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
-                            <defs>
-                              <linearGradient id={`blueWaveGradient-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stopColor="#2563eb" stopOpacity="0.3" />
-                                <stop offset="30%" stopColor="#3b82f6" stopOpacity="0.4" />
-                                <stop offset="60%" stopColor="#2563eb" stopOpacity="0.5" />
-                                <stop offset="100%" stopColor="#1d4ed8" stopOpacity="0.2" />
-                              </linearGradient>
-                            </defs>
-                            <path
-                              fill={`url(#blueWaveGradient-${index})`}
-                              d="M0,50 Q50,30 100,50 T200,50 L200,200 L0,200 Z"
-                            >
-                              <animate
-                                attributeName="d"
-                                values="M0,50 Q50,30 100,50 T200,50 L200,200 L0,200 Z;M0,50 Q50,70 100,50 T200,50 L200,200 L0,200 Z;M0,50 Q50,30 100,50 T200,50 L200,200 L0,200 Z"
-                                dur="4s"
-                                repeatCount="indefinite"
-                              />
-                            </path>
-                            {/* Additional floating wave */}
-                            <path
-                              fill={`url(#blueWaveGradient-${index})`}
-                              d="M0,80 Q50,60 100,80 T200,80 L200,200 L0,200 Z"
-                              opacity="0.6"
-                            >
-                              <animate
-                                attributeName="d"
-                                values="M0,80 Q50,60 100,80 T200,80 L200,200 L0,200 Z;M0,80 Q50,100 100,80 T200,80 L200,200 L0,200 Z;M0,80 Q50,60 100,80 T200,80 L200,200 L0,200 Z"
-                                dur="5s"
-                                repeatCount="indefinite"
-                              />
-                            </path>
-                          </svg>
-                        </div>
-                      </div>
-                      {/* Blending transition in the middle */}
-                      <div className="absolute left-1/2 top-0 bottom-0 w-32 transform -translate-x-1/2 bg-gradient-to-r from-green-500 via-green-400/50 to-blue-400/50 opacity-80 blur-xl"></div>
-                    </div>
-
-                    {/* First Section - Content with Amharic - Overlaid on top for mobile, side-by-side for desktop */}
-                    <div className="w-full md:w-1/2 flex flex-col justify-start md:justify-center px-4 md:px-6 lg:px-8 text-white relative z-10 pt-4 md:pt-0 md:py-0 order-2 overflow-hidden">
-                      <div className="animate-fade-in-up relative z-10">
-                        <h2 className="text-lg sm:text-xl md:text-5xl lg:text-6xl font-bold mb-2 md:mb-3 text-white animate-slide-in-left leading-tight drop-shadow-lg">
-                          {slide.title}
-                </h2>
-                        <h3 className="text-base sm:text-lg md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 animate-fade-in-up leading-tight drop-shadow-lg" style={{ animationDelay: '0.3s', color: '#2563eb' }}>
-                          {slide.subtitle}
-                </h3>
-                        <p className="text-sm sm:text-base md:text-xl lg:text-2xl mb-2 md:mb-4 text-white/95 leading-tight animate-fade-in-up drop-shadow-md" style={{ animationDelay: '0.5s' }}>
-                          {slide.description}
-                        </p>
-                      </div>
-                      {/* Blue floating wave at the bottom of left section - Desktop only */}
-                      <div className="hidden md:block absolute bottom-0 left-0 right-0 h-1/3 z-0">
+                      {/* Subtle wave pattern for depth */}
+                      <div className="absolute inset-0 opacity-20">
                         <svg className="w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="none">
                           <defs>
-                            <linearGradient id={`blueFloatingWaveLeft-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                              <stop offset="0%" stopColor="#2563eb" stopOpacity="0.4" />
-                              <stop offset="25%" stopColor="#3b82f6" stopOpacity="0.5" />
-                              <stop offset="50%" stopColor="#2563eb" stopOpacity="0.6" />
-                              <stop offset="75%" stopColor="#1d4ed8" stopOpacity="0.5" />
-                              <stop offset="100%" stopColor="#2563eb" stopOpacity="0.3" />
+                            <linearGradient id={`greenWaveGradient-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" stopColor="#22c55e" stopOpacity="0.3" />
+                              <stop offset="50%" stopColor="#16a34a" stopOpacity="0.2" />
+                              <stop offset="100%" stopColor="#15803d" stopOpacity="0.3" />
                             </linearGradient>
                           </defs>
-                          {/* Main floating wave */}
                           <path
-                            fill={`url(#blueFloatingWaveLeft-${index})`}
+                            fill={`url(#greenWaveGradient-${index})`}
                             d="M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z"
                           >
                             <animate
                               attributeName="d"
                               values="M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,120 100,100 T200,100 L200,200 L0,200 Z;M0,100 Q50,80 100,100 T200,100 L200,200 L0,200 Z"
-                              dur="4s"
-                              repeatCount="indefinite"
-                            />
-                          </path>
-                          {/* Secondary floating wave */}
-                          <path
-                            fill={`url(#blueFloatingWaveLeft-${index})`}
-                            d="M0,130 Q50,110 100,130 T200,130 L200,200 L0,200 Z"
-                            opacity="0.7"
-                          >
-                            <animate
-                              attributeName="d"
-                              values="M0,130 Q50,110 100,130 T200,130 L200,200 L0,200 Z;M0,130 Q50,150 100,130 T200,130 L200,200 L0,200 Z;M0,130 Q50,110 100,130 T200,130 L200,200 L0,200 Z"
-                              dur="5s"
-                              repeatCount="indefinite"
-                            />
-                          </path>
-                          {/* Tertiary floating wave */}
-                          <path
-                            fill={`url(#blueFloatingWaveLeft-${index})`}
-                            d="M0,160 Q50,140 100,160 T200,160 L200,200 L0,200 Z"
-                            opacity="0.5"
-                          >
-                            <animate
-                              attributeName="d"
-                              values="M0,160 Q50,140 100,160 T200,160 L200,200 L0,200 Z;M0,160 Q50,180 100,160 T200,160 L200,200 L0,200 Z;M0,160 Q50,140 100,160 T200,160 L200,200 L0,200 Z"
                               dur="6s"
                               repeatCount="indefinite"
                             />
                           </path>
                         </svg>
                       </div>
-              </div>
+                    </div>
 
-                    {/* Second Section - Delivery SVG - Hidden on mobile, shown on desktop */}
-                    <div className="hidden md:flex w-1/2 items-center justify-center relative overflow-hidden order-1">
-                      {/* Simple background for right section */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-100"></div>
-                      {/* Delivery SVG */}
-                      <div className="relative z-10 text-center animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
-                        <div className="w-full h-full flex items-center justify-center p-6 animate-float">
-                          <img 
-                            src="/Delivery.svg" 
-                            alt="Delivery" 
-                            className="w-full h-full max-w-full max-h-full object-contain filter drop-shadow-2xl" 
+                    {/* Left Side - Content */}
+                    <div className="w-1/2 md:w-1/2 flex flex-col justify-center px-3 md:px-6 lg:px-10 xl:px-12 text-white relative z-10 py-2 md:py-0">
+                      <div className="animate-fade-in-up">
+                        <h2 className="text-base sm:text-lg md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 text-white leading-tight">
+                          {slide.title}
+                        </h2>
+                        <h3 className="text-sm sm:text-base md:text-xl lg:text-2xl font-semibold mb-2 md:mb-3 text-white leading-tight">
+                          {slide.subtitle}
+                        </h3>
+                        <p className="text-xs sm:text-sm md:text-base lg:text-lg mb-2 md:mb-6 text-white/90 leading-tight">
+                          {slide.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right Side - Delivery SVG - Bigger Image */}
+                    <div className="w-1/2 md:w-1/2 flex items-center justify-center relative">
+                      <div className="relative w-full h-full flex items-center justify-center p-2 md:p-0">
+                        {/* Animated Delivery SVG - Larger Size */}
+                        <div className="relative animate-float w-full h-full overflow-hidden rounded-xl md:rounded-2xl max-h-[120px] sm:max-h-[140px] md:max-h-full" style={{ animationDelay: `${index * 0.2}s` }}>
+                          <img
+                            src="/Delivery.svg"
+                            alt="Delivery"
+                            className="w-full h-full object-contain shadow-2xl transform hover:scale-105 transition-transform duration-500 rounded-xl md:rounded-2xl brightness-110"
                           />
                         </div>
                       </div>
@@ -402,9 +296,9 @@ function Home() {
                         <h2 className={`${index === 0 ? 'text-base sm:text-lg md:text-3xl lg:text-4xl' : 'text-[11px] sm:text-sm md:text-3xl lg:text-4xl'} font-bold ${index === 0 ? 'mb-2 md:mb-3' : 'mb-0 md:mb-3'} text-white ${index === 0 ? 'leading-normal' : 'leading-[1.2]'}`}>
                           {slide.title}
                         </h2>
-                        {/* Show subtitle for first slide on desktop, for other slides always */}
+                        {/* Show subtitle for first slide on mobile and desktop */}
                         {(index === 0 ? (
-                          <h3 className="hidden md:block text-xl lg:text-2xl font-semibold mb-2 md:mb-3 text-green-100 leading-normal">
+                          <h3 className="text-sm sm:text-base md:text-xl lg:text-2xl font-semibold mb-2 md:mb-3 text-green-100 leading-normal">
                             {slide.subtitle}
                           </h3>
                         ) : (
@@ -412,9 +306,9 @@ function Home() {
                             {slide.subtitle}
                           </h3>
                         ))}
-                        {/* Show description for first slide on desktop, for other slides always */}
+                        {/* Show description for first slide on mobile and desktop */}
                         {(index === 0 ? (
-                          <p className="hidden md:block text-base lg:text-lg mb-4 md:mb-6 text-white/90 leading-relaxed">
+                          <p className="text-xs sm:text-sm md:text-base lg:text-lg mb-3 md:mb-4 text-white/90 leading-relaxed">
                             {slide.description}
                           </p>
                         ) : (
@@ -504,115 +398,131 @@ function Home() {
           {/* Service Cards Grid - Compact */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Delivery Partners */}
-            <div className="bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex relative" style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(37, 99, 235, 0.1), 0 4px 12px -2px rgba(37, 99, 235, 0.2)', borderRadius: '0 2rem 0 2rem' }}>
-              <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
-                  </div>
-              <div className="flex-1 p-4 flex flex-col justify-center bg-green-50/30">
-                <h3 className="text-sm font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">
+            <div 
+              className="relative shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-1 rounded-2xl h-32 md:h-48 flex flex-row md:flex-col"
+              style={{ borderRadius: '0 2rem 0 2rem' }}
+            >
+              {/* Content - Left side on mobile */}
+              <div className="w-1/2 md:w-full flex flex-col justify-center px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-gradient-to-t md:from-black/80 md:via-black/60 md:to-transparent relative" style={{ borderRadius: '0 0 0 2rem' }}>
+                {/* Icon in top left corner */}
+                <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                  <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                  </svg>
+                </div>
+                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white mb-1 md:mb-1.5 relative z-10">
                   Delivery Partners
                 </h3>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-[10px] md:text-xs text-gray-700 md:text-white/95 leading-tight md:leading-relaxed relative z-10">
                   Professional delivery partners ready to serve you
                 </p>
-                <Link
-                  to="/catalogue?type=delivery-partners"
-                  className="text-green-600 hover:text-green-700 font-semibold text-xs flex items-center gap-1"
-                >
-                  View More
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-                </div>
-              {/* Blue brand shadow accent in rounded corner */}
-              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-[#2563eb]/20 blur-sm group-hover:blur-md transition-all duration-300" style={{ borderRadius: '0 2rem 0 0' }}></div>
               </div>
+              
+              {/* Background Image - Right side on mobile */}
+              <div className="w-1/2 md:w-full md:absolute md:inset-0">
+                <img 
+                  src="/Delivery partners.png" 
+                  alt="Delivery Partners"
+                  className="w-full h-full object-cover"
+                  style={{ borderRadius: '0 2rem 0 2rem' }}
+                />
+              </div>
+            </div>
 
             {/* Acha Sisters Delivery Partner */}
-            <div className="bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex relative" style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(37, 99, 235, 0.1), 0 4px 12px -2px rgba(37, 99, 235, 0.2)', borderRadius: '0 2rem 0 2rem' }}>
-              <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <div className="flex-1 p-4 flex flex-col justify-center bg-green-50/30">
-                <h3 className="text-sm font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">
+            <div 
+              className="relative shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-1 rounded-2xl h-32 md:h-48 flex flex-row md:flex-col"
+              style={{ borderRadius: '0 2rem 0 2rem' }}
+            >
+              {/* Content - Left side on mobile */}
+              <div className="w-1/2 md:w-full flex flex-col justify-center px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-gradient-to-t md:from-black/80 md:via-black/60 md:to-transparent relative" style={{ borderRadius: '0 0 0 2rem' }}>
+                {/* Icon in top left corner */}
+                <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                  <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white mb-1 md:mb-1.5 relative z-10">
                   Acha Sisters Delivery Partner
                 </h3>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-[10px] md:text-xs text-gray-700 md:text-white/95 leading-tight md:leading-relaxed relative z-10">
                   Empowering women in delivery services
                 </p>
-                <Link 
-                  to="/catalogue?type=acha-sisters"
-                  className="text-green-600 hover:text-green-700 font-semibold text-xs flex items-center gap-1"
-                >
-                  View More
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                </Link>
               </div>
-              {/* Blue brand shadow accent in rounded corner */}
-              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-[#2563eb]/20 blur-sm group-hover:blur-md transition-all duration-300" style={{ borderRadius: '0 2rem 0 0' }}></div>
+              
+              {/* Background Image - Right side on mobile */}
+              <div className="w-1/2 md:w-full md:absolute md:inset-0">
+                <img 
+                  src="/Acha Sisters Delivery Partner.png" 
+                  alt="Acha Sisters Delivery Partner"
+                  className="w-full h-full object-cover"
+                  style={{ borderRadius: '0 2rem 0 2rem' }}
+                />
+              </div>
             </div>
             
             {/* Acha Surprise Gift */}
-            <div className="bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex relative" style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(37, 99, 235, 0.1), 0 4px 12px -2px rgba(37, 99, 235, 0.2)', borderRadius: '0 2rem 0 2rem' }}>
-              <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                </svg>
-              </div>
-              <div className="flex-1 p-4 flex flex-col justify-center bg-green-50/30">
-                <h3 className="text-sm font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">
+            <div 
+              className="relative shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-1 rounded-2xl h-32 md:h-48 flex flex-row md:flex-col"
+              style={{ borderRadius: '0 2rem 0 2rem' }}
+            >
+              {/* Content - Left side on mobile */}
+              <div className="w-1/2 md:w-full flex flex-col justify-center px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-gradient-to-t md:from-black/80 md:via-black/60 md:to-transparent relative" style={{ borderRadius: '0 0 0 2rem' }}>
+                {/* Icon in top left corner */}
+                <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                  <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                  </svg>
+                </div>
+                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white mb-1 md:mb-1.5 relative z-10">
                   Acha Surprise Gift
                 </h3>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-[10px] md:text-xs text-gray-700 md:text-white/95 leading-tight md:leading-relaxed relative z-10">
                   Gift Products, Gift Packages, Gift Bundles - Beautifully curated gifts for every occasion
                 </p>
-                <Link
-                  to="/catalogue?type=surprise-gift"
-                  className="text-green-600 hover:text-green-700 font-semibold text-xs flex items-center gap-1"
-                >
-                  View More
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
               </div>
-              {/* Blue brand shadow accent in rounded corner */}
-              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-[#2563eb]/20 blur-sm group-hover:blur-md transition-all duration-300" style={{ borderRadius: '0 2rem 0 0' }}></div>
+              
+              {/* Background Image - Right side on mobile */}
+              <div className="w-1/2 md:w-full md:absolute md:inset-0">
+                <img 
+                  src="/Acha Surprise Gift.png" 
+                  alt="Acha Surprise Gift"
+                  className="w-full h-full object-cover"
+                  style={{ borderRadius: '0 2rem 0 2rem' }}
+                />
+              </div>
             </div>
 
             {/* Acha Movers & Packers */}
-            <div className="bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden group hover:-translate-y-1 flex relative" style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(37, 99, 235, 0.1), 0 4px 12px -2px rgba(37, 99, 235, 0.2)', borderRadius: '0 2rem 0 2rem' }}>
-              <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-              <div className="flex-1 p-4 flex flex-col justify-center bg-green-50/30">
-                <h3 className="text-sm font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">
+            <div 
+              className="relative shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-1 rounded-2xl h-32 md:h-48 flex flex-row md:flex-col"
+              style={{ borderRadius: '0 2rem 0 2rem' }}
+            >
+              {/* Content - Left side on mobile */}
+              <div className="w-1/2 md:w-full flex flex-col justify-center px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-gradient-to-t md:from-black/80 md:via-black/60 md:to-transparent relative" style={{ borderRadius: '0 0 0 2rem' }}>
+                {/* Icon in top left corner */}
+                <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20" style={{ borderRadius: '0 2rem 0 2rem', backgroundColor: '#2563eb' }}>
+                  <svg className="w-6 h-6 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                </div>
+                <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white mb-1 md:mb-1.5 relative z-10">
                   Acha Movers & Packers
                 </h3>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-[10px] md:text-xs text-gray-700 md:text-white/95 leading-tight md:leading-relaxed relative z-10">
                   Professional moving and packing services
                 </p>
-                <Link
-                  to="/catalogue?type=movers-packers"
-                  className="text-green-600 hover:text-green-700 font-semibold text-xs flex items-center gap-1"
-                >
-                  View More
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-            </div>
-            {/* Blue brand shadow accent in rounded corner */}
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-[#2563eb]/20 blur-sm group-hover:blur-md transition-all duration-300" style={{ borderRadius: '0 2rem 0 0' }}></div>
+              </div>
+              
+              {/* Background Image - Right side on mobile */}
+              <div className="w-1/2 md:w-full md:absolute md:inset-0">
+                <img 
+                  src="/Acha Movers & Packers.png" 
+                  alt="Acha Movers & Packers"
+                  className="w-full h-full object-cover"
+                  style={{ borderRadius: '0 2rem 0 2rem' }}
+                />
+              </div>
             </div>
           </div>
         </div>

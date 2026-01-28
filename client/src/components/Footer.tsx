@@ -1,11 +1,41 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { api } from '../services/api';
 
 function Footer() {
   const { t } = useTranslation();
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !email.includes('@')) {
+      setMessage({ type: 'error', text: t('footer.subscription.invalidEmail') });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setMessage(null);
+
+    try {
+      await api.subscriptions.subscribe(email);
+      setMessage({ type: 'success', text: t('footer.subscription.success') });
+      setEmail('');
+    } catch (error: any) {
+      setMessage({ 
+        type: 'error', 
+        text: error.message || t('footer.subscription.error') 
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <footer className="bg-gray-900 text-gray-300 border-t-4" style={{ borderTopColor: '#1E88E5' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-16 sm:py-20 md:py-24 lg:py-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12">
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -106,6 +136,41 @@ function Footer() {
                 <a href="mailto:g.fikre2@gmail.com" className="text-sm hover:text-[#9CCC65] transition-colors break-all">g.fikre2@gmail.com</a>
               </li>
             </ul>
+          </div>
+
+          {/* Newsletter Subscription */}
+          <div>
+            <h3 className="text-white font-semibold text-lg mb-4">{t('footer.subscription.title')}</h3>
+            <p className="text-xs text-gray-400 mb-3">
+              {t('footer.subscription.description')}
+            </p>
+            <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t('footer.subscription.placeholder')}
+                className="w-full px-3 py-2 text-sm bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1E88E5] focus:border-transparent"
+                disabled={isSubmitting}
+                required
+              />
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full px-4 py-2 text-sm bg-[#1E88E5] hover:bg-[#1976D2] text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? t('footer.subscription.subscribing') : t('footer.subscription.subscribe')}
+              </button>
+            </form>
+            {message && (
+              <div className={`mt-2 text-xs ${
+                message.type === 'success' 
+                  ? 'text-[#9CCC65]' 
+                  : 'text-red-400'
+              }`}>
+                {message.text}
+              </div>
+            )}
           </div>
         </div>
 

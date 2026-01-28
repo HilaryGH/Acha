@@ -366,6 +366,25 @@ export const api = {
     },
   },
 
+  // Subscription endpoints
+  subscriptions: {
+    subscribe: async (email: string) => {
+      return request('/subscriptions/subscribe', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      });
+    },
+    unsubscribe: async (email: string) => {
+      return request('/subscriptions/unsubscribe', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      });
+    },
+    getAll: async () => {
+      return request('/subscriptions');
+    },
+  },
+
   // Order endpoints
   orders: {
     getAll: async (params?: { status?: string; deliveryMethod?: string; buyerId?: string }) => {

@@ -56,26 +56,79 @@ function TripsAndOrdersSection() {
       setLoading(true);
       
       // Fetch trips
-      const tripsResponse = await api.travellers.getAll() as { status?: string; data?: any[] };
-      if (tripsResponse.status === 'success') {
-        const activeTrips = (tripsResponse.data || [])
+      const tripsResponse = await api.travellers.getAll() as { status?: string; data?: any[]; count?: number; message?: string };
+      console.log('Trips response:', tripsResponse);
+      
+      // Check if response indicates an error
+      if (tripsResponse.status === 'error') {
+        console.error('Trips API error:', tripsResponse.message);
+        setAllTrips([]);
+        setTrips([]);
+      } else {
+        // Handle both response structures: { status: 'success', data: [...] } or direct array
+        const tripsData = tripsResponse.status === 'success' 
+          ? (tripsResponse.data || [])
+          : Array.isArray(tripsResponse) 
+            ? tripsResponse 
+            : [];
+        
+        // Filter trips - show active, verified, pending, or if none exist, show all recent trips
+        let activeTrips = tripsData
           .filter((trip: Trip) => trip.status === 'active' || trip.status === 'verified' || trip.status === 'pending')
           .sort((a: Trip, b: Trip) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        
+        // If no active trips found, show all recent trips (excluding cancelled/completed)
+        if (activeTrips.length === 0) {
+          activeTrips = tripsData
+            .filter((trip: Trip) => trip.status !== 'cancelled' && trip.status !== 'completed')
+            .sort((a: Trip, b: Trip) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        }
+        
         setAllTrips(activeTrips);
         setTrips(activeTrips.slice(0, 5));
+        console.log('Active trips:', activeTrips.length, 'Total trips:', tripsData.length);
       }
 
       // Fetch orders from new Order API
-      const ordersResponse = await api.orders.getAll() as { status?: string; data?: any[] };
-      if (ordersResponse.status === 'success') {
-        const activeOrders = (ordersResponse.data || [])
-          .filter((order: Order) => order.status === 'pending' || order.status === 'matched' || order.status === 'assigned')
+      const ordersResponse = await api.orders.getAll() as { status?: string; data?: any[]; count?: number; message?: string };
+      console.log('Orders response:', ordersResponse);
+      
+      // Check if response indicates an error
+      if (ordersResponse.status === 'error') {
+        console.error('Orders API error:', ordersResponse.message);
+        setAllOrders([]);
+        setOrders([]);
+      } else {
+        // Handle both response structures: { status: 'success', data: [...] } or direct array
+        const ordersData = ordersResponse.status === 'success'
+          ? (ordersResponse.data || [])
+          : Array.isArray(ordersResponse)
+            ? ordersResponse
+            : [];
+        
+        // Filter orders - show pending, matched, assigned, active, or if none exist, show all recent orders
+        let activeOrders = ordersData
+          .filter((order: Order) => order.status === 'pending' || order.status === 'matched' || order.status === 'assigned' || order.status === 'active')
           .sort((a: Order, b: Order) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        
+        // If no active orders found, show all recent orders (excluding cancelled/completed/delivered)
+        if (activeOrders.length === 0) {
+          activeOrders = ordersData
+            .filter((order: Order) => order.status !== 'cancelled' && order.status !== 'completed' && order.status !== 'delivered')
+            .sort((a: Order, b: Order) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        }
+        
         setAllOrders(activeOrders);
         setOrders(activeOrders.slice(0, 5));
+        console.log('Active orders:', activeOrders.length, 'Total orders:', ordersData.length);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+      // Set empty arrays on error to show "no data" message
+      setAllTrips([]);
+      setTrips([]);
+      setAllOrders([]);
+      setOrders([]);
     } finally {
       setLoading(false);
     }

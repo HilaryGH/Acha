@@ -15,6 +15,7 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const auditRoutes = require('./routes/auditRoutes');
 const womenInitiativeRoutes = require('./routes/womenInitiativeRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const subscriptionRoutes = require('./routes/subscriptionRoutes');
 
 // Initialize Express app
 const app = express();
@@ -51,6 +52,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/audit', auditRoutes);
 app.use('/api/women-initiatives', womenInitiativeRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
 
 // Log route registration
 console.log('✅ Routes registered: /api/orders');

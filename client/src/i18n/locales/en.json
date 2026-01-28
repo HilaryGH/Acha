@@ -81,7 +81,17 @@
     "privacyPolicy": "Privacy Policy",
     "termsConditions": "Terms & Conditions",
     "copyright": "All rights reserved.",
-    "description": "Connecting travelers with senders to make shipping easier, faster, and more affordable."
+    "description": "Connecting travelers with senders to make shipping easier, faster, and more affordable.",
+    "subscription": {
+      "title": "Subscribe to Our Newsletter",
+      "description": "Stay updated with the latest news, offers, and delivery updates.",
+      "placeholder": "Enter your email address",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "success": "Thank you for subscribing!",
+      "error": "Failed to subscribe. Please try again.",
+      "invalidEmail": "Please enter a valid email address"
+    }
   },
   "common": {
     "freeDelivery": "Free delivery on orders over $50"
