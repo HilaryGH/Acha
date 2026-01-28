@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
+import PaymentForm from '../components/PaymentForm';
+import Invoice from '../components/Invoice';
 
 function OrderTracking() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -9,15 +11,36 @@ function OrderTracking() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
+  const [transaction, setTransaction] = useState<any>(null);
+  const [showPayment, setShowPayment] = useState(false);
+  const [showInvoice, setShowInvoice] = useState(false);
 
   useEffect(() => {
     if (orderId) {
       fetchOrder();
+      fetchTransaction();
       // Poll for updates every 10 seconds
-      const interval = setInterval(fetchOrder, 10000);
+      const interval = setInterval(() => {
+        fetchOrder();
+        fetchTransaction();
+      }, 10000);
       return () => clearInterval(interval);
     }
   }, [orderId]);
+
+  const fetchTransaction = async () => {
+    if (!orderId) return;
+    
+    try {
+      const response = await api.transactions.getByOrder(orderId) as { status?: string; data?: any[] };
+      if (response.status === 'success' && response.data && response.data.length > 0) {
+        setTransaction(response.data[0]); // Get the most recent transaction
+      }
+    } catch (err) {
+      // Transaction might not exist yet, that's okay
+      console.log('No transaction found yet');
+    }
+  };
 
   const fetchOrder = async () => {
     if (!orderId) return;
@@ -174,6 +197,36 @@ function OrderTracking() {
             </div>
           )}
 
+          {/* Payment Status */}
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-1">Payment Status</p>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  order.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' :
+                  order.paymentStatus === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                  order.paymentStatus === 'failed' ? 'bg-red-100 text-red-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {order.paymentStatus ? order.paymentStatus.toUpperCase() : 'PENDING'}
+                </span>
+              </div>
+              {transaction && transaction.status === 'completed' && (
+                <button
+                  onClick={() => setShowInvoice(true)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                >
+                  View Invoice
+                </button>
+              )}
+            </div>
+            {order.pricing && (
+              <div className="mt-3 text-sm">
+                <p className="text-gray-600">Total Amount: <span className="font-semibold">{order.pricing.totalAmount?.toFixed(2) || '0.00'} {order.pricing.currency || 'ETB'}</span></p>
+              </div>
+            )}
+          </div>
+
           {/* Assigned Info */}
           {order.assignedTravelerId && (
             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
@@ -191,6 +244,54 @@ function OrderTracking() {
             </div>
           )}
         </div>
+
+        {/* Payment Form - Show if payment is pending */}
+        {order.paymentStatus === 'pending' && !transaction && (
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Complete Payment</h2>
+            {showPayment ? (
+              <PaymentForm
+                orderId={order._id}
+                buyerId={order.buyerId._id || order.buyerId}
+                amount={order.pricing?.itemValue || 0}
+                fees={{
+                  deliveryFee: order.pricing?.deliveryFee || 50,
+                  serviceFee: order.pricing?.serviceFee || 25,
+                  platformFee: order.pricing?.platformFee || 15,
+                  total: (order.pricing?.deliveryFee || 50) + (order.pricing?.serviceFee || 25) + (order.pricing?.platformFee || 15)
+                }}
+                onSuccess={(trans) => {
+                  setTransaction(trans);
+                  setShowPayment(false);
+                  fetchOrder();
+                }}
+                onCancel={() => setShowPayment(false)}
+              />
+            ) : (
+              <div>
+                <p className="text-gray-600 mb-4">Please complete payment to proceed with your order.</p>
+                <button
+                  onClick={() => setShowPayment(true)}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Proceed to Payment
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Invoice Modal */}
+        {showInvoice && transaction && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <Invoice
+                transactionId={transaction._id}
+                onClose={() => setShowInvoice(false)}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Tracking Updates */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6">

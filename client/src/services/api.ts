@@ -433,4 +433,49 @@ export const api = {
       return request(`/orders/${orderId}/partners`);
     },
   },
+
+  // Transaction endpoints
+  transactions: {
+    getAll: async (params?: { status?: string; paymentMethod?: string; buyerId?: string; orderId?: string; startDate?: string; endDate?: string }) => {
+      const queryParams = params ? '?' + new URLSearchParams(params as any).toString() : '';
+      return request(`/transactions${queryParams}`);
+    },
+    getById: async (id: string) => {
+      return request(`/transactions/${id}`);
+    },
+    create: async (transactionData: {
+      orderId: string;
+      buyerId: string;
+      transactionType?: string;
+      paymentMethod: string;
+      amount: number;
+      currency?: string;
+      fees?: any;
+      paymentDetails?: any;
+    }) => {
+      return request('/transactions', {
+        method: 'POST',
+        body: JSON.stringify(transactionData),
+      });
+    },
+    updateStatus: async (transactionId: string, status: string, paymentProof?: string, notes?: string) => {
+      return request(`/transactions/${transactionId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status, paymentProof, notes }),
+      });
+    },
+    getByOrder: async (orderId: string) => {
+      return request(`/transactions/order/${orderId}`);
+    },
+    getByBuyer: async (buyerId: string) => {
+      return request(`/transactions/buyer/${buyerId}`);
+    },
+    generateInvoice: async (transactionId: string) => {
+      return request(`/transactions/${transactionId}/invoice`);
+    },
+    getStats: async (startDate?: string, endDate?: string) => {
+      const queryParams = startDate || endDate ? '?' + new URLSearchParams({ startDate: startDate || '', endDate: endDate || '' } as any).toString() : '';
+      return request(`/transactions/stats${queryParams}`);
+    },
+  },
 };

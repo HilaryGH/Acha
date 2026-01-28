@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import TripsAndOrdersSection from './TripsAndOrdersSection'
 import CommunicationWidget from './CommunicationWidget'
 
 function Home() {
-  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Slide data
@@ -517,217 +515,16 @@ function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
-              
+
               {/* Content - Left side on mobile, bottom on desktop */}
               <div className="w-1/2 md:w-full md:absolute md:bottom-0 flex flex-col justify-center md:justify-end px-3 py-3 md:px-4 md:py-5 z-10 bg-white md:bg-transparent md:bg-gradient-to-b md:from-transparent md:via-black/10 md:to-black/30 relative" style={{ borderRadius: '0 0 0 2rem' }}>
                 <h3 className="text-xs md:text-base font-bold text-green-600 md:text-white md:drop-shadow-lg mb-1 md:mb-1.5 relative z-10">
                   Acha Movers & Packers
-                </h3>
+              </h3>
                 <p className="text-[10px] md:text-xs text-gray-700 md:text-white md:drop-shadow-md leading-tight md:leading-relaxed relative z-10">
                   Professional moving and packing services
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 md:mb-12 animate-fade-in-up">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-              How It Works
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Connect with travelers and delivery partners to send and receive items safely and efficiently
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {/* Feature Card 1 - Post Your Trip */}
-            <div className="group bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-2 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                {/* Icon Container */}
-              <div className="mb-4 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:shadow-green-500/50">
-                  ✈️
-                  </div>
-                </div>
-
-                {/* Content */}
-              <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
-                Post Your Trip
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-                Share your travel date, departure city, and destination. Help others while you travel.
-              </p>
-            </div>
-
-            {/* Feature Card 2 - Find Travelers */}
-            <div className="group bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-2 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              {/* Icon Container */}
-              <div className="mb-4 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:shadow-green-500/50">
-                  📦
-                </div>
-              </div>
-
-              {/* Content */}
-              <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
-                Find Travelers
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-                Search for travelers going to your destination and request item delivery.
-              </p>
-            </div>
-
-            {/* Feature Card 3 - Connect & Deliver */}
-            <div className="group bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-2 hover:scale-105 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-              {/* Icon Container */}
-              <div className="mb-4 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:shadow-green-500/50">
-                  🤝
-                </div>
-              </div>
-
-              {/* Content */}
-              <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
-                Connect & Deliver
-              </h3>
-              <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-                Connect with travelers, coordinate pickup and delivery, and make shipping personal.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gradient-to-br from-gray-50 via-white to-green-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 md:mb-12 animate-fade-in-up">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-            {t('home.benefits.title')}
-          </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {t('home.benefits.subtitle')}
-          </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Section - Acha Logo */}
-            <div className="flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              <div className="relative">
-                <div className="absolute inset-0 bg-green-500/20 rounded-full blur-3xl animate-float"></div>
-              <img 
-                src="/acha.png" 
-                alt="Acha Logo" 
-                  className="relative w-full h-auto max-w-lg object-contain transform hover:scale-105 transition-transform duration-500"
-              />
-              </div>
-            </div>
-
-            {/* Right Section - Benefits List */}
-            <div className="space-y-8">
-              {/* Cost Effective */}
-              <div className="group flex items-start gap-6 p-6 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-white hover:shadow-lg transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                  💰
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
-                    {t('home.benefits.costEffective.title')}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    {t('home.benefits.costEffective.description')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Fast Delivery */}
-              <div className="group flex items-start gap-6 p-6 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-white hover:shadow-lg transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                  ⚡
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
-                    {t('home.benefits.fastDelivery.title')}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    {t('home.benefits.fastDelivery.description')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Secure & Safe */}
-              <div className="group flex items-start gap-6 p-6 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-white hover:shadow-lg transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                  🔒
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
-                    {t('home.benefits.secureSafe.title')}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    {t('home.benefits.secureSafe.description')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Global Network */}
-              <div className="group flex items-start gap-6 p-6 rounded-2xl bg-white/50 backdrop-blur-sm hover:bg-white hover:shadow-lg transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                  🌍
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
-                    {t('home.benefits.globalNetwork.title')}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    {t('home.benefits.globalNetwork.description')}
-                  </p>
-            </div>
-            </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About Us Section Preview */}
-      <section className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 xl:px-12 bg-white">
-        <div className="max-w-5xl mx-auto">
-          {/* Title Section */}
-          <div className="text-center mb-10 md:mb-12 animate-fade-in-up">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-                    About Us
-          </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover Our Story & Mission
-            </p>
-          </div>
-
-          {/* Main Content Card */}
-          <div className="bg-gradient-to-br from-white to-green-50/30 rounded-3xl shadow-2xl p-8 md:p-12 border border-green-100 hover:shadow-green-500/20 transition-all duration-500 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <div className="mb-8">
-              <p className="text-gray-800 text-xl leading-relaxed mb-6">
-                <span className="font-bold text-green-600">Acha Delivery</span> is a peer-to-peer delivery and local delivery partner marketplace platform headquartered in <span className="font-bold text-gray-900">Addis Ababa, Ethiopia</span>.
-              </p>
-
-              <p className="text-gray-700 text-lg leading-relaxed">
-                    As a peer-to-peer marketplace, it links international and domestic travelers (acting as carriers) with buyers, senders, and recipients. Additionally, Acha Delivery serves as a delivery partner marketplace, connecting clients with verified local delivery partners...
                   </p>
               </div>
-
-              {/* Call to Action Button */}
-              <div className="text-center mt-10">
-                <Link
-                  to="/about"
-                className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105"
-              >
-                    <span>Read More About Us</span>
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                </Link>
             </div>
                 </div>
               </div>
@@ -809,39 +606,153 @@ function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section 
-        className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 xl:px-12 overflow-hidden"
-        style={{
-          backgroundImage: 'url(/background.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-green-600/95 via-green-600/90 to-green-700/95"></div>
+      {/* Beautiful Compact Info Section - Before Footer */}
+      <section className="relative py-8 md:py-12 px-4 sm:px-6 lg:px-8 xl:px-12 bg-gradient-to-br from-white via-green-50/30 to-gray-50 overflow-hidden">
+        {/* Decorative Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-green-200/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-green-300/10 rounded-full blur-3xl"></div>
+        </div>
         
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }}></div>
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Compact Grid Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+            
+            {/* How It Works - Beautiful Card */}
+            <div className="group relative bg-gradient-to-br from-white to-green-50/50 p-5 md:p-6 border border-green-100/50 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden" style={{ borderRadius: '0 5rem 0 5rem' }}>
+              {/* Decorative Gradient Overlay */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                    ✈️
+                  </div>
+                  <h3 className="text-base md:text-lg font-bold text-green-600 group-hover:text-green-700 transition-colors">
+                    How It Works
+                  </h3>
+                </div>
+                
+                <p className="text-xs md:text-sm text-gray-600 mb-4 leading-relaxed">
+                  Connect with travelers and delivery partners to send and receive items safely and efficiently
+                </p>
+                
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-2 rounded-lg bg-white/60 hover:bg-white transition-colors group/item">
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-sm flex-shrink-0 shadow-md group-hover/item:scale-110 transition-transform">
+                      ✈️
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-gray-800 mb-0.5">Post Your Trip</p>
+                      <p className="text-xs text-gray-600 leading-relaxed">Share your travel date and destination</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-2 rounded-lg bg-white/60 hover:bg-white transition-colors group/item">
+                    <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-sm flex-shrink-0 shadow-md group-hover/item:scale-110 transition-transform">
+                      📦
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-gray-800 mb-0.5">Find Travelers</p>
+                      <p className="text-xs text-gray-600 leading-relaxed">Search for travelers going to your destination</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-2 rounded-lg bg-white/60 hover:bg-white transition-colors group/item">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center text-sm flex-shrink-0 shadow-md group-hover/item:scale-110 transition-transform">
+                      🤝
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-gray-800 mb-0.5">Connect & Deliver</p>
+                      <p className="text-xs text-gray-600 leading-relaxed">Coordinate pickup and delivery</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Why Choose Acha - Beautiful Card */}
+            <div className="group relative bg-gradient-to-br from-white to-green-50/50 p-5 md:p-6 border border-green-100/50 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden" style={{ borderRadius: '0 5rem 0 5rem' }}>
+              {/* Decorative Gradient Overlay */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 overflow-hidden">
+                    <img src="/acha.png" alt="Acha Logo" className="h-6 w-auto object-contain" />
+                  </div>
+                  <h3 className="text-base md:text-lg font-bold text-green-600 group-hover:text-green-700 transition-colors">
+                    Why Choose Acha?
+                  </h3>
+                </div>
+                
+                <p className="text-xs md:text-sm text-gray-600 mb-4 leading-relaxed">
+                  Experience the benefits of peer-to-peer delivery
+                </p>
+                
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-yellow-50 to-yellow-100/50 border border-yellow-200/50 hover:shadow-md transition-all group/item">
+                    <div className="text-lg mb-1">💰</div>
+                    <p className="text-xs font-bold text-gray-800 mb-0.5">Cost Effective</p>
+                    <p className="text-xs text-gray-600">Save money</p>
+                  </div>
+                  
+                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200/50 hover:shadow-md transition-all group/item">
+                    <div className="text-lg mb-1">⚡</div>
+                    <p className="text-xs font-bold text-gray-800 mb-0.5">Fast Delivery</p>
+                    <p className="text-xs text-gray-600">Quick delivery</p>
+                  </div>
+                  
+                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200/50 hover:shadow-md transition-all group/item">
+                    <div className="text-lg mb-1">🔒</div>
+                    <p className="text-xs font-bold text-gray-800 mb-0.5">Secure & Safe</p>
+                    <p className="text-xs text-gray-600">Trusted travelers</p>
+                  </div>
+                  
+                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/50 hover:shadow-md transition-all group/item">
+                    <div className="text-lg mb-1">🌍</div>
+                    <p className="text-xs font-bold text-gray-800 mb-0.5">Global Network</p>
+                    <p className="text-xs text-gray-600">Worldwide reach</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* About Us - Beautiful Card */}
+            <div className="group relative bg-gradient-to-br from-white to-green-50/50 p-5 md:p-6 border border-green-100/50 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden" style={{ borderRadius: '0 5rem 0 5rem' }}>
+              {/* Decorative Gradient Overlay */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl flex items-center justify-center text-xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                    ℹ️
+                  </div>
+                  <h3 className="text-base md:text-lg font-bold text-green-600 group-hover:text-green-700 transition-colors">
+                    About Us
+                  </h3>
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center animate-fade-in-up">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
-            {t('home.cta.title')}
-          </h2>
-          <p className="text-xl sm:text-2xl text-white/95 mb-10 leading-relaxed">
-            {t('home.cta.subtitle')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Link to="/register" className="bg-white text-green-600 hover:bg-gray-50 px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-2xl hover:shadow-white/50 hover:-translate-y-1 hover:scale-105">
-              {t('home.cta.getStarted')}
+                <p className="text-xs md:text-sm text-gray-700 mb-3 leading-relaxed">
+                  <span className="font-bold text-green-600">Acha Delivery</span> is a peer-to-peer delivery and local delivery partner marketplace platform headquartered in <span className="font-semibold text-gray-800">Addis Ababa, Ethiopia</span>.
+                </p>
+                
+                <p className="text-xs text-gray-600 leading-relaxed mb-4">
+                  As a peer-to-peer marketplace, it links international and domestic travelers (acting as carriers) with buyers, senders, and recipients. Additionally, Acha Delivery serves as a delivery partner marketplace, connecting clients with verified local delivery partners.
+                </p>
+                
+                <Link
+                  to="/about"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white text-xs font-semibold rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+                >
+                  <span>Read More About Us</span>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
             </Link>
-            <Link to="/about" className="bg-transparent text-white border-3 border-white hover:bg-white hover:text-green-600 px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 hover:scale-105">
-              {t('home.cta.learnMore')}
-            </Link>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

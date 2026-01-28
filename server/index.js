@@ -1,4 +1,5 @@
-require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -16,6 +17,7 @@ const auditRoutes = require('./routes/auditRoutes');
 const womenInitiativeRoutes = require('./routes/womenInitiativeRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const subscriptionRoutes = require('./routes/subscriptionRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 
 // Initialize Express app
 const app = express();
@@ -29,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', true);
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/acha';
+const MONGODB_URI = process.env.MONGODB_URI ;
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
@@ -53,6 +55,7 @@ app.use('/api/audit', auditRoutes);
 app.use('/api/women-initiatives', womenInitiativeRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/transactions', transactionRoutes);
 
 // Log route registration
 console.log('✅ Routes registered: /api/orders');

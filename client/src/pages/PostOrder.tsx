@@ -3,6 +3,8 @@ import { api } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import FileUpload from '../components/FileUpload';
 import VideoUpload from '../components/VideoUpload';
+import PaymentForm from '../components/PaymentForm';
+import MatchSelection from '../components/MatchSelection';
 
 function PostOrder() {
   const navigate = useNavigate();
@@ -36,8 +38,14 @@ function PostOrder() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   const [photoUploading, setPhotoUploading] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [showMatchSelection, setShowMatchSelection] = useState(false);
+  const [createdOrder, setCreatedOrder] = useState<any>(null);
+  const [createdBuyerId, setCreatedBuyerId] = useState<string>('');
+  const [availableMatches, setAvailableMatches] = useState<any[]>([]);
+  const [matchType, setMatchType] = useState<'traveler' | 'partner' | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -126,57 +134,29 @@ function PostOrder() {
       const orderResponse = await api.orders.create(orderData) as { status?: string; data?: any; message?: string };
       
       if (orderResponse.status === 'success') {
-        const orderId = orderResponse.data?._id;
         const responseData = orderResponse.data;
-        const deliveryMethodText = formData.deliveryMethod === 'traveler' ? 'travelers' : 'partners';
         
-        // Check if order was automatically matched
-        let successMessage = '';
-        if (responseData?.matched && responseData?.matchDetails) {
-          const matchType = responseData.matchDetails.type === 'traveler' ? 'traveler' : 'delivery partner';
-          const matchName = responseData.matchDetails.name;
-          successMessage = `Order posted successfully and automatically matched with ${matchType} ${matchName}! Order ID: ${orderResponse.data?.uniqueId || orderId}`;
-        } else {
-          successMessage = `Order posted successfully! Your order will be matched with ${deliveryMethodText}. Order ID: ${orderResponse.data?.uniqueId || orderId}`;
-        }
+        // Store order and buyer info
+        setCreatedOrder(responseData);
+        setCreatedBuyerId(buyerId);
         
-        setMessage({ 
-          type: 'success', 
-          text: successMessage
-        });
-        
-        // Reset form after 3 seconds and redirect to tracking
-        setTimeout(() => {
-          setFormData({
-            name: '',
-            phone: '',
-            email: '',
-            whatsapp: '',
-            telegram: '',
-            currentCity: '',
-            location: '',
-            deliveryDestination: '',
-            bankAccount: '',
-            idDocument: '',
-            deliveryMethod: 'traveler',
-            productName: '',
-            productDescription: '',
-            brand: '',
-            quantityType: 'pieces',
-            quantityDescription: '',
-            manufacturingDate: '',
-            countryOfOrigin: '',
-            preferredDeliveryDate: '',
-            photos: [],
-            video: '',
-            link: ''
+        // Check if there are available matches
+        if (responseData.availableMatches && responseData.availableMatches.length > 0) {
+          setAvailableMatches(responseData.availableMatches);
+          setMatchType(responseData.matchType);
+          setShowMatchSelection(true);
+          setMessage({ 
+            type: 'success', 
+            text: `Found ${responseData.availableMatches.length} ${responseData.matchType === 'traveler' ? 'traveler' : 'partner'}${responseData.availableMatches.length > 1 ? 's' : ''} matching your route. Please select one.`
           });
-          if (orderId) {
-            navigate(`/orders/track/${orderId}`);
-          } else {
-            navigate('/');
-          }
-        }, 3000);
+        } else {
+          // No matches found, proceed to payment
+          setShowPayment(true);
+          setMessage({ 
+            type: 'success', 
+            text: 'Order created successfully! Please proceed with payment.'
+          });
+        }
       } else {
         setMessage({ type: 'error', text: orderResponse.message || 'Failed to create order. Please try again.' });
       }
@@ -186,6 +166,87 @@ function PostOrder() {
       setLoading(false);
     }
   };
+
+  const handlePaymentSuccess = () => {
+    setMessage({ 
+      type: 'success', 
+      text: 'Payment submitted successfully! Your order is being processed.'
+    });
+    
+    // Redirect to order tracking after 2 seconds
+    setTimeout(() => {
+      if (createdOrder?._id) {
+        navigate(`/orders/track/${createdOrder._id}`);
+      } else {
+        navigate('/');
+      }
+    }, 2000);
+  };
+
+  const handlePaymentCancel = () => {
+    setShowPayment(false);
+    setMessage({ 
+      type: 'info', 
+      text: 'You can complete payment later from your order tracking page.'
+    });
+    
+    // Redirect to order tracking
+    if (createdOrder?._id) {
+      navigate(`/orders/track/${createdOrder._id}`);
+    }
+  };
+
+  const handleMatchSelect = async (matchId: string) => {
+    try {
+      setLoading(true);
+      if (matchType === 'traveler') {
+        await api.orders.matchWithTraveler(createdOrder._id, matchId);
+      } else if (matchType === 'partner') {
+        await api.orders.assignToPartner(createdOrder._id, matchId);
+      }
+      
+      // Refresh order data
+      const updatedOrder = await api.orders.getById(createdOrder._id) as { status?: string; data?: any };
+      if (updatedOrder.status === 'success') {
+        setCreatedOrder(updatedOrder.data);
+      }
+      
+      setShowMatchSelection(false);
+      setShowPayment(true);
+      setMessage({ 
+        type: 'success', 
+        text: 'Match selected successfully! Please proceed with payment.'
+      });
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Failed to select match. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMatchSkip = () => {
+    setShowMatchSelection(false);
+    setShowPayment(true);
+    setMessage({ 
+      type: 'info', 
+      text: 'You can select a match later. Proceeding to payment.'
+    });
+  };
+
+  // Calculate fees (simplified - you can make this dynamic)
+  const calculateFees = () => {
+    const deliveryFee = 50; // Base delivery fee
+    const serviceFee = 25; // Service fee
+    const platformFee = 15; // Platform fee
+    return {
+      deliveryFee,
+      serviceFee,
+      platformFee,
+      total: deliveryFee + serviceFee + platformFee
+    };
+  };
+
+  const itemValue = 0; // You can add this as a form field if needed
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -198,22 +259,56 @@ function PostOrder() {
           </p>
         </div>
 
+        {/* Match Selection - Show if matches are available */}
+        {showMatchSelection && createdOrder && matchType && (
+          <div className="mb-8">
+            <MatchSelection
+              matches={availableMatches}
+              matchType={matchType}
+              origin={formData.currentCity}
+              destination={formData.deliveryDestination}
+              onSelect={handleMatchSelect}
+              onSkip={handleMatchSkip}
+            />
+          </div>
+        )}
+
+        {/* Payment Form - Show after order creation (or after match selection) */}
+        {showPayment && createdOrder && !showMatchSelection && (
+          <div className="mb-8">
+            <PaymentForm
+              orderId={createdOrder._id}
+              buyerId={createdBuyerId}
+              amount={itemValue}
+              fees={calculateFees()}
+              onSuccess={handlePaymentSuccess}
+              onCancel={handlePaymentCancel}
+            />
+          </div>
+        )}
+
         {/* Form Card */}
         <div className="bg-white rounded-xl shadow-lg p-8">
           {message && (
             <div className={`mb-6 p-4 rounded-lg ${
               message.type === 'success' 
                 ? 'bg-green-100 text-green-800 border border-green-300' 
-                : 'bg-red-100 text-red-800 border border-red-300'
+                : message.type === 'error'
+                ? 'bg-red-100 text-red-800 border border-red-300'
+                : 'bg-blue-100 text-blue-800 border border-blue-300'
             }`}>
               <div className="flex items-center gap-2">
                 {message.type === 'success' ? (
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                ) : (
+                ) : message.type === 'error' ? (
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
                 )}
                 <span>{message.text}</span>
@@ -221,7 +316,7 @@ function PostOrder() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-8" style={{ display: (showMatchSelection || showPayment) ? 'none' : 'block' }}>
             {/* Delivery Method Selection */}
             <div className="border-b border-gray-200 pb-6">
               <h2 className="text-2xl font-semibold mb-4 text-gray-800 flex items-center gap-2">

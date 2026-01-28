@@ -123,6 +123,44 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  // Payment Information
+  paymentStatus: {
+    type: String,
+    enum: ['pending', 'processing', 'paid', 'failed', 'refunded'],
+    default: 'pending'
+  },
+  transactionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Transaction',
+    default: null
+  },
+  // Pricing Information
+  pricing: {
+    itemValue: {
+      type: Number,
+      default: 0
+    },
+    deliveryFee: {
+      type: Number,
+      default: 0
+    },
+    serviceFee: {
+      type: Number,
+      default: 0
+    },
+    platformFee: {
+      type: Number,
+      default: 0
+    },
+    totalAmount: {
+      type: Number,
+      default: 0
+    },
+    currency: {
+      type: String,
+      default: 'ETB'
+    }
+  },
   // Timestamps
   createdAt: {
     type: Date,

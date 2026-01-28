@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
-require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config();
 
 /**
  * Script to create a super admin user

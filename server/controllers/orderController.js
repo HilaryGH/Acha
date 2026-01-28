@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const Buyer = require('../models/Buyer');
 const Traveller = require('../models/Traveller');
 const Partner = require('../models/Partner');
+const { calculateDistance, isLocalDelivery } = require('../utils/googleMaps');
 
 // Helper function to normalize location strings for matching
 const normalizeLocation = (location) => {
@@ -54,20 +55,13 @@ exports.createOrder = async (req, res) => {
       orderInfo
     });
 
-    // Try to automatically match with travelers or partners based on location
-    let matched = false;
-    let matchDetails = null;
+    // Find matching travelers or partners (return up to 4 options)
+    let availableMatches = [];
+    let matchType = null;
 
     if (deliveryMethod === 'traveler') {
       // Find matching travelers
-      // Match criteria:
-      // 1. Traveler's currentLocation (departure city) should match buyer's currentCity
-      // 2. Traveler's destinationCity should match order's countryOfOrigin (if provided) or be flexible
-      // 3. Traveler should be active
-      // 4. Traveler's departure date should be reasonable (not too far in the past)
-      
       const buyerCity = buyer.currentCity;
-      // Use deliveryDestination first, then countryOfOrigin, then fallback to buyer city
       const orderDestination = orderInfo.deliveryDestination || orderInfo.countryOfOrigin || buyerCity;
       const preferredDate = orderInfo.preferredDeliveryDate ? new Date(orderInfo.preferredDeliveryDate) : null;
       
@@ -75,63 +69,58 @@ exports.createOrder = async (req, res) => {
       const matchingTravelers = await Traveller.find({
         status: 'active',
         currentLocation: { $regex: new RegExp(buyerCity, 'i') }
-      });
+      }).limit(20); // Get more candidates to filter
 
       // Filter travelers by destination and date
       const suitableTravelers = matchingTravelers.filter(traveler => {
-        // Check if destination matches (flexible matching)
         const destinationMatch = !orderDestination || 
           locationsMatch(traveler.destinationCity, orderDestination) ||
           locationsMatch(traveler.destinationCity, buyerCity);
         
-        // Check if departure date is reasonable (not too far in the past, and before preferred delivery date if provided)
         const departureDate = new Date(traveler.departureDate);
         const now = new Date();
         const isDateValid = departureDate >= now || 
-          (departureDate >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)); // Allow up to 7 days in the past
+          (departureDate >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000));
         
         const isDateBeforePreferred = !preferredDate || departureDate <= preferredDate;
         
         return destinationMatch && isDateValid && isDateBeforePreferred;
       });
 
-      // Sort by departure date (closest first)
+      // Sort by departure date (closest first) and take top 4
       suitableTravelers.sort((a, b) => {
         const dateA = new Date(a.departureDate);
         const dateB = new Date(b.departureDate);
         return dateA - dateB;
       });
 
-      // Match with the first suitable traveler
-      if (suitableTravelers.length > 0) {
-        const matchedTraveler = suitableTravelers[0];
-        order.assignedTravelerId = matchedTraveler._id;
-        order.status = 'matched';
-        await order.addTrackingUpdate('matched', `Order automatically matched with traveler: ${matchedTraveler.name}`, matchedTraveler.currentLocation);
-        matched = true;
-        matchDetails = {
-          type: 'traveler',
-          name: matchedTraveler.name,
-          phone: matchedTraveler.phone,
-          email: matchedTraveler.email
-        };
-      }
+      availableMatches = suitableTravelers.slice(0, 4).map(t => ({
+        _id: t._id,
+        uniqueId: t.uniqueId,
+        name: t.name,
+        email: t.email,
+        phone: t.phone,
+        currentLocation: t.currentLocation,
+        destinationCity: t.destinationCity,
+        departureDate: t.departureDate,
+        arrivalDate: t.arrivalDate,
+        travellerType: t.travellerType
+      }));
+      matchType = 'traveler';
     } else if (deliveryMethod === 'partner') {
       // Find matching delivery partners
-      // Match criteria:
-      // 1. Partner's city or primaryLocation should match buyer's currentCity
-      // 2. Partner should be approved
-      
       const buyerCity = buyer.currentCity;
       
       // Find approved partners matching location
       const matchingPartners = await Partner.find({
         status: 'approved',
+        registrationType: 'Invest/Partner',
+        partner: 'Delivery Partner',
         $or: [
           { city: { $regex: new RegExp(buyerCity, 'i') } },
           { primaryLocation: { $regex: new RegExp(buyerCity, 'i') } }
         ]
-      });
+      }).limit(20);
 
       // Filter by exact or fuzzy location match
       const suitablePartners = matchingPartners.filter(partner => {
@@ -139,37 +128,28 @@ exports.createOrder = async (req, res) => {
                locationsMatch(partner.primaryLocation, buyerCity);
       });
 
-      // Match with the first suitable partner
-      if (suitablePartners.length > 0) {
-        const matchedPartner = suitablePartners[0];
-        order.assignedPartnerId = matchedPartner._id;
-        order.status = 'assigned';
-        await order.addTrackingUpdate('assigned', `Order automatically assigned to partner: ${matchedPartner.name || matchedPartner.companyName}`, matchedPartner.city || matchedPartner.primaryLocation);
-        matched = true;
-        matchDetails = {
-          type: 'partner',
-          name: matchedPartner.name || matchedPartner.companyName,
-          phone: matchedPartner.phone,
-          email: matchedPartner.email
-        };
-      }
-    }
-
-    // Prepare response message
-    let message = 'Order created successfully';
-    if (matched) {
-      message += ` and automatically ${deliveryMethod === 'traveler' ? 'matched' : 'assigned'} with ${deliveryMethod === 'traveler' ? 'a traveler' : 'a delivery partner'}`;
-    } else {
-      message += '. No automatic match found - order is pending assignment.';
+      // Take top 4 partners
+      availableMatches = suitablePartners.slice(0, 4).map(p => ({
+        _id: p._id,
+        uniqueId: p.uniqueId,
+        name: p.name || p.companyName,
+        companyName: p.companyName,
+        email: p.email,
+        phone: p.phone,
+        city: p.city,
+        primaryLocation: p.primaryLocation
+      }));
+      matchType = 'partner';
     }
 
     res.status(201).json({
       status: 'success',
-      message: message,
+      message: 'Order created successfully. Please select a delivery option.',
       data: {
         ...order.toObject(),
-        matched,
-        matchDetails
+        availableMatches,
+        matchType,
+        requiresSelection: availableMatches.length > 0
       }
     });
   } catch (error) {
@@ -303,7 +283,7 @@ exports.matchWithTraveler = async (req, res) => {
 
     order.assignedTravelerId = travelerId;
     order.status = 'matched';
-    order.addTrackingUpdate('matched', `Order matched with traveler: ${traveler.name}`, '');
+    await order.addTrackingUpdate('matched', `Order matched with traveler: ${traveler.name}`, '');
     await order.save();
 
     res.status(200).json({
@@ -356,7 +336,7 @@ exports.assignToPartner = async (req, res) => {
 
     order.assignedPartnerId = partnerId;
     order.status = 'assigned';
-    order.addTrackingUpdate('assigned', `Order assigned to partner: ${partner.name || partner.companyName}`, '');
+    await order.addTrackingUpdate('assigned', `Order assigned to partner: ${partner.name || partner.companyName}`, '');
     await order.save();
 
     res.status(200).json({
@@ -518,4 +498,3 @@ exports.getAvailablePartners = async (req, res) => {
     });
   }
 };
-

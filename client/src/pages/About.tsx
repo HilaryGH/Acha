@@ -4,7 +4,7 @@ function About() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Banner with Animated Background */}
-      <section className="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 xl:px-12 overflow-hidden">
+      <section className="relative py-12 md:py-16 px-4 sm:px-6 lg:px-8 xl:px-12 overflow-hidden">
         {/* Animated SVG Wave Background */}
         <div className="absolute inset-0 overflow-hidden">
           <svg 
@@ -41,13 +41,13 @@ function About() {
         </div>
 
         {/* Floating Gradient Orbs */}
-        <div className="absolute top-20 left-10 w-32 h-32 rounded-full opacity-15 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%)', animationDelay: '0s' }}></div>
-        <div className="absolute top-40 right-20 w-40 h-40 rounded-full opacity-12 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 50%)', animationDelay: '1.5s' }}></div>
-        <div className="absolute bottom-20 left-1/4 w-36 h-36 rounded-full opacity-10 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 50%)', animationDelay: '3s' }}></div>
+        <div className="absolute top-10 left-10 w-24 h-24 rounded-full opacity-15 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%)', animationDelay: '0s' }}></div>
+        <div className="absolute top-20 right-20 w-32 h-32 rounded-full opacity-12 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #26C6DA 0%, #43A047 50%)', animationDelay: '1.5s' }}></div>
+        <div className="absolute bottom-10 left-1/4 w-28 h-28 rounded-full opacity-10 blur-3xl animate-float" style={{ background: 'linear-gradient(135deg, #43A047 0%, #1E88E5 50%)', animationDelay: '3s' }}></div>
 
         <div className="relative max-w-7xl mx-auto z-10">
           {/* Back Button */}
-          <div className="mb-8">
+          <div className="mb-6">
             <Link
               to="/"
               className="inline-flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors font-medium"
@@ -59,9 +59,9 @@ function About() {
             </Link>
           </div>
 
-          {/* Page Title */}
-          <div className="text-center mb-12 md:mb-16">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 md:mb-6">
+          {/* Page Title - Reduced Size */}
+          <div className="text-center mb-8 md:mb-10">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4">
               <span className="bg-clip-text text-transparent animate-gradient-shift" style={{ 
                 background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
                 backgroundSize: '200% 200%',
@@ -71,7 +71,7 @@ function About() {
                 About Us
               </span>
             </h1>
-            <div className="w-24 h-1 mx-auto rounded-full animate-gradient-shift" style={{ 
+            <div className="w-20 h-0.5 mx-auto rounded-full animate-gradient-shift" style={{ 
               background: 'linear-gradient(135deg, #1E88E5 0%, #26C6DA 50%, #43A047 100%)',
               backgroundSize: '200% 200%'
             }}></div>

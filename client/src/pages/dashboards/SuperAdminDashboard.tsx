@@ -50,7 +50,7 @@ interface SuperAdminDashboardProps {
 
 function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'partners' | 'audit' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'partners' | 'transactions' | 'audit' | 'settings'>('overview');
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -61,8 +61,16 @@ function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
   const [users, setUsers] = useState<User[]>([]);
   const [partners, setPartners] = useState<Partner[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [transactionStats, setTransactionStats] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<string>('all');
+  const [transactionFilters, setTransactionFilters] = useState({
+    status: '',
+    paymentMethod: '',
+    startDate: '',
+    endDate: ''
+  });
 
   useEffect(() => {
     loadDashboardData();
@@ -78,6 +86,9 @@ function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
         await loadUsers();
       } else if (activeTab === 'partners') {
         await loadPartners();
+      } else if (activeTab === 'transactions') {
+        await loadTransactions();
+        await loadTransactionStats();
       } else if (activeTab === 'audit') {
         await loadAuditLogs();
       }
@@ -135,6 +146,34 @@ function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
       setAuditLogs(response.data?.logs || []);
     } catch (error) {
       console.error('Error loading audit logs:', error);
+    }
+  };
+
+  const loadTransactions = async () => {
+    try {
+      const params: any = {};
+      if (transactionFilters.status) params.status = transactionFilters.status;
+      if (transactionFilters.paymentMethod) params.paymentMethod = transactionFilters.paymentMethod;
+      if (transactionFilters.startDate) params.startDate = transactionFilters.startDate;
+      if (transactionFilters.endDate) params.endDate = transactionFilters.endDate;
+      
+      const response = await api.transactions.getAll(params) as { status?: string; data?: any[] };
+      setTransactions(response.data || []);
+    } catch (error) {
+      console.error('Error loading transactions:', error);
+    }
+  };
+
+  const loadTransactionStats = async () => {
+    try {
+      const params: any = {};
+      if (transactionFilters.startDate) params.startDate = transactionFilters.startDate;
+      if (transactionFilters.endDate) params.endDate = transactionFilters.endDate;
+      
+      const response = await api.transactions.getStats(params.startDate, params.endDate) as { status?: string; data?: any };
+      setTransactionStats(response.data);
+    } catch (error) {
+      console.error('Error loading transaction stats:', error);
     }
   };
 
@@ -202,6 +241,7 @@ function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
                 { id: 'overview', label: 'Overview', icon: '📊' },
                 { id: 'users', label: 'User Management', icon: '👥' },
                 { id: 'partners', label: 'Partners', icon: '🤝' },
+                { id: 'transactions', label: 'Transactions', icon: '💰' },
                 { id: 'audit', label: 'Audit Logs', icon: '📋' },
                 { id: 'settings', label: 'System Settings', icon: '⚙️' },
               ].map((tab) => (
@@ -282,6 +322,164 @@ function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
                 </div>
               )}
             </>
+          )}
+
+          {activeTab === 'transactions' && (
+            <div className="space-y-6">
+              {/* Transaction Statistics */}
+              {transactionStats && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
+                    <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-2">
+                      {transactionStats.summary?.totalRevenue?.toFixed(2) || '0.00'} ETB
+                    </p>
+                  </div>
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+                    <p className="text-sm font-medium text-gray-600">Total Transactions</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-2">
+                      {transactionStats.summary?.totalTransactions || 0}
+                    </p>
+                  </div>
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
+                    <p className="text-sm font-medium text-gray-600">Completed</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-2">
+                      {transactionStats.summary?.completedCount || 0}
+                    </p>
+                  </div>
+                  <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
+                    <p className="text-sm font-medium text-gray-600">Pending</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-2">
+                      {transactionStats.summary?.pendingCount || 0}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Filters */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Filter Transactions</h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select
+                      value={transactionFilters.status}
+                      onChange={(e) => setTransactionFilters(prev => ({ ...prev, status: e.target.value }))}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                      onBlur={loadTransactions}
+                    >
+                      <option value="">All</option>
+                      <option value="pending">Pending</option>
+                      <option value="processing">Processing</option>
+                      <option value="completed">Completed</option>
+                      <option value="failed">Failed</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
+                    <select
+                      value={transactionFilters.paymentMethod}
+                      onChange={(e) => setTransactionFilters(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                      onBlur={loadTransactions}
+                    >
+                      <option value="">All</option>
+                      <option value="bank_transfer">Bank Transfer</option>
+                      <option value="mobile_money">Mobile Money</option>
+                      <option value="cash">Cash</option>
+                      <option value="card">Card</option>
+                      <option value="acha_pay">Acha Pay</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                    <input
+                      type="date"
+                      value={transactionFilters.startDate}
+                      onChange={(e) => setTransactionFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                      onBlur={loadTransactions}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                    <input
+                      type="date"
+                      value={transactionFilters.endDate}
+                      onChange={(e) => setTransactionFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                      onBlur={loadTransactions}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Transactions Table */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">All Transactions</h3>
+                {loading ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading transactions...</p>
+                  </div>
+                ) : transactions.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-gray-600">No transactions found</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Transaction ID</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Buyer</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Payment Method</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {transactions.map((transaction) => (
+                          <tr key={transaction._id}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {transaction.uniqueId || transaction._id.slice(-8)}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {transaction.orderId?.uniqueId || transaction.orderId?._id?.slice(-8) || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {transaction.buyerId?.name || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                              {transaction.amount?.toFixed(2) || '0.00'} {transaction.currency || 'ETB'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
+                              {transaction.paymentMethod?.replace('_', ' ') || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                                transaction.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                transaction.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                transaction.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                transaction.status === 'failed' ? 'bg-red-100 text-red-800' :
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {transaction.status || 'N/A'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(transaction.createdAt).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
 
           {activeTab === 'users' && (
